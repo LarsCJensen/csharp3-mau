@@ -8,8 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\test_image.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Assignment1_BLL\Assignment1_BLL.csproj" />
     <ProjectReference Include="..\Assignment1_Utilities\Assignment1_Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\test_image.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

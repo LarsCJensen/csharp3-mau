@@ -50,14 +50,15 @@
                 return FileInfo.Length.ToString();
             }
         }
-        public string CheckSum { get; set; }
-        public int DuplicateId { get; set; }
-
-        public FileClass((FileInfo FileInfo, string Checksum, int DuplicateId) duplicateFile)
+        public string? Image
         {
-            FileInfo = duplicateFile.FileInfo;
-            CheckSum = duplicateFile.Checksum;
-            DuplicateId = duplicateFile.DuplicateId;
+            get { 
+                return FileInfo.FullName; 
+            }
+        }
+        public FileClass(FileInfo fileInfo)
+        {
+            FileInfo = fileInfo;
         }
         /// <summary>
         /// Method for delete, delegated to FileInfo

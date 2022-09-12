@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Assignment1.ViewModel;
 using Assignment1_Utilities;
 
 namespace Assignment1
@@ -22,12 +23,14 @@ namespace Assignment1
     /// </summary>
     public partial class MainWindow : Window
     {
-        private object dummyNode = null;
+        private object? dummyNode = null;
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
+            MainViewModel vm = new MainViewModel();
+            DataContext = vm;            
             InitializeGUI();
+            
         }
         private void InitializeGUI()
         {
@@ -41,7 +44,7 @@ namespace Assignment1
                 // Adding a dummyNode to make first expand work
                 item.Items.Add(dummyNode);
                 item.Expanded += new RoutedEventHandler(FolderExpanded);
-                fileTree.Items.Add(item);
+                fileTreeView.Items.Add(item);
             }
         }
         /// <summary>
