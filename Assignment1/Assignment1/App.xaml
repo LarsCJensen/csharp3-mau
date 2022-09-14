@@ -6,6 +6,9 @@
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
         <BitmapImage x:Key="TestImage" UriSource="/Assignment1;component/Assets/test_image.jpg" />
+        <BitmapImage x:Key="ArrowUp" UriSource="/Assignment1;component/Assets/arrow-up.png" />
+        <BitmapImage x:Key="ArrowDown" UriSource="/Assignment1;component/Assets/arrow-down.png" />
+        <BitmapImage x:Key="RedCross" UriSource="/Assignment1;component/Assets/red-cross.png" />
         <converters:ImageConverter x:Key="ImageConverter" />
     </Application.Resources>
 </Application>

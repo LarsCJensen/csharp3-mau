@@ -7,59 +7,165 @@
         xmlns:viewmodel="clr-namespace:Assignment1.ViewModel"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Home Media Player" Height="450" Width="800">
+        Title="{Binding Title, FallbackValue='Home Media Player'}" Height="700" Width="1024">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
-            <TreeView x:Name="fileTreeView">
-                <!--Triggers for SelectedItemChanged, binding command and parameter with element--> 
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectedItemChanged">
-                        <i:InvokeCommandAction Command="{Binding SelectFolder}" CommandParameter="{Binding ElementName=fileTreeView, Path=SelectedItem}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </TreeView>
-        </Grid>
-
-        <Grid Grid.Column="1">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="300"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <ListView ItemsSource="{Binding Files}">
-                    <ListView.Resources>
-                        <DataTemplate x:Key="IconTemplate">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Image HorizontalAlignment="Center" VerticalAlignment="Top" Height="300" Width="400" Source="{Binding Image, Converter={StaticResource ImageConverter},FallbackValue={StaticResource TestImage}, TargetNullValue={StaticResource TestImage}}">
-                                    <Image.Style>
-                                        <Style/>
-                                    </Image.Style>
-                                </Image>
-                                <TextBlock Grid.Column="1" Text="{Binding Name}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.Resources>
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"></StackPanel>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn CellTemplate="{StaticResource IconTemplate}" Header="Name" />
-                            <GridViewColumn DisplayMemberBinding="{Binding Path}" Header="File Name" />
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <Menu>
+                    <MenuItem Header="_File">
+                        <MenuItem Header="_New_album" Command="{Binding NewCommand}" CommandParameter="album"/>
+                        <MenuItem Header="_New_slideshow" Command="{Binding NewCommand}" CommandParameter="slideshow"/>
+                        <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
+                    </MenuItem>
+                    <MenuItem Header="_Options">
+                        <MenuItem Header="_None Yet" />
+                    </MenuItem>                    
+                </Menu>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TreeView x:Name="fileTreeView">
+                        <!--Triggers for SelectedItemChanged, binding command and parameter with element--> 
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedItemChanged">
+                                <i:InvokeCommandAction Command="{Binding SelectFolder}" CommandParameter="{Binding ElementName=fileTreeView, Path=SelectedItem}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TreeView>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="400"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <ListView ItemsSource="{Binding Files}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="400" Width="700">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <!--<StackPanel Orientation="Horizontal" />-->
+                                    <UniformGrid Columns="5" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.Resources>
+                                <DataTemplate x:Key="IconTemplate">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="100" />
+                                                <RowDefinition Height="20" />                                                
+                                            </Grid.RowDefinitions>
+                                        </Grid>
+                                        <Image HorizontalAlignment="Left" VerticalAlignment="Top" Height="75" Width="100" Source="{Binding Image, Converter={StaticResource ImageConverter},FallbackValue={StaticResource TestImage}, TargetNullValue={StaticResource TestImage}}">
+                                            <Image.Style>
+                                                <Style/>
+                                            </Image.Style>
+                                        </Image>
+                                        <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Name}" />
+                                    </Grid>
+                                </DataTemplate>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </Style>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="MaxWidth" Value="100"/>
+                                    <Setter Property="MaxHeight" Value="100"/>
+                                    <Setter Property="VerticalAlignment" Value="Top" />
+                                    <Setter Property="HorizontalAlignment" Value="Left" />
+                                </Style>
+                            </ListView.Resources>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn CellTemplate="{StaticResource IconTemplate}"/>
+                                    <!--<GridViewColumn DisplayMemberBinding="{Binding Path}" Header="File Name" />-->
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="10" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Background="LightGray">
+                                <StackPanel.Resources>
+                                    <Style x:Key="Margin"  TargetType="{x:Type Control}">
+                                        <Setter Property="Margin" Value="10,5,0,5"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                        <Setter Property="Height" Value="30"/>
+                                        <Setter Property="IsEnabled" Value="{Binding IsInitialized, FallbackValue=false}" />                                        
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Label Content="Name" Style="{StaticResource Margin}" />
+                                <TextBox x:Name="Name" Style="{StaticResource Margin}" Text="{Binding CreatedObject.Name, FallbackValue=Name}" Width="75" />
+                                <Label Content="Description" Style="{StaticResource Margin}" />
+                                <TextBox x:Name="Description" Style="{StaticResource Margin}" Text="{Binding CreatedObject.Description, FallbackValue=Description}"  Width="200" />
+                                <Button Style="{StaticResource Margin}" Content="Save" Command="{Binding SaveCommand}" Width="50" HorizontalAlignment="Left" />
+                                <Button Style="{StaticResource Margin}" Content="Add" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" />
+                            </StackPanel>
+                            <DataGrid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" Name="chosenFiles" ItemsSource="{Binding CreatedObject.Files}" >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding CreatedObject.Name}" Width="*" />
+                                    <DataGridTemplateColumn Width="*" Header="Description">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBox Text="{Binding CreatedObject.Files.Description}"/>                                                    
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Filetype" Binding="{Binding CreatedObject.Files.Extension}" Width="50" />
+                                    <DataGridTemplateColumn Width="*" Header="Delay">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBox Text="{Binding CreatedObject.Files.Delay}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Background="LightGray" Orientation="Vertical">
+                                <StackPanel.Resources>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Margin" Value="0,20,0,5"/>
+                                        <Setter Property="Width" Value="30" />
+                                        <Setter Property="Height" Value="30" />                                        
+                                    </Style>
+                                    <ImageBrush x:Key="ArrowUpImageBrush" ImageSource="{StaticResource ArrowUp}" Stretch="UniformToFill"/>
+                                    <ImageBrush x:Key="ArrowDownImageBrush" ImageSource="{StaticResource ArrowDown}" Stretch="UniformToFill"/>
+                                    <ImageBrush x:Key="RedCrossImageBrush" ImageSource="{StaticResource RedCross}" Stretch="UniformToFill"/>
+                                </StackPanel.Resources>
+                                <Button Background="{StaticResource ArrowUpImageBrush}" Command="{Binding UpCommand}" Width="30"/>
+                                <Button Background="{StaticResource ArrowDownImageBrush}" Command="{Binding DownCommand}" Width="30" />
+                                <Button Background="{StaticResource RedCrossImageBrush}" Command="{Binding DeleteCommand}" Width="30" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Background="LightGray" />
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
-
     </Grid>
 </Window>

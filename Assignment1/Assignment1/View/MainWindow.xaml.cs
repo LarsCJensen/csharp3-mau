@@ -29,10 +29,11 @@ namespace Assignment1
             InitializeComponent();
             MainViewModel vm = new MainViewModel();
             DataContext = vm;            
-            InitializeGUI();
-            
+            InitializeGUI(vm);
+            vm.OnClose += delegate { this.Close(); };
+
         }
-        private void InitializeGUI()
+        private void InitializeGUI(MainViewModel vm)
         {
             string[] drives = FileUtilities.AddLogicalDrives();
             foreach (string drive in drives)

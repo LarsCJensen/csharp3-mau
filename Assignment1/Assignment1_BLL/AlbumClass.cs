@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 
 namespace Assignment1_BLL
 {
-    public class AlbumClass: IFileCollectionManager
+    public class AlbumClass: BaseClass, IFileCollectionManager
     {
-        public string Name { get; set; }
+        
         public string Description { get; set; }
-        public List<FileClass> Files { get; set; }
-
-        public AlbumClass(string name, string description, List<FileClass> files)
+        
+        public AlbumClass()
         {
-            Name = name;
-            Description = description;
             Files = new List<FileClass>();
         }   
        

@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Assignment1_BLL
 {
-    public class SlideshowClass: IFileCollectionManager
-    {
-        public string Name { get; set; }
-        public List<FileClass> Files { get; set; }
-
+    public class SlideshowClass: BaseClass, IFileCollectionManager
+    {        
+        public int LengthInSeconds { get; set; }
         public SlideshowClass(string name)
         {
             Name = name;

@@ -8,6 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\arrow-down.png" />
+    <None Remove="Assets\arrow-up.png" />
+    <None Remove="Assets\red-cross.png" />
     <None Remove="Assets\test_image.jpg" />
   </ItemGroup>
 
@@ -22,6 +25,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\arrow-down.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\arrow-up.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\red-cross.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\test_image.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
