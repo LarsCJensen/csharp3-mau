@@ -60,12 +60,82 @@ namespace Assignment1.ViewModel
             } 
         }
 
+        private AlbumClass _album;
+        public AlbumClass Album
+        {
+            get
+            {
+                return _album;
+            }
+            set
+            {
+                _album = value;
+                OnPropertyChanged("Album");
+            }
+        }
+        
+        private bool _isAlbum = true;
+        public bool IsAlbum
+        {
+            get
+            {
+                return _isAlbum;
+            }
+            set
+            {
+                _isAlbum = value;
+                OnPropertyChanged("IsAlbum");
+            }
+        }
+
+        private SlideshowClass _slideshow;
+        public SlideshowClass Slideshow
+        {
+            get
+            {
+                return _slideshow;
+            }
+            set
+            {
+                _slideshow = value;
+                OnPropertyChanged("Slideshow");
+            }
+        }
+
+        private bool _isSlideshow = false;
+        public bool IsSlideshow
+        {
+            get
+            {
+                return _isSlideshow;
+            }
+            set
+            {
+                _isSlideshow = value;
+                OnPropertyChanged("IsSlideshow");
+            }
+        }
+        private ObservableCollection<FileClass> _chosenFiles = new ObservableCollection<FileClass>();
+        public ObservableCollection<FileClass> ChosenFiles
+        {
+            get { return _chosenFiles; }
+            private set
+            {
+                _chosenFiles = value;
+                //OnPropertyChanged("ChosenFiles");
+            }
+        }
+
         #region Commands
         public RelayCommand<object> SelectFolder { get; private set; }
         public RelayCommand CloseCommand { get; private set; }
         public RelayCommand<string> NewCommand { get; private set; }
         public RelayCommand SaveCommand { get; private set; }
-        public RelayCommand DeleteCommand { get; private set; }
+        public RelayCommand<object> AddCommand { get; private set; }
+        public RelayCommand<int> UpCommand { get; private set; }
+        public RelayCommand<int> DownCommand { get; private set; }
+        public RelayCommand<int> DeleteCommand { get; private set; }
+
         #endregion
         #region EventHandlers
         public event EventHandler OnClose;
@@ -76,7 +146,10 @@ namespace Assignment1.ViewModel
             CloseCommand = new RelayCommand(Close);
             NewCommand = new RelayCommand<string>(param => NewCommandExecute(param));
             SaveCommand = new RelayCommand(Save);
-            DeleteCommand = new RelayCommand(Delete);
+            AddCommand = new RelayCommand<object>(param => Add(param));
+            UpCommand = new RelayCommand<int>(param => Up(param));
+            DownCommand = new RelayCommand<int>(param => Down(param));
+            DeleteCommand = new RelayCommand<int>(param => Delete(param));
         }
 
         private void SelectFolderExcecute(object sender)
@@ -95,10 +168,23 @@ namespace Assignment1.ViewModel
         }
         private void NewCommandExecute(string commandParam)
         {
-            // Change contents of gui?
-            CreatedObject = new AlbumClass();
-            IsInitialized = true;
-            Title += " - New album";            
+            if(commandParam == "album")
+            {
+                // Change contents of gui?
+                Album = new AlbumClass();
+                IsInitialized = true;
+                Title = "Home Media Player - New album";
+                IsAlbum = true;
+                IsSlideshow = false;
+            } else
+            {
+                
+                IsInitialized = true;
+                Title = "Home Media Player - New slideshow";
+                IsSlideshow = true;
+                IsAlbum = false;
+            }
+            
         }
         private void Close()
         {
@@ -111,18 +197,56 @@ namespace Assignment1.ViewModel
         private void Save()
         {
             // Is this the place? 
-            if(CreatedObject.GetType() == typeof(AlbumClass))
+            if(Album != null)
             {
-                MessageBox.Show("ALBUM");                
+                // Save to db
+                Title = $"Home Media Player - {Album.Name}";
+                MessageBox.Show("Saved to DB");
             } else
             {
-                MessageBox.Show("Slideshow");
+                Title = $"Home Media Player - {Slideshow.Name}";
+                MessageBox.Show("Saved to DB");
             }
         }
-
-        private void Delete()
+        private void Add(object sender)
         {
-
+            if(sender == null)
+            {
+                MessageBox.Show("Please choose file to add!");
+                return;
+            }
+            // TODO We don't want the list in ALbum class to be observable?
+            FileClass file = (FileClass)sender;
+            if (Album != null)
+            {                
+                Album.AddFile(file);                
+            }
+            ChosenFiles.Add(file);
+        }
+        private void Up(int selectedIndex)
+        {
+            if(selectedIndex == 0) 
+            {
+                MessageBox.Show("Can't move the top file up!");
+                return;
+            }
+            ChosenFiles.Move(selectedIndex, selectedIndex - 1);
+        }
+        private void Down(int selectedIndex)
+        {
+            if (selectedIndex == ChosenFiles.Count()-1)
+            {
+                MessageBox.Show("Can't move the bottom file down!");
+                return;
+            }
+            ChosenFiles.Move(selectedIndex, selectedIndex + 1);
+        }        
+        private void Delete(int selectedIndex)
+        {
+            if (selectedIndex == null)
+            {
+                MessageBox.Show("You must choose a file to delete!");
+            }
         }
     }
 }

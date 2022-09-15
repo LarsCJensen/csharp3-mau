@@ -32,7 +32,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
-                    <TreeView x:Name="fileTreeView">
+                    <TreeView x:Name="fileTreeView" IsEnabled="{Binding IsInitialized, FallbackValue=false}" >
                         <!--Triggers for SelectedItemChanged, binding command and parameter with element--> 
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="SelectedItemChanged">
@@ -48,7 +48,7 @@
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
-                        <ListView ItemsSource="{Binding Files}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="400" Width="700">
+                        <ListView x:Name="filesListView" ItemsSource="{Binding Files}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="400" Width="700">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <!--<StackPanel Orientation="Horizontal" />-->
@@ -104,42 +104,100 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Background="LightGray">
-                                <StackPanel.Resources>
-                                    <Style x:Key="Margin"  TargetType="{x:Type Control}">
-                                        <Setter Property="Margin" Value="10,5,0,5"/>
-                                        <Setter Property="VerticalAlignment" Value="Center"/>
-                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        <Setter Property="HorizontalAlignment" Value="Left" />
-                                        <Setter Property="Height" Value="30"/>
-                                        <Setter Property="IsEnabled" Value="{Binding IsInitialized, FallbackValue=false}" />                                        
-                                    </Style>
-                                </StackPanel.Resources>
-                                <Label Content="Name" Style="{StaticResource Margin}" />
-                                <TextBox x:Name="Name" Style="{StaticResource Margin}" Text="{Binding CreatedObject.Name, FallbackValue=Name}" Width="75" />
-                                <Label Content="Description" Style="{StaticResource Margin}" />
-                                <TextBox x:Name="Description" Style="{StaticResource Margin}" Text="{Binding CreatedObject.Description, FallbackValue=Description}"  Width="200" />
-                                <Button Style="{StaticResource Margin}" Content="Save" Command="{Binding SaveCommand}" Width="50" HorizontalAlignment="Left" />
-                                <Button Style="{StaticResource Margin}" Content="Add" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" />
+                            <!-- ALBUM -->
+                            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Visibility="{Binding Path=IsAlbum, Converter={StaticResource BoolToVis}}" Background="LightGray">
+                                <StackPanel Orientation="Horizontal" >
+                                    <StackPanel.Resources>
+                                        <Style x:Key="Margin"  TargetType="{x:Type Control}">
+                                            <Setter Property="Margin" Value="10,5,0,5"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="HorizontalAlignment" Value="Left" />
+                                            <Setter Property="Height" Value="30"/>
+                                            <Setter Property="IsEnabled" Value="{Binding IsInitialized, FallbackValue=false}" />                                        
+                                        </Style>
+                                    </StackPanel.Resources>
+                                    <Label Content="Name" Style="{StaticResource Margin}" />
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Album.Name, FallbackValue=Name}" Width="75" />
+                                    <Label Content="Description" Style="{StaticResource Margin}" />
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Album.Description, FallbackValue=Description}"  Width="200" />
+                                    <Button Style="{StaticResource Margin}" Content="Save" Command="{Binding SaveCommand}" Width="50" HorizontalAlignment="Left" />
+                                    <Button Style="{StaticResource Margin}" Content="Add" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListView, Path=SelectedItem}"/>
+                                </StackPanel>                                                          
                             </StackPanel>
-                            <DataGrid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" Name="chosenFiles" ItemsSource="{Binding CreatedObject.Files}" >
+                            <!-- SLIDESHOW -->
+                            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BoolToVis}}" Background="LightGray">
+                                <StackPanel Orientation="Horizontal" >
+                                    <StackPanel.Resources>
+                                        <Style x:Key="Margin"  TargetType="{x:Type Control}">
+                                            <Setter Property="Margin" Value="5,5,0,5"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            <Setter Property="HorizontalAlignment" Value="Left" />
+                                            <Setter Property="Height" Value="30"/>
+                                            <Setter Property="IsEnabled" Value="{Binding IsInitialized, FallbackValue=false}" />
+                                        </Style>
+                                    </StackPanel.Resources>
+                                    <Label Content="Name" Style="{StaticResource Margin}" />
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Name, FallbackValue=Name}" Width="75" />
+                                    <Label Content="Description" Style="{StaticResource Margin}" />
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Description, FallbackValue=Description}"  Width="200" />
+                                    <Label Content="Interval (s)" Style="{StaticResource Margin}" />
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Interval, FallbackValue=3}" Width="25" />
+                                    <Button Style="{StaticResource Margin}" Content="Save" Command="{Binding SaveCommand}" Width="50" HorizontalAlignment="Left" />
+                                    <Button Style="{StaticResource Margin}" Content="Add" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListView, Path=SelectedItem}"/>
+                                    <Button Style="{StaticResource Margin}" Content="Play" Command="{Binding PlayCommand}" Width="50" HorizontalAlignment="Left"/>
+                                </StackPanel>
+                                <!--<DataGrid Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ChosenFiles}" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" >
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="200" />
+                                        <DataGridTemplateColumn Width="*" Header="Description">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBox Text="{Binding Path=Description}"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Filetype" Binding="{Binding Path=Extension}" Width="50" />
+                                        <DataGridTemplateColumn Width="50" Header="Delay">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBox Text="{Binding ChosenFiles.Delay}"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>-->
+                                <!--<StackPanel Grid.Row="1" Grid.Column="1" Background="LightGray" Orientation="Vertical">
+                                    <StackPanel.Resources>
+                                        <Style TargetType="{x:Type Button}">
+                                            <Setter Property="Margin" Value="0,20,0,5"/>
+                                            <Setter Property="Width" Value="30" />
+                                            <Setter Property="Height" Value="30" />
+                                        </Style>
+                                        <ImageBrush x:Key="ArrowUpImageBrush" ImageSource="{StaticResource ArrowUp}" Stretch="UniformToFill"/>
+                                        <ImageBrush x:Key="ArrowDownImageBrush" ImageSource="{StaticResource ArrowDown}" Stretch="UniformToFill"/>
+                                        <ImageBrush x:Key="RedCrossImageBrush" ImageSource="{StaticResource RedCross}" Stretch="UniformToFill"/>
+                                    </StackPanel.Resources>
+                                    <Button Background="{StaticResource ArrowUpImageBrush}" Command="{Binding UpCommand}" Width="30"/>
+                                    <Button Background="{StaticResource ArrowDownImageBrush}" Command="{Binding DownCommand}" Width="30" />
+                                    <Button Background="{StaticResource RedCrossImageBrush}" Command="{Binding DeleteCommand}" Width="30" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Background="LightGray" />-->
+                            </StackPanel>
+                            <DataGrid x:Name="chosenFilesGrid"  Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ChosenFiles}" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" >
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Name" Binding="{Binding CreatedObject.Name}" Width="*" />
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="200" />                                    
+                                    <DataGridTextColumn Header="Filetype" Binding="{Binding Path=Extension}" Width="50" />
                                     <DataGridTemplateColumn Width="*" Header="Description">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
-                                                    <TextBox Text="{Binding CreatedObject.Files.Description}"/>                                                    
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Filetype" Binding="{Binding CreatedObject.Files.Extension}" Width="50" />
-                                    <DataGridTemplateColumn Width="*" Header="Delay">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <StackPanel>
-                                                    <TextBox Text="{Binding CreatedObject.Files.Delay}"/>
+                                                    <TextBox Text="{Binding Path=Description}"/>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
@@ -151,18 +209,18 @@
                                     <Style TargetType="{x:Type Button}">
                                         <Setter Property="Margin" Value="0,20,0,5"/>
                                         <Setter Property="Width" Value="30" />
-                                        <Setter Property="Height" Value="30" />                                        
+                                        <Setter Property="Height" Value="30" />
                                     </Style>
                                     <ImageBrush x:Key="ArrowUpImageBrush" ImageSource="{StaticResource ArrowUp}" Stretch="UniformToFill"/>
                                     <ImageBrush x:Key="ArrowDownImageBrush" ImageSource="{StaticResource ArrowDown}" Stretch="UniformToFill"/>
                                     <ImageBrush x:Key="RedCrossImageBrush" ImageSource="{StaticResource RedCross}" Stretch="UniformToFill"/>
                                 </StackPanel.Resources>
-                                <Button Background="{StaticResource ArrowUpImageBrush}" Command="{Binding UpCommand}" Width="30"/>
-                                <Button Background="{StaticResource ArrowDownImageBrush}" Command="{Binding DownCommand}" Width="30" />
-                                <Button Background="{StaticResource RedCrossImageBrush}" Command="{Binding DeleteCommand}" Width="30" />
+                                <Button Background="{StaticResource ArrowUpImageBrush}" Command="{Binding UpCommand}" CommandParameter="{Binding ElementName=chosenFilesGrid, Path=SelectedIndex}"/>
+                                <Button Background="{StaticResource ArrowDownImageBrush}" Command="{Binding DownCommand}" CommandParameter="{Binding ElementName=chosenFilesGrid, Path=SelectedIndex}"/>
+                                <Button Background="{StaticResource RedCrossImageBrush}" Command="{Binding DeleteCommand}" CommandParameter="{Binding ElementName=chosenFilesGrid, Path=SelectedIndex}"/>
                             </StackPanel>
                             <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Background="LightGray" />
-                        </Grid>
+                        </Grid>                        
                     </Grid>
                 </Grid>
             </Grid>

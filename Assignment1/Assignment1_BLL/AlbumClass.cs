@@ -9,21 +9,16 @@ namespace Assignment1_BLL
     public class AlbumClass: BaseClass, IFileCollectionManager
     {
         
-        public string Description { get; set; }
+        public string Description { get; set; }        
         
-        public AlbumClass()
-        {
-            Files = new List<FileClass>();
-        }   
-       
-        public bool Add(FileClass file)
+        public bool AddFile(FileClass file)
         {
             // TODO try/except?
             Files.Add(file);
             return true;
         }
 
-        public bool Delete(FileClass file)
+        public bool DeleteFile(FileClass file)
         {
             // TODO try/except?
             Files.Remove(file);

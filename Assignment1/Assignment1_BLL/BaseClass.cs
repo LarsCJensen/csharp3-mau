@@ -9,7 +9,7 @@ namespace Assignment1_BLL
     public class BaseClass
     {
         public string Name { get; set; }
-        public List<FileClass> Files { get; set; }
+        public List<FileClass> Files { get; set; } = new List<FileClass>();
 
     }
 }

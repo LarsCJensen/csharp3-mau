@@ -10,5 +10,6 @@
         <BitmapImage x:Key="ArrowDown" UriSource="/Assignment1;component/Assets/arrow-down.png" />
         <BitmapImage x:Key="RedCross" UriSource="/Assignment1;component/Assets/red-cross.png" />
         <converters:ImageConverter x:Key="ImageConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Application.Resources>
 </Application>

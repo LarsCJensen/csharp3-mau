@@ -12,8 +12,22 @@ namespace Assignment1_BLL
     public interface IFileCollectionManager
     {
         public List<FileClass> Files { get; set; }
-        public bool Add(FileClass file);
-        public bool Delete(FileClass file);
+        /// <summary>
+        /// Method to Add File to Files collection
+        /// </summary>
+        /// <param name="file">File to add</param>
+        /// <returns>Success or failed</returns>
+        public bool AddFile(FileClass file);
+        /// <summary>
+        /// Method to Delete File from Files collection
+        /// </summary>
+        /// <param name="file">File to delete</param>
+        /// <returns>Success or failed</returns>
+        public bool DeleteFile(FileClass file);
+        /// <summary>
+        /// Method to get number of files in collection
+        /// </summary>
+        /// <returns>Number of files in collection</returns>
         public int Count();
     }
 }

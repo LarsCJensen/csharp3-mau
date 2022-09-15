@@ -8,25 +8,21 @@ namespace Assignment1_BLL
 {
     public class SlideshowClass: BaseClass, IFileCollectionManager
     {        
-        public int LengthInSeconds { get; set; }
-        public SlideshowClass(string name)
-        {
-            Name = name;
-            Files = new List<FileClass>();
-        }
+        public int LengthInSeconds { get; }
+        public int Interval { get; private set; }        
         
         public void Play()
         {
             // TODO Play slideshow
         }
 
-        public bool Add(FileClass file)
+        public bool AddFile(FileClass file)
         {
             Files.Add(file);
             return true;
         }
 
-        public bool Delete(FileClass file)
+        public bool DeleteFile(FileClass file)
         {
             Files.Remove(file);
             return true;
