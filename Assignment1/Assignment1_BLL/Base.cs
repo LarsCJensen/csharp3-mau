@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Assignment1_BLL
 {
-    public class BaseClass
+    public class Base
     {
-        public string Name { get; set; }
-        public List<FileClass> Files { get; set; } = new List<FileClass>();
-
+        public string? Name { get; set; }
+        public List<ChosenFile> Files { get; set; } = new List<ChosenFile>();
     }
 }

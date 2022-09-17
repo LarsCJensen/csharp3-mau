@@ -9,25 +9,30 @@ namespace Assignment1_BLL
     /// <summary>
     /// Interface for FileCollectionManager which includes required properties and methods
     /// </summary>
-    public interface IFileCollectionManager
+    public interface ICollectionManager<T>
     {
-        public List<FileClass> Files { get; set; }
         /// <summary>
-        /// Method to Add File to Files collection
+        /// Method to Add item to collection
         /// </summary>
-        /// <param name="file">File to add</param>
+        /// <param name="item">Item to add</param>
         /// <returns>Success or failed</returns>
-        public bool AddFile(FileClass file);
+        public bool AddItem(T item);
         /// <summary>
-        /// Method to Delete File from Files collection
+        /// Method to Delete Item from collection
         /// </summary>
-        /// <param name="file">File to delete</param>
+        /// <param name="pos">Position to delete</param>
         /// <returns>Success or failed</returns>
-        public bool DeleteFile(FileClass file);
+        public bool DeleteItem(int pos);
+        /// <summary>
+        /// Method to get Item at position
+        /// </summary>
+        /// <param name="pos">Position to delete</param>
+        /// <returns>Item at position</returns>
+        public T GetItemAt(int pos);
         /// <summary>
         /// Method to get number of files in collection
         /// </summary>
         /// <returns>Number of files in collection</returns>
-        public int Count();
+        public int CountItems();
     }
 }

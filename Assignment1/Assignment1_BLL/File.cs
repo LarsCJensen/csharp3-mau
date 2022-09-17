@@ -3,7 +3,8 @@
     /// <summary>
     /// Class to handle File
     /// </summary>
-    public class FileClass
+    // TODO Make internal
+    public class File
     {
         //Since FileInfo is sealed I cannot inherit it, so using it like this instead 
         public FileInfo FileInfo { get; set; }
@@ -56,7 +57,7 @@
                 return FileInfo.FullName; 
             }
         }
-        public FileClass(FileInfo fileInfo)
+        public File(FileInfo fileInfo)
         {
             FileInfo = fileInfo;
         }
