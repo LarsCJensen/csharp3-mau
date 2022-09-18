@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="EPP.PresentationCore" Version="1.0.0" />
     <PackageReference Include="PresentationFramework" Version="4.6.0" />
+    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
 
 </Project>

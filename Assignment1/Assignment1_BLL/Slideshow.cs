@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Assignment1_BLL
 {
-    public class BaseClass
-    {
-        public string Name { get; set; }
-        public List<FileClass> Files { get; set; }
-
+    public class Slideshow: Base 
+    {        
+        public int LengthInSeconds { get; }
+        public int Interval { get; set; } = 3;                
     }
 }

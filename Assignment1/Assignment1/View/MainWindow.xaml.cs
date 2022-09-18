@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,10 +14,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Assignment1.View;
 using Assignment1.ViewModel;
+using Assignment1_BLL;
 using Assignment1_Utilities;
 
-namespace Assignment1
+namespace Assignment1.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -24,16 +27,16 @@ namespace Assignment1
     public partial class MainWindow : Window
     {
         private object? dummyNode = null;
+        MainViewModel vm = new MainViewModel();
         public MainWindow()
         {
-            InitializeComponent();
-            MainViewModel vm = new MainViewModel();
+            InitializeComponent();            
             DataContext = vm;            
-            InitializeGUI(vm);
+            InitializeGUI();
             vm.OnClose += delegate { this.Close(); };
 
         }
-        private void InitializeGUI(MainViewModel vm)
+        private void InitializeGUI()
         {
             string[] drives = FileUtilities.AddLogicalDrives();
             foreach (string drive in drives)
@@ -81,6 +84,16 @@ namespace Assignment1
                     // Would log callstack
                 }
             }
+        }
+
+        private void Play_Click(object sender, RoutedEventArgs e)
+        {
+            PlayerViewModel playerVm = new PlayerViewModel(vm.Slideshow.Name, vm.Slideshow.Files, vm.Slideshow.Interval);
+            Player player= new Player();
+            // Bind OnClose event
+            playerVm.OnClose += delegate { this.Close(); };
+            player.DataContext = playerVm;
+            player.Show();
         }
     }
 }

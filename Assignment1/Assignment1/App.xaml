@@ -2,13 +2,22 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Assignment1" 
+             xmlns:vm="clr-namespace:Assignment1.ViewModel"
+             xmlns:vw="clr-namespace:Assignment1.View" 
              xmlns:converters="clr-namespace:Assignment1_Utilities;assembly=Assignment1_Utilities"
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
-        <BitmapImage x:Key="TestImage" UriSource="/Assignment1;component/Assets/test_image.jpg" />
+        <DataTemplate DataType="{x:Type vm:MainViewModel}">
+            <vw:MainWindow />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PlayerViewModel}">
+            <vw:Player />
+        </DataTemplate>
+        <BitmapImage x:Key="TestImage" UriSource="/Assignment1;component/Assets/movie.png" />
         <BitmapImage x:Key="ArrowUp" UriSource="/Assignment1;component/Assets/arrow-up.png" />
         <BitmapImage x:Key="ArrowDown" UriSource="/Assignment1;component/Assets/arrow-down.png" />
         <BitmapImage x:Key="RedCross" UriSource="/Assignment1;component/Assets/red-cross.png" />
         <converters:ImageConverter x:Key="ImageConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Application.Resources>
 </Application>
