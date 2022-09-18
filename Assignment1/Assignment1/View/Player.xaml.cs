@@ -25,14 +25,8 @@ namespace Assignment1.View
         public Player()
         {
             InitializeComponent();            
-            DataContext = vm;
-            InitializeGUI();
+            DataContext = vm;         
             vm.OnClose += delegate { this.Close(); };
         }
-        private void InitializeGUI()
-        {
-            // TODO Set background of MediaElement?
-        }
-
     }
 }

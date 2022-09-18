@@ -51,6 +51,9 @@ namespace Assignment1.ViewModel
                 OnPropertyChanged("IsInitialized");
             } 
         }
+        /// <summary>
+        /// Files populating the ListView
+        /// </summary>
         private ObservableCollection<Assignment1_BLL.File> _files = new ObservableCollection<Assignment1_BLL.File>();
         public ObservableCollection<Assignment1_BLL.File> Files
         {
@@ -117,6 +120,9 @@ namespace Assignment1.ViewModel
                 OnPropertyChanged("IsSlideshow");
             }
         }
+        /// <summary>
+        /// Files which are added from ListView to Datagrid
+        /// </summary>
         private ObservableCollection<ChosenFile> _chosenFiles = new ObservableCollection<ChosenFile>();
         public ObservableCollection<ChosenFile> ChosenFiles
         {
@@ -132,6 +138,7 @@ namespace Assignment1.ViewModel
         public RelayCommand<object> SelectFolder { get; private set; }
         public RelayCommand<string> NewCommand { get; private set; }
         public RelayCommand SaveCommand { get; private set; }
+        public RelayCommand CloseCommand { get; private set; }
         public RelayCommand<object> AddCommand { get; private set; }
         public RelayCommand<int> UpCommand { get; private set; }
         public RelayCommand<int> DownCommand { get; private set; }
@@ -147,6 +154,7 @@ namespace Assignment1.ViewModel
             SelectFolder = new RelayCommand<object>(async param => SelectFolderExcecute(param));
             NewCommand = new RelayCommand<string>(param => NewCommandExecute(param));
             SaveCommand = new RelayCommand(Save);
+            CloseCommand = new RelayCommand(Close);
             AddCommand = new RelayCommand<object>(param => Add(param));
             UpCommand = new RelayCommand<int>(param => Up(param));
             DownCommand = new RelayCommand<int>(param => Down(param));
@@ -216,12 +224,12 @@ namespace Assignment1.ViewModel
             if(Album != null)
             {
                 // Save to db
-                Title = $"Home Media Player - {Album.Name}";
-                MessageBox.Show($"Album {Album.Name} saved!", "Unallowed!", MessageBoxButton.OK);
+                Title = $"Home Media Player - {Album.Title}";
+                MessageBox.Show($"Album {Album.Title} saved!", "Saved!", MessageBoxButton.OK);
             } else
             {
-                Title = $"Home Media Player - {Slideshow.Name}";
-                MessageBox.Show($"Slideshow {Slideshow.Name} Saved to DB", "Unallowed!", MessageBoxButton.OK);
+                Title = $"Home Media Player - {Slideshow.Title}";
+                MessageBox.Show($"Slideshow {Slideshow.Title} Saved to DB", "Saved!", MessageBoxButton.OK);
             }
         }
         private void Add(object sender)
@@ -230,9 +238,7 @@ namespace Assignment1.ViewModel
             {
                 MessageBox.Show("Please choose file to add!", "Error!", MessageBoxButton.OK);
                 return;
-            }
-            
-            
+            }            
             if (Album != null)
             {
                 ChosenFile file = new ChosenFile((Assignment1_BLL.File)sender, Album.Files.Count());
@@ -280,19 +286,26 @@ namespace Assignment1.ViewModel
         }        
         private void Delete(int selectedIndex)
         {
-            if (Album != null)
+            try
             {
-                Album.DeleteItem(selectedIndex);
-            }
-            else if (Slideshow != null)
+                if (Album != null)
+                {
+                    Album.DeleteItem(selectedIndex);
+                }
+                else if (Slideshow != null)
+                {
+                    Slideshow.DeleteItem(selectedIndex);
+                }
+            } catch (Exception exc)
             {
-                Slideshow.DeleteItem(selectedIndex);
+                MessageBox.Show(@$"Error: {exc.Message}");
             }
+            
             UpdateChosenFiles();
         }
         private void UpdateChosenFiles()
         {
-            // TODO Would be nice to have generic
+            // TODO Would be nice to have general for both types
             if(Album != null)
             {
                 ChosenFiles = new ObservableCollection<ChosenFile>(Album.Files);

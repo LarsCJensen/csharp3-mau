@@ -88,6 +88,9 @@ namespace Assignment1.ViewModel
 
         #region Commands
         public RelayCommand PlayCommand { get; private set; }
+        public RelayCommand PauseCommand { get; private set; }
+        public RelayCommand BackCommand { get; private set; }
+        public RelayCommand ForwardCommand { get; private set; }
         #endregion
 
         #region EventHandlers
@@ -96,9 +99,16 @@ namespace Assignment1.ViewModel
         public PlayerViewModel() { }
         public PlayerViewModel(string title, List<ChosenFile> chosenFiles, int interval)
         {
-            Title = title;
+            if(title != null)
+            {
+                Title = title;
+            }            
             Interval = interval;
             PlayCommand = new RelayCommand(Play);
+            PauseCommand = new RelayCommand(Pause);
+            BackCommand = new RelayCommand(Back);
+            ForwardCommand = new RelayCommand(Forward);
+            
             SlideShowFiles = new ObservableCollection<ChosenFile>(chosenFiles);
         }
         /// <summary>
@@ -133,13 +143,30 @@ namespace Assignment1.ViewModel
                     IsVideo = true;
                     Continue = false;
                     // Get length of Video
-                    int videoLength = (int)Math.Ceiling(Utilities.GetVideoDuration(file.Image));
+                    int videoLength = (int)Math.Ceiling(Utilities.GetVideoDuration(file.FullName));
                     VideoSource = file.Image;
                     await Task.Delay(videoLength);                    
                 }
             }
             // Would have implemented custom dialog for this
             MessageBox.Show("Slideshow done!", "Done!", MessageBoxButton.OK);
-        }        
+        }
+        private void Pause()
+        {
+            NotImplementedMessage();
+        }
+        private void Forward()
+        {
+            NotImplementedMessage();
+        }
+        private void Back()
+        {
+            NotImplementedMessage();
+        }
+
+        private void NotImplementedMessage()
+        {
+            MessageBox.Show("Not implemented yet!", "Not implemented!", MessageBoxButton.OK);
+        }
     }
 }

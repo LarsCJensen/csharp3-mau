@@ -3,10 +3,9 @@
     /// <summary>
     /// Class to handle File
     /// </summary>
-    // TODO Make internal
     public class File
     {
-        //Since FileInfo is sealed I cannot inherit it, so using it like this instead 
+        //Since FileInfo is sealed I cannot inherit it, so using it like this and expand my own File class
         public FileInfo FileInfo { get; set; }
         public string? Name
         {
@@ -51,6 +50,13 @@
                 return FileInfo.Length.ToString();
             }
         }
+        public string? FullName
+        {
+            get
+            {
+                return FileInfo.FullName;
+            }
+        }
         public string? Image
         {
             get { 
@@ -60,13 +66,6 @@
         public File(FileInfo fileInfo)
         {
             FileInfo = fileInfo;
-        }
-        /// <summary>
-        /// Method for delete, delegated to FileInfo
-        /// </summary>
-        public void Delete()
-        {
-            FileInfo.Delete();
-        }
+        }        
     }
 }

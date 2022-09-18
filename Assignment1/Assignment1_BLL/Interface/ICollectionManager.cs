@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assignment1_BLL
+namespace Assignment1_BLL.Interface
 {
     /// <summary>
     /// Interface for FileCollectionManager which includes required properties and methods

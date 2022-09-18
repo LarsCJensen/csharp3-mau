@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Assignment1_BLL
 {
-    public class Slideshow: Base 
+    public class Album: Base
     {        
-        public int LengthInSeconds { get; }
-        public int Interval { get; set; } = 3;                
+        // Not yet implemented
+        public bool CopyToFolder { get; set; }        
     }
 }

@@ -12,8 +12,12 @@
             <RowDefinition Height="25" />
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
-        <MediaElement Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding VideoSource}" Margin="10,10,10,10" Visibility="{Binding IsVideo, Converter={StaticResource BoolToVis}}"/>
-        <Image Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding ImageSource}" Margin="10,10,10,10" Visibility="{Binding IsImage, Converter={StaticResource BoolToVis}}"/>
+        <Border BorderThickness="1">
+            <MediaElement Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding VideoSource}" Margin="10,10,10,10" Visibility="{Binding IsVideo, Converter={StaticResource BoolToVis}}"/>            
+        </Border>
+        <Border BorderThickness="1">
+            <Image Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding ImageSource}" Margin="10,10,10,10" Visibility="{Binding IsImage, Converter={StaticResource BoolToVis}}"/>
+        </Border>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Background="LightGray">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}">
@@ -26,10 +30,10 @@
             <Button Content="Back" Command="{Binding BackCommand}" />
             <Button Content="Forward" Command="{Binding ForwardCommand}" />            
         </StackPanel>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True"   Grid.Row="2">
             <ListView ItemsSource="{Binding SlideShowFiles}" >
                 <ListView.View>
-                    <GridView   ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible">
+                    <GridView>
                         <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" />
                         <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Path=Description}" />
                         <GridViewColumn Header="Extension" DisplayMemberBinding="{Binding Path=Extension}" />

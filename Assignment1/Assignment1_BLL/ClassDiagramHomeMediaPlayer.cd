@@ -9,17 +9,17 @@
   <Class Name="Assignment1_BLL.Album" Collapsed="true">
     <Position X="3.75" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAgAAAAAQAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Album.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Assignment1_BLL.Base" Collapsed="true">
     <Position X="5.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <HashCode>AAAAAAAAQAAgAAAAAQAAAARAgAAAAAAAAIAAAAAAAIA=</HashCode>
       <FileName>Base.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Assignment1_BLL.ChosenFile" Collapsed="true">
     <Position X="1.25" Y="2.5" Width="1.5" />
@@ -38,16 +38,15 @@
   <Class Name="Assignment1_BLL.Slideshow" Collapsed="true">
     <Position X="6.25" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAAAgAYAAAAAAgAAAAAAAgAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAgAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Slideshow.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
-  <Interface Name="Assignment1_BLL.ICollectionManager&lt;T&gt;" Collapsed="true">
-    <Position X="3.75" Y="1.25" Width="1.5" />
+  <Interface Name="Assignment1_BLL.Interface.ICollectionManager&lt;T&gt;" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAAAAAQAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ICollectionManager.cs</FileName>
+      <HashCode>AAAAAAAAQAAAAAAAAQAAAABAgAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Interface\ICollectionManager.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
