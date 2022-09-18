@@ -17,9 +17,6 @@ namespace Assignment1.ViewModel
 {
     public class MainViewModel: BaseViewModel
     {
-        //Hardcoded extensions to search for
-        static string[] extensions = new string[] { "*.jpg", "*.bmp", "*.mov", "*.avi", "*.mpg", "*.mp4" };
-        
         private string _title = "Home Media Player";
         public string Title
         {
@@ -139,7 +136,6 @@ namespace Assignment1.ViewModel
         public RelayCommand<int> UpCommand { get; private set; }
         public RelayCommand<int> DownCommand { get; private set; }
         public RelayCommand<int> DeleteCommand { get; private set; }
-        public RelayCommand PlayCommand { get; private set; }
 
 
         #endregion
@@ -155,26 +151,18 @@ namespace Assignment1.ViewModel
             UpCommand = new RelayCommand<int>(param => Up(param));
             DownCommand = new RelayCommand<int>(param => Down(param));
             DeleteCommand = new RelayCommand<int>(param => Delete(param));
-            PlayCommand = new RelayCommand(PlaySlideshow);
             SpinnerVisible = false;
         }
 
         private async void SelectFolderExcecute(object sender)
         {
-            //// TODO Try catch!
-            //TreeViewItem selecteditem = (TreeViewItem)sender;
-            //string[] extensions = new string[] { "*.jpg", "*.bmp", "*.mov", "*.avi", "*.mpg", "*.mp4" };
-
-            //List<FileInfo> filesFileInfo = FileUtilities.GetFileInfoFromDirectory(selecteditem.Tag.ToString(), extensions);
-            //Files = new ObservableCollection<Assignment1_BLL.File>();
-            //foreach (FileInfo file in filesFileInfo)
-            //{
-            //    Assignment1_BLL.File newFile = new Assignment1_BLL.File(file);
-            //    Files.Add(newFile);
-            //}
             SpinnerVisible = true;
             TreeViewItem selecteditem = (TreeViewItem)sender;
-            await GetFilesInFolder(selecteditem.Tag.ToString());
+            if(Utilities.IsNotNull(selecteditem.Tag))
+            {
+                await GetFilesInFolder(selecteditem.Tag.ToString());
+            }
+            
             SpinnerVisible = false;
         }
 
@@ -182,7 +170,7 @@ namespace Assignment1.ViewModel
         {
             await Task.Run(() =>
             {                
-                List<FileInfo> filesFileInfo = FileUtilities.GetFileInfoFromDirectory(tag, extensions);
+                List<FileInfo> filesFileInfo = FileUtilities.GetFileInfoFromDirectory(tag, ValidExtensions.AllValidExtensions);
                 Files = new ObservableCollection<Assignment1_BLL.File>();
                 foreach (FileInfo file in filesFileInfo)
                 {
@@ -193,9 +181,11 @@ namespace Assignment1.ViewModel
         }
         private void NewCommandExecute(string commandParam)
         {
-            if(commandParam == "album")
+            ChosenFiles = new ObservableCollection<ChosenFile>();
+            if (commandParam == "album")
             {
                 // Change contents of gui?
+                Slideshow = null;                
                 Album = new Album();
                 IsInitialized = true;
                 Title = "Home Media Player - New album";
@@ -203,6 +193,7 @@ namespace Assignment1.ViewModel
                 IsSlideshow = false;
             } else
             {
+                Album = null;
                 Slideshow = new Slideshow();
                 IsInitialized = true;
                 Title = "Home Media Player - New slideshow";
@@ -261,7 +252,14 @@ namespace Assignment1.ViewModel
                 MessageBox.Show("Can't move the top file up!", "Unallowed!", MessageBoxButton.OK);
                 return;
             }
-            ChosenFiles.Move(selectedIndex, selectedIndex - 1);
+            if (Album != null)
+            {
+                Album.MoveItem(selectedIndex, selectedIndex - 1);
+            } else if (Slideshow != null) 
+            {
+                Slideshow.MoveItem(selectedIndex, selectedIndex - 1);
+            }
+            UpdateChosenFiles();
         }
         private void Down(int selectedIndex)
         {
@@ -270,7 +268,15 @@ namespace Assignment1.ViewModel
                 MessageBox.Show("Can't move the bottom file down!", "Unallowed!", MessageBoxButton.OK);
                 return;
             }
-            ChosenFiles.Move(selectedIndex, selectedIndex + 1);
+            if (Album != null)
+            {
+                Album.MoveItem(selectedIndex, selectedIndex + 1);
+            }
+            else if (Slideshow != null)
+            {
+                Slideshow.MoveItem(selectedIndex, selectedIndex + 1);
+            }
+            UpdateChosenFiles();
         }        
         private void Delete(int selectedIndex)
         {
@@ -297,9 +303,5 @@ namespace Assignment1.ViewModel
             
         }
 
-        private void PlaySlideshow()
-        {
-            // TODO Not used
-        }
     }
 }

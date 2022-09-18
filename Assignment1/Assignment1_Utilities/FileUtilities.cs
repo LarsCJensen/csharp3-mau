@@ -18,8 +18,13 @@ namespace Assignment1_Utilities
         {
             return Directory.GetDirectories(chosenDir);
         }
-
-        public static List<string> GetFilesInDirectory(string chosenDir, string[]? extensions = null)
+        /// <summary>
+        /// Helper method to get files in directory. Uses distinct to get unique extensions.
+        /// </summary>
+        /// <param name="chosenDir">Folder to list files in</param>
+        /// <param name="extensions">List of extensions to check for</param>
+        /// <returns>List of strings</returns>
+        public static List<string> GetFilesInDirectory(string chosenDir, List<string> extensions = null)
         {
             if (extensions == null) {
                 return new List<string>(Directory.GetFiles(chosenDir));
@@ -27,7 +32,7 @@ namespace Assignment1_Utilities
             else
             {
                 List<string> files = new List<string>();
-                foreach(string ext in extensions)
+                foreach(string ext in extensions.Distinct().ToList())
                 {
                     files.AddRange(Directory.GetFiles(chosenDir, ext));
                 }
@@ -35,7 +40,7 @@ namespace Assignment1_Utilities
             }
         }
 
-        public static List<FileInfo> GetFileInfoFromDirectory(string? chosenDir, string[]? extensions = null)
+        public static List<FileInfo> GetFileInfoFromDirectory(string? chosenDir, List<string> extensions = null)
         {
             List<FileInfo> files = new List<FileInfo>();
             foreach(string file in GetFilesInDirectory(chosenDir, extensions)) {

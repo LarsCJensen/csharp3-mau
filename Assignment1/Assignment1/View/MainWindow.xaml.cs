@@ -88,7 +88,7 @@ namespace Assignment1.View
 
         private void Play_Click(object sender, RoutedEventArgs e)
         {
-            PlayerViewModel playerVm = new PlayerViewModel(vm.Slideshow.Name, vm.Slideshow.Files);
+            PlayerViewModel playerVm = new PlayerViewModel(vm.Slideshow.Name, vm.Slideshow.Files, vm.Slideshow.Interval);
             Player player= new Player();
             // Bind OnClose event
             playerVm.OnClose += delegate { this.Close(); };

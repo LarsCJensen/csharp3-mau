@@ -34,5 +34,6 @@ namespace Assignment1_BLL
         /// </summary>
         /// <returns>Number of files in collection</returns>
         public int CountItems();
+        public bool MoveItem(int oldPos, int newPos);
     }
 }

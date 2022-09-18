@@ -6,12 +6,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assignment1_Utilities;
+using System.Windows;
+using System.Diagnostics;
 
 namespace Assignment1.ViewModel
 {
     public class PlayerViewModel: BaseViewModel
-    {
-        private string _title; 
+    {        
+        private string _title = "Slideshow player"; 
         public string Title
         {
             get { return _title; }
@@ -31,7 +34,16 @@ namespace Assignment1.ViewModel
                 OnPropertyChanged("SlideShowFiles");
             }
         }
-
+        private int _delay;
+        public int Interval
+        {
+            get { return _delay; }
+            set
+            {
+                _delay = value;               
+            }
+        }
+        public bool Continue { get; set; } = true;
         private string _imageSource;
         public string ImageSource
         {
@@ -51,8 +63,8 @@ namespace Assignment1.ViewModel
                 _videoSource = value;
                 OnPropertyChanged("VideoSource");
             }
-        }
-        private bool _isVideo = true;
+        }        
+        private bool _isVideo = false;
         public bool IsVideo
         {
             get { return _isVideo; }
@@ -63,7 +75,7 @@ namespace Assignment1.ViewModel
             }
         }
 
-        private bool _isImage = false;
+        private bool _isImage = true;
         public bool IsImage
         {
             get { return _isImage; }
@@ -81,25 +93,53 @@ namespace Assignment1.ViewModel
         #region EventHandlers
         public event EventHandler OnClose;
         #endregion
-        public PlayerViewModel() 
-        {
-            
-        }
-        public PlayerViewModel(string title, List<ChosenFile> chosenFiles)
+        public PlayerViewModel() { }
+        public PlayerViewModel(string title, List<ChosenFile> chosenFiles, int interval)
         {
             Title = title;
+            Interval = interval;
             PlayCommand = new RelayCommand(Play);
             SlideShowFiles = new ObservableCollection<ChosenFile>(chosenFiles);
         }
-        
-        private void Play()
+        /// <summary>
+        /// Play slideshow
+        /// </summary>
+        private async void Play()
         {
-            foreach(ChosenFile file in SlideShowFiles)
+            ImageSource = null;
+            VideoSource = null;
+            foreach (ChosenFile file in SlideShowFiles)
             {
-                //if(file.Extension)
-                //ImageSource = file.Image;
-                VideoSource = file.Image;
-            }    
-        }
+                if (Utilities.IsNull(file.Extension) || Utilities.IsNull(file.Image))
+                {
+                    continue;
+                }
+                // An "ugly" work-around to match extension
+                if (ValidExtensions.ImageExtensions.Contains($"*{file.Extension.ToLower()}"))
+                {
+                    if (Utilities.IsNotNull(ImageSource))
+                    {
+                        await Task.Delay(Interval * 1000);
+                    }
+                    IsVideo = false;
+                    IsImage = true;
+                    ImageSource = file.Image;
+                    await Task.Delay(Interval * 1000);
+                }
+                                                                    // An "ugly" work-around to match extension
+                else if (ValidExtensions.VideoExtensions.Contains($"*{file.Extension.ToLower()}"))
+                {
+                    IsImage = false;
+                    IsVideo = true;
+                    Continue = false;
+                    // Get length of Video
+                    int videoLength = (int)Math.Ceiling(Utilities.GetVideoDuration(file.Image));
+                    VideoSource = file.Image;
+                    await Task.Delay(videoLength);                    
+                }
+            }
+            // Would have implemented custom dialog for this
+            MessageBox.Show("Slideshow done!", "Done!", MessageBoxButton.OK);
+        }        
     }
 }

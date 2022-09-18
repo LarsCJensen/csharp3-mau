@@ -134,7 +134,7 @@
                                     <TextBox Style="{StaticResource Margin}" Text="{Binding Album.Name, FallbackValue=Name}" Width="75" />
                                     <Label Content="Description" Style="{StaticResource Margin}" />
                                     <TextBox Style="{StaticResource Margin}" Text="{Binding Album.Description, FallbackValue=Description}"  Width="200" />
-                                    <CheckBox Style="{StaticResource Margin}" Content="Copy to folder" IsChecked="{Binding CopyToFolder}"/>
+                                    <CheckBox Style="{StaticResource Margin}" Content="Copy to folder" IsChecked="{Binding Album.CopyToFolder}"/>
                                     <Button Style="{StaticResource Margin}" Content="Save" Command="{Binding SaveCommand}" Width="50" HorizontalAlignment="Left" />
                                     <Button Style="{StaticResource Margin}" Content="Add" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListView, Path=SelectedItem}"/>
                                 </StackPanel>                                                          
@@ -156,8 +156,8 @@
                                     <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Name, FallbackValue=Name}" Width="75" />
                                     <Label Content="Description" Style="{StaticResource Margin}" />
                                     <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Description, FallbackValue=Description}"  Width="200" />
-                                    <Label Content="Interval (s)" Style="{StaticResource Margin}" />
-                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Interval, FallbackValue=3, Mode=TwoWay}" Width="25" />
+                                    <Label Content="Interval (sec)" Style="{StaticResource Margin}" />
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Interval, FallbackValue=3}" Width="25" />
                                     <Button Style="{StaticResource Margin}" Content="Save" Command="{Binding SaveCommand}" Width="50" HorizontalAlignment="Left" />
                                     <Button Style="{StaticResource Margin}" Content="Add" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListView, Path=SelectedItem}"/>
                                     <Button Style="{StaticResource Margin}" Content="Play" Click="Play_Click" Width="50" HorizontalAlignment="Left"/>

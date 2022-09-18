@@ -8,16 +8,17 @@
         Title="{Binding Title}" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*"  />
             <RowDefinition Height="25" />
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
-        <MediaElement Grid.Row="0" Source="{Binding VideoSource}" x:Name="mediaElement" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10" Visibility="{Binding IsVideo, Converter={StaticResource BoolToVis}}"/>
-        <Image Grid.Row="0" Source="{Binding ImageSource}" x:Name="imageElement" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10" Visibility="{Binding IsImage, Converter={StaticResource BoolToVis}}"/>
+        <MediaElement Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding VideoSource}" Margin="10,10,10,10" Visibility="{Binding IsVideo, Converter={StaticResource BoolToVis}}"/>
+        <Image Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding ImageSource}" Margin="10,10,10,10" Visibility="{Binding IsImage, Converter={StaticResource BoolToVis}}"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Background="LightGray">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Margin" Value="5,0,2,2"/>
+                    <Setter Property="Width" Value="50"/>
                 </Style>
             </StackPanel.Resources>
             <Button Content="Play" Command="{Binding PlayCommand}" />
@@ -25,16 +26,16 @@
             <Button Content="Back" Command="{Binding BackCommand}" />
             <Button Content="Forward" Command="{Binding ForwardCommand}" />            
         </StackPanel>
-        <StackPanel Grid.Row="2">
-            <ListView ItemsSource="{Binding SlideShowFiles}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2">
+            <ListView ItemsSource="{Binding SlideShowFiles}" >
                 <ListView.View>
-                    <GridView>
+                    <GridView   ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible">
                         <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" />
                         <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Path=Description}" />
                         <GridViewColumn Header="Extension" DisplayMemberBinding="{Binding Path=Extension}" />
                     </GridView>
                 </ListView.View>
-            </ListView>            
-        </StackPanel>
+            </ListView>
+        </ScrollViewer>
     </Grid>
 </Window>

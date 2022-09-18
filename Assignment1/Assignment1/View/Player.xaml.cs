@@ -20,17 +20,19 @@ namespace Assignment1.View
     /// </summary>
     public partial class Player : Window
     {
+
+        PlayerViewModel vm = new PlayerViewModel();
         public Player()
         {
-            InitializeComponent();
-            PlayerViewModel vm = new PlayerViewModel();
+            InitializeComponent();            
             DataContext = vm;
             InitializeGUI();
             vm.OnClose += delegate { this.Close(); };
         }
         private void InitializeGUI()
         {
-            // TODO
+            // TODO Set background of MediaElement?
         }
+
     }
 }
