@@ -8,11 +8,12 @@
         xmlns:viewmodel="clr-namespace:Assignment1.ViewModel"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="{Binding Title, FallbackValue='Home Media Player'}" Height="700" Width="1024">
+        Title="{Binding Title, FallbackValue='Home Media Player'}" Height="700" Width="1024" Loaded="Window_Loaded">
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
@@ -28,6 +29,14 @@
                 </Menu>
             </Grid>
             <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Content="1. Choose folder with images/videos" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <Label Content="2. Choose image/video to add" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+            </Grid>
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300" />
                     <ColumnDefinition Width="*" />
@@ -135,12 +144,12 @@
                                     <Label Content="Description" Style="{StaticResource Margin}" />
                                     <TextBox Style="{StaticResource Margin}" Text="{Binding Album.Description, FallbackValue=Description}"  Width="200" />
                                     <CheckBox Style="{StaticResource Margin}" Content="Copy to folder" IsChecked="{Binding Album.CopyToFolder}"/>
-                                    <Button Style="{StaticResource Margin}" Content="Save" Command="{Binding SaveCommand}" Width="50" HorizontalAlignment="Left" />
-                                    <Button Style="{StaticResource Margin}" Content="Add" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListView, Path=SelectedItem}"/>
+                                    <Button Style="{StaticResource Margin}" Content="Save album" Command="{Binding SaveCommand}" Width="65" HorizontalAlignment="Left" />
+                                    <Button Style="{StaticResource Margin}" Content="Add file" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListView, Path=SelectedItem}"/>
                                 </StackPanel>                                                          
                             </StackPanel>
                             <!-- SLIDESHOW -->
-                            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BoolToVis}}" Background="LightGray">
+                            <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BoolToVis}}" Background="LightGray">                                
                                 <StackPanel Orientation="Horizontal" >
                                     <StackPanel.Resources>
                                         <Style x:Key="Margin"  TargetType="{x:Type Control}">
@@ -155,30 +164,33 @@
                                     <Label Content="Name" Style="{StaticResource Margin}" />
                                     <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Title, FallbackValue=Name}" Width="75" />
                                     <Label Content="Description" Style="{StaticResource Margin}" />
-                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Description, FallbackValue=Description}"  Width="200" />
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Description, FallbackValue=Description}"  Width="160" />
                                     <Label Content="Interval (sec)" Style="{StaticResource Margin}" />
-                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Interval, FallbackValue=3}" Width="25" />
-                                    <Button Style="{StaticResource Margin}" Content="Save" Command="{Binding SaveCommand}" Width="50" HorizontalAlignment="Left" />
-                                    <Button Style="{StaticResource Margin}" Content="Add" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListView, Path=SelectedItem}"/>
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding Slideshow.Interval, FallbackValue=3}" Width="20" />
+                                    <Button Style="{StaticResource Margin}" Content="Save slideshow" Command="{Binding SaveCommand}" Width="85" HorizontalAlignment="Left" />
+                                    <Button Style="{StaticResource Margin}" Content="Add file" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListView, Path=SelectedItem}"/>
                                     <Button Style="{StaticResource Margin}" Content="Play" Click="Play_Click" Width="50" HorizontalAlignment="Left"/>
                                 </StackPanel>                                
                             </StackPanel>
                             <!-- Set VirtualizingPanel.IsVirtualizing to False to prevent crash -->
-                            <DataGrid x:Name="chosenFilesGrid"  Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ChosenFiles}" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" VirtualizingPanel.IsVirtualizing="False" >
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="200" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Filetype" Binding="{Binding Path=Extension}" Width="50" IsReadOnly="True"/>
-                                    <DataGridTemplateColumn Width="*" Header="Description">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <StackPanel>
-                                                    <TextBox Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
+                            <StackPanel  Grid.Row="1" Grid.Column="0" >
+                                <Label Content="Chosen files in Album/Slideshow" HorizontalAlignment="Stretch"  Background="LightGray"/>
+                                <DataGrid x:Name="chosenFilesGrid" ItemsSource="{Binding ChosenFiles}" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" VirtualizingPanel.IsVirtualizing="False" >
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="200" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Filetype" Binding="{Binding Path=Extension}" Width="50" IsReadOnly="True"/>
+                                        <DataGridTemplateColumn Width="*" Header="Description">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBox Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
                             <StackPanel Grid.Row="1" Grid.Column="1" Background="LightGray" Orientation="Vertical">
                                 <StackPanel.Resources>
                                     <Style TargetType="{x:Type Button}">

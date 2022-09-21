@@ -49,7 +49,7 @@ namespace Assignment1.View
                 item.Items.Add(dummyNode);
                 item.Expanded += new RoutedEventHandler(FolderExpanded);
                 fileTreeView.Items.Add(item);
-            }
+            }           
         }
         /// <summary>
         /// Event for when folder is expanded
@@ -94,6 +94,16 @@ namespace Assignment1.View
             playerVm.OnClose += delegate { this.Close(); };
             player.DataContext = playerVm;
             player.Show();
+        }
+
+        // This will be moved to an about dialog
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            string aboutMessage = "To create a new album use menu File -> New Album.";
+            aboutMessage += "\nTo create a new slideshow use menu File -> New slideshow.";
+            aboutMessage += $"\n\nBrowse for files through the tree view. Supported file types are {String.Join(",", ValidExtensions.AllValidExtensions)}.";
+            aboutMessage += "\n\nFor slideshows you can choose interval to be used between images. Videos will be played in its full length.";
+            MessageBox.Show(aboutMessage, "How to?", MessageBoxButton.OK);
         }
     }
 }
