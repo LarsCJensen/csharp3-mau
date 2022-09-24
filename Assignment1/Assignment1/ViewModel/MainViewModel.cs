@@ -51,6 +51,7 @@ namespace Assignment1.ViewModel
                 OnPropertyChanged("IsInitialized");
             } 
         }
+        
         /// <summary>
         /// Files populating the ListView
         /// </summary>
@@ -143,7 +144,8 @@ namespace Assignment1.ViewModel
         public RelayCommand<int> UpCommand { get; private set; }
         public RelayCommand<int> DownCommand { get; private set; }
         public RelayCommand<int> DeleteCommand { get; private set; }
-
+        public RelayCommand ReloadTreeViewCommand { get; private set; }
+        public RelayCommand<object> DoubleClickImageCommand { get; private set; }
 
         #endregion
         #region EventHandlers
@@ -159,7 +161,9 @@ namespace Assignment1.ViewModel
             UpCommand = new RelayCommand<int>(param => Up(param));
             DownCommand = new RelayCommand<int>(param => Down(param));
             DeleteCommand = new RelayCommand<int>(param => Delete(param));
+            //ReloadTreeViewCommand = new RelayCommand(LoadTreeView);
             SpinnerVisible = false;
+            DoubleClickImageCommand = new RelayCommand<object>(param => Add(param));
         }
 
         private async void SelectFolderExcecute(object sender)
@@ -231,7 +235,7 @@ namespace Assignment1.ViewModel
                 Title = $"Home Media Player - {Slideshow.Title}";
                 MessageBox.Show($"Slideshow {Slideshow.Title} Saved to DB", "Saved!", MessageBoxButton.OK);
             }
-        }
+        }        
         private void Add(object sender)
         {
             if(sender == null)

@@ -26,7 +26,26 @@ namespace Assignment1_Utilities
                     if (value is string)
                     {
                         string str = (string)value;
-                        return new BitmapImage(new Uri(str, UriKind.RelativeOrAbsolute));
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        if (Path.GetExtension(value.ToString()) == ".mp4") 
+                        {
+                            // Work around for mp4 being slow
+                            return null;
+                        } else
+                        {
+                            //string str = (string)value;
+                            //BitmapImage bitmap = new BitmapImage();
+                            bitmap.UriSource = new Uri(str, UriKind.RelativeOrAbsolute);
+                            bitmap.DecodePixelWidth = 100;
+                            bitmap.DecodePixelHeight = 75;
+                            bitmap.CreateOptions = BitmapCreateOptions.None;
+                            bitmap.CacheOption = BitmapCacheOption.Default;
+                        }
+                        bitmap.EndInit();
+                        bitmap.Freeze();
+                        return bitmap;
+                        //return new BitmapImage(new Uri(str, UriKind.RelativeOrAbsolute));
                     }
                     // Handle if value is Uri
                     else if (value is Uri)
