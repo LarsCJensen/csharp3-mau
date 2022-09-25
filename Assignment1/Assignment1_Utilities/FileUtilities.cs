@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Assignment1_Utilities
 {
@@ -26,18 +27,27 @@ namespace Assignment1_Utilities
         /// <returns>List of strings</returns>
         public static List<string> GetFilesInDirectory(string chosenDir, List<string> extensions = null)
         {
-            if (extensions == null) {
-                return new List<string>(Directory.GetFiles(chosenDir));
-            }
-            else
+            try
             {
-                List<string> files = new List<string>();
-                foreach(string ext in extensions.Distinct().ToList())
+                if (extensions == null)
                 {
-                    files.AddRange(Directory.GetFiles(chosenDir, ext));
+                    return new List<string>(Directory.GetFiles(chosenDir));
                 }
-                return files; 
+                else
+                {
+                    List<string> files = new List<string>();
+                    foreach (string ext in extensions.Distinct().ToList())
+                    {
+                        files.AddRange(Directory.GetFiles(chosenDir, ext));
+                    }
+                    return files;
+                }
+            } catch (System.UnauthorizedAccessException)
+            {
+                MessageBox.Show("Unable to access files because of unauthorized exception", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return new List<string>();                
             }
+            
         }
 
         public static List<FileInfo> GetFileInfoFromDirectory(string? chosenDir, List<string> extensions = null)

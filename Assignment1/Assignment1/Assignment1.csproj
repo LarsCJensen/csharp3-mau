@@ -44,4 +44,16 @@
     </Resource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="Dialogs\DialogOk\DialogOkView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Dialogs\DialogService\DialogWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Dialogs\DialogYesNo\DialogYesNoView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
 </Project>
