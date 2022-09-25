@@ -1,23 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Assignment1.ViewModel;
+using Assignment1_Utilities;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Assignment1.View;
-using Assignment1.ViewModel;
-using Assignment1_BLL;
-using Assignment1_Utilities;
 
 namespace Assignment1.View
 {
@@ -75,13 +61,14 @@ namespace Assignment1.View
                         subitem.FontWeight = FontWeights.Normal;
                         subitem.Items.Add(dummyNode);
                         subitem.Expanded += new RoutedEventHandler(FolderExpanded);
-                        item.Items.Add(subitem);
+                        item.Items.Add(subitem);                        
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Exception occurred!", MessageBoxButton.OK, MessageBoxImage.Error);
-                    // Would log callstack
+                    //MessageBox.Show(ex.Message, "Exception occurred!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Dialogs.DialogService.DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("Exception occurred!", ex.Message);
+                    Dialogs.DialogService.DialogService.OpenDialog(errorVM);
                 }
             }
         }
@@ -104,6 +91,18 @@ namespace Assignment1.View
             aboutMessage += $"\n\nBrowse for files through the tree view. Supported file types are {String.Join(",", ValidExtensions.AllValidExtensions)}.";
             aboutMessage += "\n\nFor slideshows you can choose interval to be used between images. Videos will be played in its full length.";
             MessageBox.Show(aboutMessage, "How to?", MessageBoxButton.OK);
+        }
+        /// <summary>
+        /// Event for double click on image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// Wanted to make this a command, but couldn't find a good solution.
+        /// Sometimes code-behind isn't that bad.
+        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            
+            vm.AddCommand.Execute(filesListBox.SelectedItem);
         }
     }
 }

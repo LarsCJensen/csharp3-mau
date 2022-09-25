@@ -120,7 +120,12 @@
                             </ListView.View>
                         </ListView>-->
                         
-                        <ListBox x:Name="filesListBox" ItemsSource="{Binding Files}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="400" Width="700">
+                        <ListBox x:Name="filesListBox" ItemsSource="{Binding Files}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="400" Width="700" >
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                    <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <UniformGrid Columns="4" VerticalAlignment="Top" HorizontalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" IsItemsHost="True"/>
@@ -141,9 +146,6 @@
                                         </Grid>-->
                                     <StackPanel MaxWidth="150">
                                         <Image HorizontalAlignment="Left" VerticalAlignment="Top" Height="75" Width="100" Source="{Binding Image, Converter={StaticResource ImageConverter},FallbackValue={StaticResource TestImage}, TargetNullValue={StaticResource TestImage}}">
-                                            <!--<Image.InputBindings>
-                                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DoubleClickImageCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"  />
-                                            </Image.InputBindings>-->
                                             <Image.Style>
                                                 <Style/>
                                             </Image.Style>                                            

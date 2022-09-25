@@ -145,7 +145,6 @@ namespace Assignment1.ViewModel
         public RelayCommand<int> DownCommand { get; private set; }
         public RelayCommand<int> DeleteCommand { get; private set; }
         public RelayCommand ReloadTreeViewCommand { get; private set; }
-        public RelayCommand<object> DoubleClickImageCommand { get; private set; }
 
         #endregion
         #region EventHandlers
@@ -162,8 +161,7 @@ namespace Assignment1.ViewModel
             DownCommand = new RelayCommand<int>(param => Down(param));
             DeleteCommand = new RelayCommand<int>(param => Delete(param));
             //ReloadTreeViewCommand = new RelayCommand(LoadTreeView);
-            SpinnerVisible = false;
-            DoubleClickImageCommand = new RelayCommand<object>(param => Add(param));
+            SpinnerVisible = false;            
         }
 
         private async void SelectFolderExcecute(object sender)

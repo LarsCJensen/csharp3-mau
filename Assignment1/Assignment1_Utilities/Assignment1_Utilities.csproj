@@ -10,7 +10,7 @@
     <PackageReference Include="EPP.PresentationCore" Version="1.0.0" />
     <PackageReference Include="PresentationFramework" Version="4.6.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
-	<FrameworkReference Include="Microsoft.WindowsDesktop.App"/>
+	<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
   </ItemGroup>
 
 </Project>
