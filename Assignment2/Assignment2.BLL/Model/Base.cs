@@ -4,15 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assignment2.BLL.Interface;
+using Assignment2.DAL;
+using Assignment2.DAL.Repositories;
 using Assignment2.Utilities;
+
+// TODO IS THIS A MANAGER??
 
 namespace Assignment2.BLL
 {
     public class Base: ICollectionManager<ChosenFile>
     {
+        // TODO Probably isn't needed
+        protected MediaPlayerDbContext _context;
         public string? Title { get; set; }
         public string? Description { get; set; }
         public List<ChosenFile> Files { get; set; } = new List<ChosenFile>();
+        
         public bool AddItem(ChosenFile file)
         {
             Files.Add(file);

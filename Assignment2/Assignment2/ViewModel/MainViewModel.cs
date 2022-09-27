@@ -55,8 +55,8 @@ namespace Assignment2.ViewModel
         /// <summary>
         /// Files populating the ListView
         /// </summary>
-        private ObservableCollection<Assignment2.BLL.File> _files = new ObservableCollection<Assignment2.BLL.File>();
-        public ObservableCollection<Assignment2.BLL.File> Files
+        private ObservableCollection<BLL.File> _files = new ObservableCollection<BLL.File>();
+        public ObservableCollection<BLL.File> Files
         {
             get { return _files; }
             private set
@@ -152,6 +152,12 @@ namespace Assignment2.ViewModel
         #endregion
         public MainViewModel()
         {
+            RegisterCommands();
+            SpinnerVisible = false;            
+        }
+
+        protected override void RegisterCommands()
+        {
             SelectFolder = new RelayCommand<object>(async param => SelectFolderExcecute(param));
             NewCommand = new RelayCommand<string>(param => NewCommandExecute(param));
             SaveCommand = new RelayCommand(Save);
@@ -161,7 +167,7 @@ namespace Assignment2.ViewModel
             DownCommand = new RelayCommand<int>(param => Down(param));
             DeleteCommand = new RelayCommand<int>(param => Delete(param));
             //ReloadTreeViewCommand = new RelayCommand(LoadTreeView);
-            SpinnerVisible = false;            
+
         }
 
         private async void SelectFolderExcecute(object sender)
@@ -181,10 +187,10 @@ namespace Assignment2.ViewModel
             await Task.Run(() =>
             {                
                 List<FileInfo> filesFileInfo = FileUtilities.GetFileInfoFromDirectory(tag, ValidExtensions.AllValidExtensions);
-                Files = new ObservableCollection<Assignment2.BLL.File>();
+                Files = new ObservableCollection<BLL.File>();
                 foreach (FileInfo file in filesFileInfo)
                 {
-                    Assignment2.BLL.File newFile = new Assignment2.BLL.File(file);
+                    BLL.File newFile = new BLL.File(file);
                     Files.Add(newFile);
                 }
             });
@@ -227,6 +233,7 @@ namespace Assignment2.ViewModel
             {
                 // Save to db
                 Title = $"Home Media Player - {Album.Title}";
+                Album.Save();
                 MessageBox.Show($"Album {Album.Title} saved!", "Saved!", MessageBoxButton.OK);
             } else
             {

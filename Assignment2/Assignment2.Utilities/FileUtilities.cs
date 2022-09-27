@@ -42,7 +42,7 @@ namespace Assignment2.Utilities
                     }
                     return files;
                 }
-            } catch (System.UnauthorizedAccessException)
+            } catch (UnauthorizedAccessException)
             {
                 MessageBox.Show("Unable to access files because of unauthorized exception", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return new List<string>();                

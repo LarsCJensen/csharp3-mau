@@ -39,5 +39,10 @@ namespace Assignment2.ViewModel
             }
         }
         #endregion        
+        protected BaseViewModel()
+        {
+            RegisterCommands();
+        }
+        protected virtual void RegisterCommands() { }
     }
 }

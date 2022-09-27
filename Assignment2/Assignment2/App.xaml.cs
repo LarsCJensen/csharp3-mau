@@ -21,7 +21,8 @@ namespace Assignment2
             string config = ConfigurationManager.ConnectionStrings["MyLocalDB"].ToString();
             var builder = new DbContextOptionsBuilder<MediaPlayerDbContext>();
             builder.UseSqlServer(config);
-            new MediaPlayerDbContext(builder.Options);
+            // TODO
+            MediaPlayerDbContext context = new MediaPlayerDbContext(builder.Options);
             base.OnStartup(e);
         }
         
