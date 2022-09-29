@@ -12,6 +12,10 @@ using System.IO;
 using Assignment2.BLL;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Reflection;
+using Assignment2.BLL.Services;
+using Assignment2.DAL.Models;
+using File = Assignment2.DAL.Models.File;
+using System.Text.RegularExpressions;
 
 namespace Assignment2.ViewModel
 {
@@ -55,8 +59,8 @@ namespace Assignment2.ViewModel
         /// <summary>
         /// Files populating the ListView
         /// </summary>
-        private ObservableCollection<BLL.File> _files = new ObservableCollection<BLL.File>();
-        public ObservableCollection<BLL.File> Files
+        private ObservableCollection<FileInfo> _files = new ObservableCollection<FileInfo>();
+        public ObservableCollection<FileInfo> Files
         {
             get { return _files; }
             private set
@@ -66,17 +70,17 @@ namespace Assignment2.ViewModel
             }
         }        
 
-        private Album _album;
-        public Album Album
+        private AlbumManager _albumManager;
+        public AlbumManager AlbumManager
         {
             get
             {
-                return _album;
+                return _albumManager;
             }
             set
             {
-                _album = value;
-                OnPropertyChanged("Album");
+                _albumManager = value;
+                OnPropertyChanged("AlbumManager");
             }
         }
         
@@ -94,17 +98,17 @@ namespace Assignment2.ViewModel
             }
         }
 
-        private Slideshow _slideshow;
-        public Slideshow Slideshow
+        private SlideshowManager _slideshowManager;
+        public SlideshowManager SlideshowManager
         {
             get
             {
-                return _slideshow;
+                return _slideshowManager;
             }
             set
             {
-                _slideshow = value;
-                OnPropertyChanged("Slideshow");
+                _slideshowManager = value;
+                OnPropertyChanged("SlideshowManager");
             }
         }
 
@@ -124,8 +128,8 @@ namespace Assignment2.ViewModel
         /// <summary>
         /// Files which are added from ListView to Datagrid
         /// </summary>
-        private ObservableCollection<ChosenFile> _chosenFiles = new ObservableCollection<ChosenFile>();
-        public ObservableCollection<ChosenFile> ChosenFiles
+        private ObservableCollection<File> _chosenFiles;
+        public ObservableCollection<File> ChosenFiles
         {
             get { return _chosenFiles; }
             private set
@@ -162,12 +166,11 @@ namespace Assignment2.ViewModel
             NewCommand = new RelayCommand<string>(param => NewCommandExecute(param));
             SaveCommand = new RelayCommand(Save);
             CloseCommand = new RelayCommand(Close);
-            AddCommand = new RelayCommand<object>(param => Add(param));
+            AddCommand = new RelayCommand<object>(param => AddFile(param));
             UpCommand = new RelayCommand<int>(param => Up(param));
             DownCommand = new RelayCommand<int>(param => Down(param));
             DeleteCommand = new RelayCommand<int>(param => Delete(param));
             //ReloadTreeViewCommand = new RelayCommand(LoadTreeView);
-
         }
 
         private async void SelectFolderExcecute(object sender)
@@ -185,32 +188,35 @@ namespace Assignment2.ViewModel
         private async Task GetFilesInFolder(string tag)
         {
             await Task.Run(() =>
-            {                
+            {
+                Files = new ObservableCollection<FileInfo>();
                 List<FileInfo> filesFileInfo = FileUtilities.GetFileInfoFromDirectory(tag, ValidExtensions.AllValidExtensions);
-                Files = new ObservableCollection<BLL.File>();
                 foreach (FileInfo file in filesFileInfo)
                 {
-                    BLL.File newFile = new BLL.File(file);
-                    Files.Add(newFile);
+                    // Since Files collection is on UI thread it needs to be delegated
+                    App.Current.Dispatcher.Invoke((Action)delegate 
+                    {
+                        Files.Add(file);
+                    });
                 }
             });
         }
         private void NewCommandExecute(string commandParam)
         {
-            ChosenFiles = new ObservableCollection<ChosenFile>();
+            ChosenFiles = new ObservableCollection<File>();
             if (commandParam == "album")
             {
                 // Change contents of gui?
-                Slideshow = null;                
-                Album = new Album();
+                SlideshowManager = null;
+                AlbumManager = new AlbumManager();
                 IsInitialized = true;
                 Title = "Home Media Player - New album";
                 IsAlbum = true;
                 IsSlideshow = false;
             } else
             {
-                Album = null;
-                Slideshow = new Slideshow();
+                AlbumManager = null;
+                SlideshowManager = new SlideshowManager();
                 IsInitialized = true;
                 Title = "Home Media Player - New slideshow";
                 IsSlideshow = true;
@@ -229,34 +235,38 @@ namespace Assignment2.ViewModel
         private void Save()
         {
             // Is this the place? 
-            if(Album != null)
+            if(AlbumManager != null)
             {
                 // Save to db
-                Title = $"Home Media Player - {Album.Title}";
-                Album.Save();
-                MessageBox.Show($"Album {Album.Title} saved!", "Saved!", MessageBoxButton.OK);
+                Title = $"Home Media Player - {AlbumManager.Album.Title}";
+                // TODO Handle
+                bool result = AlbumManager.Save();
+                MessageBox.Show($"Album {AlbumManager.Album.Title} saved!", "Saved!", MessageBoxButton.OK);
             } else
             {
-                Title = $"Home Media Player - {Slideshow.Title}";
-                MessageBox.Show($"Slideshow {Slideshow.Title} Saved to DB", "Saved!", MessageBoxButton.OK);
+                Title = $"Home Media Player - {SlideshowManager.Slideshow.Title}";
+                // TODO Handle
+                bool result = SlideshowManager.Save();
+                MessageBox.Show($"Slideshow {SlideshowManager.Slideshow.Title} Saved to DB", "Saved!", MessageBoxButton.OK);
             }
-        }        
-        private void Add(object sender)
+        }
+        #region CommandExecutes
+        private void AddFile(object sender)
         {
             if(sender == null)
             {
                 MessageBox.Show("Please choose file to add!", "Error!", MessageBoxButton.OK);
                 return;
-            }            
-            if (Album != null)
-            {
-                ChosenFile file = new ChosenFile((BLL.File)sender, Album.Files.Count());
-                Album.AddItem(file);                
             }
-            else if (Slideshow != null)
+            File file = new File();
+            Reflection.CopyProperties(sender, file);
+            if (AlbumManager != null)
             {
-                ChosenFile file = new ChosenFile((BLL.File)sender, Slideshow.Files.Count());
-                Slideshow.AddItem(file);
+                AlbumManager.AddItem(file);
+            }
+            else if (SlideshowManager != null)
+            {
+                SlideshowManager.AddItem(file);
             }
             UpdateChosenFiles();
         }
@@ -267,12 +277,12 @@ namespace Assignment2.ViewModel
                 MessageBox.Show("Can't move the top file up!", "Unallowed!", MessageBoxButton.OK);
                 return;
             }
-            if (Album != null)
+            if (AlbumManager != null)
             {
-                Album.MoveItem(selectedIndex, selectedIndex - 1);
-            } else if (Slideshow != null) 
+                AlbumManager.MoveItem(selectedIndex, selectedIndex - 1);
+            } else if (SlideshowManager != null) 
             {
-                Slideshow.MoveItem(selectedIndex, selectedIndex - 1);
+                SlideshowManager.MoveItem(selectedIndex, selectedIndex - 1);
             }
             UpdateChosenFiles();
         }
@@ -283,13 +293,13 @@ namespace Assignment2.ViewModel
                 MessageBox.Show("Can't move the bottom file down!", "Unallowed!", MessageBoxButton.OK);
                 return;
             }
-            if (Album != null)
+            if (AlbumManager != null)
             {
-                Album.MoveItem(selectedIndex, selectedIndex + 1);
+                AlbumManager.MoveItem(selectedIndex, selectedIndex + 1);
             }
-            else if (Slideshow != null)
+            else if (SlideshowManager != null)
             {
-                Slideshow.MoveItem(selectedIndex, selectedIndex + 1);
+                SlideshowManager.MoveItem(selectedIndex, selectedIndex + 1);
             }
             UpdateChosenFiles();
         }        
@@ -297,13 +307,13 @@ namespace Assignment2.ViewModel
         {
             try
             {
-                if (Album != null)
+                if (AlbumManager != null)
                 {
-                    Album.DeleteItem(selectedIndex);
+                    AlbumManager.DeleteItem(selectedIndex);
                 }
-                else if (Slideshow != null)
+                else if (SlideshowManager != null)
                 {
-                    Slideshow.DeleteItem(selectedIndex);
+                    SlideshowManager.DeleteItem(selectedIndex);
                 }
             } catch (Exception exc)
             {
@@ -315,15 +325,15 @@ namespace Assignment2.ViewModel
         private void UpdateChosenFiles()
         {
             // TODO Would be nice to have general for both types
-            if(Album != null)
+            if(AlbumManager != null)
             {
-                ChosenFiles = new ObservableCollection<ChosenFile>(Album.Files);
+                ChosenFiles = new ObservableCollection<File>(AlbumManager.Files);
             } else
             {
-                ChosenFiles = new ObservableCollection<ChosenFile>(Slideshow.Files);
+                ChosenFiles = new ObservableCollection<File>(SlideshowManager.Files);
             }
             
         }
-
+        #endregion
     }
 }

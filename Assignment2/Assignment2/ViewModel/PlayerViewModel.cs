@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Assignment2.Utilities;
 using System.Windows;
 using System.Diagnostics;
+using Assignment2.DAL.Models;
 
 namespace Assignment2.ViewModel
 {
@@ -24,8 +25,8 @@ namespace Assignment2.ViewModel
                 OnPropertyChanged("Title");
             }
         }
-        private ObservableCollection<ChosenFile> _slideShowFiles;
-        public ObservableCollection<ChosenFile> SlideShowFiles
+        private ObservableCollection<File> _slideShowFiles;
+        public ObservableCollection<File> SlideShowFiles
         {
             get { return _slideShowFiles; }
             private set
@@ -97,7 +98,7 @@ namespace Assignment2.ViewModel
         public event EventHandler OnClose;
         #endregion
         public PlayerViewModel() { }
-        public PlayerViewModel(string title, List<ChosenFile> chosenFiles, int interval)
+        public PlayerViewModel(string title, ICollection<File> slideshowFiles, int interval)
         {
             if(title != null)
             {
@@ -109,7 +110,7 @@ namespace Assignment2.ViewModel
             BackCommand = new RelayCommand(Back);
             ForwardCommand = new RelayCommand(Forward);
             
-            SlideShowFiles = new ObservableCollection<ChosenFile>(chosenFiles);
+            SlideShowFiles = new ObservableCollection<File>(slideshowFiles);
         }
         /// <summary>
         /// Play slideshow
@@ -118,9 +119,9 @@ namespace Assignment2.ViewModel
         {
             ImageSource = null;
             VideoSource = null;
-            foreach (ChosenFile file in SlideShowFiles)
+            foreach (File file in SlideShowFiles)
             {
-                if (Utilities.Utilities.IsNull(file.Extension) || Utilities.Utilities.IsNull(file.Image))
+                if (Utilities.Utilities.IsNull(file.Extension) || Utilities.Utilities.IsNull(file.FullName))
                 {
                     continue;
                 }
@@ -133,7 +134,7 @@ namespace Assignment2.ViewModel
                     }
                     IsVideo = false;
                     IsImage = true;
-                    ImageSource = file.Image;
+                    ImageSource = file.FullName;
                     await Task.Delay(Interval * 1000);
                 }
                                                                     // An "ugly" work-around to match extension
@@ -144,7 +145,7 @@ namespace Assignment2.ViewModel
                     Continue = false;
                     // Get length of Video
                     int videoLength = (int)Math.Ceiling(Utilities.Utilities.GetVideoDuration(file.FullName));
-                    VideoSource = file.Image;
+                    VideoSource = file.FullName;
                     await Task.Delay(videoLength);                    
                 }
             }

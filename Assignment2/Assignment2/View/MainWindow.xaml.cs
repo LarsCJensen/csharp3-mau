@@ -4,6 +4,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Linq;
 
 namespace Assignment2.View
 {
@@ -75,15 +76,16 @@ namespace Assignment2.View
 
         private void Play_Click(object sender, RoutedEventArgs e)
         {
-            PlayerViewModel playerVm = new PlayerViewModel(vm.Slideshow.Title, vm.Slideshow.Files, vm.Slideshow.Interval);
-            Player player= new Player();
+            // TODO CHEcK IF files < 1!
+            PlayerViewModel playerVm = new PlayerViewModel(vm.SlideshowManager.Slideshow.Title, vm.SlideshowManager.Slideshow.Files, vm.SlideshowManager.Slideshow.Interval);
+            Player player = new Player();
             // Bind OnClose event
             playerVm.OnClose += delegate { this.Close(); };
             player.DataContext = playerVm;
             player.Show();
         }
 
-        // This will be moved to an about dialog
+        // TODO This will be moved to an about dialog
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             string aboutMessage = "To create a new album use menu File -> New Album.";

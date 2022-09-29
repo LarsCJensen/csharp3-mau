@@ -5,22 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using Assignment2.BLL.Interface;
 using Assignment2.DAL;
+using Assignment2.DAL.Models;
 using Assignment2.DAL.Repositories;
 using Assignment2.Utilities;
+using File = Assignment2.DAL.Models.File;
 
 // TODO IS THIS A MANAGER??
 
 namespace Assignment2.BLL
 {
-    public class Base: ICollectionManager<ChosenFile>
+    public abstract class BaseManager: ICollectionManager<File>
     {
-        // TODO Probably isn't needed
-        protected MediaPlayerDbContext _context;
-        public string? Title { get; set; }
-        public string? Description { get; set; }
-        public List<ChosenFile> Files { get; set; } = new List<ChosenFile>();
+        // TODO is the ICollectionmanager even needed?
+        //public string? Title { get; set; }
+        //public string? Description { get; set; }
+        public List<File> Files { get; set; } = new List<File>();
         
-        public bool AddItem(ChosenFile file)
+        public bool AddItem(File file)
         {
             Files.Add(file);
             return true;
@@ -30,7 +31,7 @@ namespace Assignment2.BLL
             Files.RemoveAt(position);
             return true;
         }
-        public ChosenFile GetItemAt(int pos)
+        public File GetItemAt(int pos)
         {
             return Files[pos];
         }
@@ -45,5 +46,6 @@ namespace Assignment2.BLL
             Files = Utilities.Utilities.Move(Files, oldPos, newPos);
             return true;
         }
+        public abstract bool Save();
     }
 }

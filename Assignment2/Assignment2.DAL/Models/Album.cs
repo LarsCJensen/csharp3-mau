@@ -13,7 +13,7 @@ namespace Assignment2.DAL.Models
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<File> files { get; set; }
+        public virtual ICollection<File> Files { get; set; }
 
     }
 }

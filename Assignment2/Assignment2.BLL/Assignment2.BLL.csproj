@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Assignment2.DAL\Assignment2.DAL.csproj" />
     <ProjectReference Include="..\Assignment2.Utilities\Assignment2.Utilities.csproj" />
   </ItemGroup>
 

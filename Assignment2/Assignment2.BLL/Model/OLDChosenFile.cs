@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace Assignment2.BLL
 {
-    public class ChosenFile: File
+    // TODO Not used
+    public class OLDChosenFile: OLDFile
     {   
         /// <summary>
         /// Class for chosen file, which has more attributes
         /// </summary>
         public int Position { get; set; }
         public string? Description { get; set; }
-        public ChosenFile(File file, int position) : base(file.FileInfo)
+        public OLDChosenFile(OLDFile file, int position) : base(file.FileInfo)
         {
             this.Position = position;
         }

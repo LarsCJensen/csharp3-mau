@@ -13,6 +13,10 @@ namespace Assignment2.DAL
 {
     public class MediaPlayerDbContext: DbContext
     {
+        public MediaPlayerDbContext()
+        {
+
+        }
         public MediaPlayerDbContext(DbContextOptions<MediaPlayerDbContext> options) : base(options) 
         {
             // TODO Remove
@@ -23,9 +27,13 @@ namespace Assignment2.DAL
         public DbSet<Slideshow> Slideshows{ get; set; }
 
         // TODO Not used
-        private static DbContextOptions GetOptions(DbContextOptionsBuilder<MediaPlayerDbContext> options)
+        //private static DbContextOptions GetOptions(DbContextOptionsBuilder<MediaPlayerDbContext> options)
+        //{
+        //    return SqlServerDbContextOptionsExtensions.UseSqlServer(options).Options;
+        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            return SqlServerDbContextOptionsExtensions.UseSqlServer(options).Options;
+            options.UseSqlServer(@"data source=(LocalDb)\MSSQLLocalDB;initial catalog=Assignment2.DAL.MediaPlayerContext;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework");
         }
     }
 

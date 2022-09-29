@@ -3,7 +3,7 @@
     /// <summary>
     /// Class to handle File
     /// </summary>
-    public class File
+    public class OLDFile
     {
         //Since FileInfo is sealed I cannot inherit it, so using it like this and expand my own File class
         public FileInfo FileInfo { get; set; }
@@ -63,7 +63,7 @@
                 return FileInfo.FullName; 
             }
         }
-        public File(FileInfo fileInfo)
+        public OLDFile(FileInfo fileInfo)
         {
             FileInfo = fileInfo;
         }        
