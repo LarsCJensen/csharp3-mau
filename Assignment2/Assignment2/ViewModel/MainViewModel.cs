@@ -16,10 +16,11 @@ using Assignment2.BLL.Services;
 using Assignment2.DAL.Models;
 using File = Assignment2.DAL.Models.File;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 namespace Assignment2.ViewModel
 {
-    public class MainViewModel: BaseViewModel
+    public class MainViewModel: BaseViewModel, IDataErrorInfo
     {
         private string _title = "Home Media Player";
         public string Title
@@ -153,6 +154,32 @@ namespace Assignment2.ViewModel
         #endregion
         #region EventHandlers
         public event EventHandler OnClose;
+        #endregion
+
+        #region IDataErrorInfo
+        public string Error => throw new NotImplementedException();
+        /// <summary>
+        /// Validation of properties
+        /// </summary>
+        /// <param name="property">Property to validate</param>
+        /// <returns>string</returns>
+        public string this[string property]
+        {
+            get
+            {
+                string validationResult = String.Empty;
+                switch (property)
+                {
+                    case "Title":
+                        validationResult = "Wrong!";
+                        break;
+                    case "Description":
+                        validationResult = "Description WRONG!";                        
+                        break;
+                }
+                return validationResult;
+            }
+        }
         #endregion
         public MainViewModel()
         {

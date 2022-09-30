@@ -126,7 +126,7 @@
                                         </Style>
                                     </StackPanel.Resources>
                                     <Label Content="Name" Style="{StaticResource Margin}" />
-                                    <TextBox Style="{StaticResource Margin}" Text="{Binding AlbumManager.Album.Title, TargetNullValue='Write title', FallbackValue='Write Title'}" Width="75" />
+                                    <TextBox Style="{StaticResource Margin}" Text="{Binding AlbumManager.Album.Title, TargetNullValue='Write title', FallbackValue='Write Title', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Width="75"/>
                                     <Label Content="Description" Style="{StaticResource Margin}" />
                                     <TextBox Style="{StaticResource Margin}" Text="{Binding AlbumManager.Album.Description, TargetNullValue=Description, FallbackValue=Description}"  Width="200" />
                                     <CheckBox Style="{StaticResource Margin}" Content="Copy to folder" IsChecked="{Binding AlbumManager.CopyToFolder}"/>

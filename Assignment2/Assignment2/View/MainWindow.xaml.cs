@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Linq;
+using Assignment2.BLL;
 
 namespace Assignment2.View
 {
@@ -76,7 +77,11 @@ namespace Assignment2.View
 
         private void Play_Click(object sender, RoutedEventArgs e)
         {
-            // TODO CHEcK IF files < 1!
+            // TODO Dialog
+            if(vm.SlideshowManager.Slideshow.Files.Count == 0)
+            {
+                MessageBox.Show("No files to slideshow!", "No files!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             PlayerViewModel playerVm = new PlayerViewModel(vm.SlideshowManager.Slideshow.Title, vm.SlideshowManager.Slideshow.Files, vm.SlideshowManager.Slideshow.Interval);
             Player player = new Player();
             // Bind OnClose event
