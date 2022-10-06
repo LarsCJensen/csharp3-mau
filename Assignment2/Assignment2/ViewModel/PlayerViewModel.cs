@@ -10,6 +10,7 @@ using Assignment2.Utilities;
 using System.Windows;
 using System.Diagnostics;
 using Assignment2.DAL.Models;
+using Assignment2.BLL.Model;
 
 namespace Assignment2.ViewModel
 {
@@ -25,8 +26,8 @@ namespace Assignment2.ViewModel
                 OnPropertyChanged("Title");
             }
         }
-        private ObservableCollection<File> _slideShowFiles;
-        public ObservableCollection<File> SlideShowFiles
+        private ObservableCollection<FileBase> _slideShowFiles;
+        public ObservableCollection<FileBase> SlideShowFiles
         {
             get { return _slideShowFiles; }
             private set
@@ -98,7 +99,7 @@ namespace Assignment2.ViewModel
         public event EventHandler OnClose;
         #endregion
         public PlayerViewModel() { }
-        public PlayerViewModel(string title, ICollection<File> slideshowFiles, int interval)
+        public PlayerViewModel(string title, ICollection<SlideshowFile> slideshowFiles, int interval)
         {
             if(title != null)
             {
@@ -110,7 +111,7 @@ namespace Assignment2.ViewModel
             BackCommand = new RelayCommand(Back);
             ForwardCommand = new RelayCommand(Forward);
             
-            SlideShowFiles = new ObservableCollection<File>(slideshowFiles);
+            SlideShowFiles = new ObservableCollection<FileBase>(slideshowFiles);
         }
         /// <summary>
         /// Play slideshow
@@ -119,7 +120,7 @@ namespace Assignment2.ViewModel
         {
             ImageSource = null;
             VideoSource = null;
-            foreach (File file in SlideShowFiles)
+            foreach (FileBase file in SlideShowFiles)
             {
                 if (Utilities.Utilities.IsNull(file.Extension) || Utilities.Utilities.IsNull(file.FullName))
                 {

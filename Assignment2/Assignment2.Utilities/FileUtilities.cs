@@ -38,7 +38,7 @@ namespace Assignment2.Utilities
                     List<string> files = new List<string>();
                     foreach (string ext in extensions.Distinct().ToList())
                     {
-                        files.AddRange(Directory.GetFiles(chosenDir, ext));
+                        files.AddRange(Directory.GetFiles(chosenDir, "*"+ext));
                     }
                     return files;
                 }

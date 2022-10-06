@@ -14,14 +14,21 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Reflection;
 using Assignment2.BLL.Services;
 using Assignment2.DAL.Models;
-using File = Assignment2.DAL.Models.File;
+using FileBase = Assignment2.DAL.Models.FileBase;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using Assignment2.BLL.Model;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using System.Collections;
+using System.Windows.Navigation;
+using Assignment2.Dialogs.DialogService;
+using System.Runtime.ExceptionServices;
 
 namespace Assignment2.ViewModel
 {
-    public class MainViewModel: BaseViewModel, IDataErrorInfo
+    public class NewWindowViewModel: BaseViewModel, INotifyDataErrorInfo
     {
+        private readonly Dictionary<string, List<string>> _propertyErrors = new Dictionary<string, List<string>>();
         private string _title = "Home Media Player";
         public string Title
         {
@@ -43,18 +50,6 @@ namespace Assignment2.ViewModel
                 _spinnerVisible = value;
                 OnPropertyChanged("SpinnerVisible");
             }
-        }
-        private bool _isInitialized = false;
-        public bool IsInitialized { 
-            get
-            {
-                return _isInitialized;
-            }
-            set
-            {
-                _isInitialized = value;
-                OnPropertyChanged("IsInitialized");
-            } 
         }
         
         /// <summary>
@@ -84,6 +79,23 @@ namespace Assignment2.ViewModel
                 OnPropertyChanged("AlbumManager");
             }
         }
+        // TODO Validation
+        //public string AlbumTitle
+        //{
+        //    get
+        //    {
+        //        return _albumManager.Album.Title;
+        //    }
+        //    set
+        //    {
+        //        RemoveError(nameof(AlbumTitle));
+        //        if (value == null || value.Length == 0)
+        //        {
+        //            AddError(nameof(AlbumTitle), "You must give the album a name!");
+        //        }
+        //        _albumManager.Album.Title = value;
+        //    }
+        //}
         
         private bool _isAlbum = true;
         public bool IsAlbum
@@ -129,8 +141,8 @@ namespace Assignment2.ViewModel
         /// <summary>
         /// Files which are added from ListView to Datagrid
         /// </summary>
-        private ObservableCollection<File> _chosenFiles;
-        public ObservableCollection<File> ChosenFiles
+        private ObservableCollection<FileBase> _chosenFiles;
+        public ObservableCollection<FileBase> ChosenFiles
         {
             get { return _chosenFiles; }
             private set
@@ -142,64 +154,83 @@ namespace Assignment2.ViewModel
 
         #region Commands
         public RelayCommand<object> SelectFolder { get; private set; }
-        public RelayCommand<string> NewCommand { get; private set; }
         public RelayCommand SaveCommand { get; private set; }
-        public RelayCommand CloseCommand { get; private set; }
         public RelayCommand<object> AddCommand { get; private set; }
         public RelayCommand<int> UpCommand { get; private set; }
         public RelayCommand<int> DownCommand { get; private set; }
         public RelayCommand<int> DeleteCommand { get; private set; }
         public RelayCommand ReloadTreeViewCommand { get; private set; }
-
+        public RelayCommand CloseCommand { get; set; }
         #endregion
+
         #region EventHandlers
         public event EventHandler OnClose;
+        public event EventHandler OnSave;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
         #endregion
 
-        #region IDataErrorInfo
-        public string Error => throw new NotImplementedException();
-        /// <summary>
-        /// Validation of properties
-        /// </summary>
-        /// <param name="property">Property to validate</param>
-        /// <returns>string</returns>
-        public string this[string property]
+        public NewWindowViewModel()
         {
-            get
-            {
-                string validationResult = String.Empty;
-                switch (property)
-                {
-                    case "Title":
-                        validationResult = "Wrong!";
-                        break;
-                    case "Description":
-                        validationResult = "Description WRONG!";                        
-                        break;
-                }
-                return validationResult;
-            }
+            // Default constructor
         }
-        #endregion
-        public MainViewModel()
+        public NewWindowViewModel(bool slideshow)
         {
+            IsSlideshow = slideshow;
+            ChosenFiles = new ObservableCollection<FileBase>();
+            if (IsSlideshow)
+            {
+                IsAlbum = false;
+                Title = "Home Media Player - New slideshow";
+                SlideshowManager = new SlideshowManager();
+            } else
+            {
+                IsAlbum = true;
+                Title = "Home Media Player - New album";
+                AlbumManager = new AlbumManager();
+            }
             RegisterCommands();
             SpinnerVisible = false;            
         }
+        public NewWindowViewModel(int id, bool slideshow)
+        {
+            // Default constructor
+            IsSlideshow = slideshow;
+            if (IsSlideshow)
+            {
+                SlideshowManager = new SlideshowManager(id);
+                Title = $"Home Media Player - {SlideshowManager.Slideshow.Title}";
+                SlideshowManager.Files = new List<SlideshowFile>(SlideshowManager.Slideshow.Files);
+            }
+            else
+            {
+                AlbumManager = new AlbumManager(id);
+                Title = $"Home Media Player - {AlbumManager.Album.Title}";
+                AlbumManager.Files = new List<AlbumFile>(AlbumManager.Album.Files);
+            }
+            UpdateChosenFiles();
+            RegisterCommands();
+            SpinnerVisible = false;       
+        }        
 
         protected override void RegisterCommands()
         {
+            base.RegisterCommands();
             SelectFolder = new RelayCommand<object>(async param => SelectFolderExcecute(param));
-            NewCommand = new RelayCommand<string>(param => NewCommandExecute(param));
             SaveCommand = new RelayCommand(Save);
-            CloseCommand = new RelayCommand(Close);
             AddCommand = new RelayCommand<object>(param => AddFile(param));
             UpCommand = new RelayCommand<int>(param => Up(param));
             DownCommand = new RelayCommand<int>(param => Down(param));
             DeleteCommand = new RelayCommand<int>(param => Delete(param));
+            CloseCommand = new RelayCommand(Close);
             //ReloadTreeViewCommand = new RelayCommand(LoadTreeView);
         }
-
+        public void Close()
+        {
+            if (OnClose != null)
+            {
+                OnClose(this, EventArgs.Empty);
+            }
+        }
         private async void SelectFolderExcecute(object sender)
         {
             SpinnerVisible = true;
@@ -227,55 +258,49 @@ namespace Assignment2.ViewModel
                     });
                 }
             });
-        }
-        private void NewCommandExecute(string commandParam)
-        {
-            ChosenFiles = new ObservableCollection<File>();
-            if (commandParam == "album")
-            {
-                // Change contents of gui?
-                SlideshowManager = null;
-                AlbumManager = new AlbumManager();
-                IsInitialized = true;
-                Title = "Home Media Player - New album";
-                IsAlbum = true;
-                IsSlideshow = false;
-            } else
-            {
-                AlbumManager = null;
-                SlideshowManager = new SlideshowManager();
-                IsInitialized = true;
-                Title = "Home Media Player - New slideshow";
-                IsSlideshow = true;
-                IsAlbum = false;
-            }
-            
-        }
-        private void Close()
-        {
-            if (OnClose != null)
-            {
-                OnClose(this, EventArgs.Empty);
-            }
-        }
-
+        }        
         private void Save()
         {
-            // Is this the place? 
-            if(AlbumManager != null)
+            string validationMessage = "There were validation errors:\n\n";
+            if (AlbumManager != null)
             {
-                // Save to db
-                Title = $"Home Media Player - {AlbumManager.Album.Title}";
-                // TODO Handle
-                bool result = AlbumManager.Save();
-                MessageBox.Show($"Album {AlbumManager.Album.Title} saved!", "Saved!", MessageBoxButton.OK);
+                Dictionary<string, string> validationResult = AlbumManager.Save();
+                if (validationResult.Count > 0)
+                {
+                    foreach(KeyValuePair<string, string> entry in validationResult)
+                    {
+                        validationMessage += $"{entry.Key}: {entry.Value}\n";
+                    }
+                    DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("Validation errors!", validationMessage);
+                    DialogService.OpenDialog(errorVM);
+                } else
+                {
+                    MessageBox.Show($"Album {AlbumManager.Album.Title} saved!", "Saved!", MessageBoxButton.OK);
+                    OnSave(this, EventArgs.Empty);
+                    OnClose(this, EventArgs.Empty);
+                }
+                
             } else
             {
-                Title = $"Home Media Player - {SlideshowManager.Slideshow.Title}";
-                // TODO Handle
-                bool result = SlideshowManager.Save();
-                MessageBox.Show($"Slideshow {SlideshowManager.Slideshow.Title} Saved to DB", "Saved!", MessageBoxButton.OK);
+                Dictionary<string, string> validationResult = SlideshowManager.Save();
+                if (validationResult.Count > 0)
+                {
+                    foreach (KeyValuePair<string, string> entry in validationResult)
+                    {
+                        validationMessage += $"{entry.Key}: {entry.Value}\n";
+                    }
+                    DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("Validation errors!", validationMessage);
+                    DialogService.OpenDialog(errorVM);
+                }
+                else
+                {
+                    MessageBox.Show($"Slideshow {SlideshowManager.Slideshow.Title} Saved to DB", "Saved!", MessageBoxButton.OK);
+                    OnSave(this, EventArgs.Empty);
+                    OnClose(this, EventArgs.Empty);
+                }
+                
             }
+            
         }
         #region CommandExecutes
         private void AddFile(object sender)
@@ -285,14 +310,18 @@ namespace Assignment2.ViewModel
                 MessageBox.Show("Please choose file to add!", "Error!", MessageBoxButton.OK);
                 return;
             }
-            File file = new File();
-            Reflection.CopyProperties(sender, file);
-            if (AlbumManager != null)
+            if (IsAlbum)
             {
+                AlbumFile file = new AlbumFile();
+                Reflection.CopyProperties(sender, file);
+                file.Position = AlbumManager.Files.Count;
                 AlbumManager.AddItem(file);
             }
-            else if (SlideshowManager != null)
+            else if (IsSlideshow)
             {
+                SlideshowFile file = new SlideshowFile();
+                Reflection.CopyProperties(sender, file);
+                file.Position = SlideshowManager.Files.Count;
                 SlideshowManager.AddItem(file);
             }
             UpdateChosenFiles();
@@ -354,13 +383,50 @@ namespace Assignment2.ViewModel
             // TODO Would be nice to have general for both types
             if(AlbumManager != null)
             {
-                ChosenFiles = new ObservableCollection<File>(AlbumManager.Files);
+                ChosenFiles = new ObservableCollection<FileBase>(AlbumManager.Files);
             } else
             {
-                ChosenFiles = new ObservableCollection<File>(SlideshowManager.Files);
+                ChosenFiles = new ObservableCollection<FileBase>(SlideshowManager.Files);
             }
             
         }
         #endregion
+        #region Validation
+        public bool HasErrors => _propertyErrors.Any();
+        public bool CanSave => !HasErrors;
+
+        public IEnumerable GetErrors(string? propertyName)
+        {
+            return _propertyErrors.GetValueOrDefault(propertyName, null);
+        }
+        /// <summary>
+        /// Add error message to property
+        /// </summary>
+        /// <param name="propertyName">Property name</param>
+        /// <param name="error">Error message</param>
+        public void AddError(string propertyName, string error)
+        {
+            if(!_propertyErrors.ContainsKey(propertyName))
+            {
+                _propertyErrors.Add(propertyName, new List<string>());
+            }
+            _propertyErrors[propertyName].Add(error);
+            OnErrorsChanged(propertyName);  
+        }
+        public void RemoveError(string propertyName)
+        {
+            if (!_propertyErrors.ContainsKey(propertyName))
+            {
+                _propertyErrors.Remove(propertyName);
+                OnErrorsChanged(propertyName);
+            }
+        }
+        private void OnErrorsChanged(string propertyName)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            OnPropertyChanged(nameof(CanSave));
+        }
+        #endregion
+
     }
 }

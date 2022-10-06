@@ -5,28 +5,71 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Assignment2.View"
         mc:Ignorable="d"
-        Title="ListWindow" Height="450" Width="800">
+        Title="{Binding Title}" Height="450" Width="800">
     <Grid>
-        <StackPanel  Grid.Row="1" Grid.Column="0">
-            <Label Content="Album/Slideshow" HorizontalAlignment="Stretch"  Background="LightGray"/>
-            <DataGrid x:Name="chosenFilesGrid" ItemsSource="{Binding ChosenFiles}" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" VirtualizingPanel.IsVirtualizing="False" >
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="200" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="50" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Type" Binding="{Binding Path=Extension}" Width="50" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Number of images" Binding="{Binding Path=NumberOfImages}" Width="50" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Number of videos" Binding="{Binding Path=NumberOfVideos}" Width="50" IsReadOnly="True"/>
-                    <DataGridTemplateColumn Width="*" Header="Description">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBox Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Menu>
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
+                </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem Header="_About" Command="{Binding OpenAbout}" />
+                </MenuItem>
+            </Menu>
+        </Grid>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Background="LightGray">
+            <Label Content="Search"/>
+            <TextBlock Text="{Binding SearchText, FallbackValue='Free text search'}" Width="300" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Content="Search" Command="{Binding SearchCommand}" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </StackPanel>
+        <TabControl Grid.Row="2" SelectedIndex="{Binding SelectedIndex}">
+            <!--Albums-->
+            <TabItem Header="Albums">
+                <Grid>
+                    <DataGrid x:Name="AlbumList" ItemsSource="{Binding Albums}" SelectedItem="{Binding Path=SelectedAlbum, Mode=TwoWay}" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" VirtualizingPanel.IsVirtualizing="False" CanUserAddRows="false">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="150" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="200" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Number of images" Binding="{Binding Path=NumberOfImages}" Width="110" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Number of videos" Binding="{Binding Path=NumberOfVideos}" Width="110" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <!--Slideshows-->
+            <TabItem Header="Slideshows">
+                <Grid>
+                    <DataGrid x:Name="SlideshowList" ItemsSource="{Binding Slideshows}" SelectedItem="{Binding Path=SelectedSlideshow, Mode=TwoWay}" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" VirtualizingPanel.IsVirtualizing="False" CanUserAddRows="false">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" Width="150" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" Width="200" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Number of images" Binding="{Binding Path=NumberOfImages}" Width="110" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Number of videos" Binding="{Binding Path=NumberOfVideos}" Width="110" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Interval" Binding="{Binding Path=Interval}" Width="50" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Background="LightGray">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="0,0,10,0"/>
+                    <Setter Property="Width" Value="100" />
+                    <Setter Property="Height" Value="25" />
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="Play" IsEnabled="{Binding IsSlideshow}" Click="Play_Click" CommandParameter="{Binding ElementName=SlideshowList, Path=SelectedItem}" />
+            <Button Content="New album" Click="NewAlbum_Click" />
+            <Button Content="New slideshow" Click="NewSlideshow_Click" />
+            <Button Content="Edit" Click="Edit_Click" IsEnabled="{Binding EditDeleteActive}"/>
+            <Button Content="Delete" Command="{Binding DeleteCommand}" IsEnabled="{Binding EditDeleteActive}" />
         </StackPanel>
     </Grid>
 </Window>

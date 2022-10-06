@@ -33,7 +33,6 @@ namespace Assignment2.BLL.Interface
         /// Method to get number of files in collection
         /// </summary>
         /// <returns>Number of files in collection</returns>
-        public int CountItems();
         public bool MoveItem(int oldPos, int newPos);
     }
 }

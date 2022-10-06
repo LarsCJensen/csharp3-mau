@@ -7,10 +7,10 @@
              xmlns:dialogYesNo="clr-namespace:Assignment2.Dialogs.DialogYesNo"
              xmlns:dialogOk="clr-namespace:Assignment2.Dialogs.DialogOk"
              xmlns:converters="clr-namespace:Assignment2.Utilities;assembly=Assignment2.Utilities"
-             StartupUri="View/MainWindow.xaml">
+             StartupUri="View/ListWindow.xaml">
     <Application.Resources>
-        <DataTemplate DataType="{x:Type vm:MainViewModel}">
-            <vw:MainWindow />
+        <DataTemplate DataType="{x:Type vm:NewWindowViewModel}">
+            <vw:NewWindow />
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:PlayerViewModel}">
             <vw:Player />

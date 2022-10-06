@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using Assignment2.DAL.Models;
-using File = Assignment2.DAL.Models.File;
+using FileBase = Assignment2.DAL.Models.FileBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -19,10 +19,10 @@ namespace Assignment2.DAL
         }
         public MediaPlayerDbContext(DbContextOptions<MediaPlayerDbContext> options) : base(options) 
         {
-            // TODO Remove
-            Console.WriteLine("test");
+           
         }
-        public DbSet<File> Files { get; set; }
+        public DbSet<AlbumFile> AlbumFiles { get; set; }
+        public DbSet<SlideshowFile> SlideshowFiles { get; set; }
         public DbSet<Album> Albums { get; set; }
         public DbSet<Slideshow> Slideshows{ get; set; }
 
@@ -34,7 +34,16 @@ namespace Assignment2.DAL
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseSqlServer(@"data source=(LocalDb)\MSSQLLocalDB;initial catalog=Assignment2.DAL.MediaPlayerContext;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework");
+            // To use LazyLoading of relationships
+            options.UseLazyLoadingProxies();
         }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        //{
+        //    modelBuilder.Entity<File>()
+        //        .HasOne(a => a.Album)
+        //        .OnDelete(DeleteBehavior.Cascade);
+        //}
     }
 
     public class MediaPlayerDbContextFactory : IDesignTimeDbContextFactory<MediaPlayerDbContext>

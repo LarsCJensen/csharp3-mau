@@ -8,7 +8,10 @@ namespace Assignment2.BLL.Services
 {
     public abstract class BaseService<T>
     {
-        public abstract bool Save(T entity);
+        public abstract Dictionary<string, string> Save(T entity);
+        public abstract bool Delete(int id);
+        public abstract T GetById(int id);
+        public abstract IEnumerable<T> GetItems();
         protected abstract bool Validate(T entity);
     }
 }

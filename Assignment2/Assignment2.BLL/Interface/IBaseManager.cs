@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Assignment2.BLL.Interface
 {
-    public abstract class IBaseManager
+    // TODO REMOVE
+    public abstract class IBaseManager<T>
     {
-        public abstract bool Save<T>(T entity); 
+        public abstract bool Save();
+        public abstract List<T> GetItems();
     }
 }

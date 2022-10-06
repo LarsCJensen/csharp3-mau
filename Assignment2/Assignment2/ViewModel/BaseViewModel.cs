@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assignment2.Utilities;
+using CommunityToolkit.Mvvm.Input;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Assignment2.ViewModel
 {
@@ -38,11 +40,15 @@ namespace Assignment2.ViewModel
                 throw new VerifyPropertyException(msg);
             }
         }
-        #endregion        
+        #endregion      
         protected BaseViewModel()
         {
             RegisterCommands();
         }
-        protected virtual void RegisterCommands() { }
+        protected virtual void RegisterCommands() 
+        {
+            
+        }
+        
     }
 }

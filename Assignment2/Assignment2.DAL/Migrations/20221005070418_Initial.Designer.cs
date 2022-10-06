@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment2.DAL.Migrations
 {
     [DbContext(typeof(MediaPlayerDbContext))]
-    [Migration("20220925181152_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20221005070418_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,6 +36,12 @@ namespace Assignment2.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("NumberOfImages")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfVideos")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -48,7 +54,7 @@ namespace Assignment2.DAL.Migrations
                     b.ToTable("Albums");
                 });
 
-            modelBuilder.Entity("Assignment2.DAL.Models.File", b =>
+            modelBuilder.Entity("Assignment2.DAL.Models.AlbumFile", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -56,7 +62,7 @@ namespace Assignment2.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
-                    b.Property<int?>("Albumid")
+                    b.Property<int>("AlbumId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -75,10 +81,13 @@ namespace Assignment2.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Position")
+                    b.Property<int>("NumberOfImages")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Slideshowid")
+                    b.Property<int>("NumberOfVideos")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Position")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedTime")
@@ -86,11 +95,9 @@ namespace Assignment2.DAL.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("Albumid");
+                    b.HasIndex("AlbumId");
 
-                    b.HasIndex("Slideshowid");
-
-                    b.ToTable("Files");
+                    b.ToTable("AlbumFiles");
                 });
 
             modelBuilder.Entity("Assignment2.DAL.Models.Slideshow", b =>
@@ -111,6 +118,12 @@ namespace Assignment2.DAL.Migrations
                     b.Property<int>("LengthInSeconds")
                         .HasColumnType("int");
 
+                    b.Property<int>("NumberOfImages")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfVideos")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -123,25 +136,82 @@ namespace Assignment2.DAL.Migrations
                     b.ToTable("Slideshows");
                 });
 
-            modelBuilder.Entity("Assignment2.DAL.Models.File", b =>
+            modelBuilder.Entity("Assignment2.DAL.Models.SlideshowFile", b =>
                 {
-                    b.HasOne("Assignment2.DAL.Models.Album", null)
-                        .WithMany("files")
-                        .HasForeignKey("Albumid");
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("Assignment2.DAL.Models.Slideshow", null)
-                        .WithMany("files")
-                        .HasForeignKey("Slideshowid");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Extension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfImages")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfVideos")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SlideshowId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("SlideshowId");
+
+                    b.ToTable("SlideshowFiles");
+                });
+
+            modelBuilder.Entity("Assignment2.DAL.Models.AlbumFile", b =>
+                {
+                    b.HasOne("Assignment2.DAL.Models.Album", "Album")
+                        .WithMany("Files")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Album");
+                });
+
+            modelBuilder.Entity("Assignment2.DAL.Models.SlideshowFile", b =>
+                {
+                    b.HasOne("Assignment2.DAL.Models.Slideshow", "Slideshow")
+                        .WithMany("Files")
+                        .HasForeignKey("SlideshowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Slideshow");
                 });
 
             modelBuilder.Entity("Assignment2.DAL.Models.Album", b =>
                 {
-                    b.Navigation("files");
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("Assignment2.DAL.Models.Slideshow", b =>
                 {
-                    b.Navigation("files");
+                    b.Navigation("Files");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,22 +6,26 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Linq;
 using Assignment2.BLL;
+using Assignment2.BLL.Model;
 
 namespace Assignment2.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class NewWindow : Window
     {
         private object? dummyNode = null;
-        MainViewModel vm = new MainViewModel();
-        public MainWindow()
+        // TODO REMOVE
+        //NewWindowViewModel vm = new NewWindowViewModel();
+        public NewWindow()
         {
-            InitializeComponent();            
-            DataContext = vm;            
+            InitializeComponent();
+            // TODO REMOVE
+            //DataContext = vm;            
             InitializeGUI();
-            vm.OnClose += delegate { this.Close(); };
+            // TODO REMOVE
+            //vm.OnClose += delegate { this.Close(); };
 
         }
         private void InitializeGUI()
@@ -75,20 +79,20 @@ namespace Assignment2.View
             }
         }
 
-        private void Play_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO Dialog
-            if(vm.SlideshowManager.Slideshow.Files.Count == 0)
-            {
-                MessageBox.Show("No files to slideshow!", "No files!", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            PlayerViewModel playerVm = new PlayerViewModel(vm.SlideshowManager.Slideshow.Title, vm.SlideshowManager.Slideshow.Files, vm.SlideshowManager.Slideshow.Interval);
-            Player player = new Player();
-            // Bind OnClose event
-            playerVm.OnClose += delegate { this.Close(); };
-            player.DataContext = playerVm;
-            player.Show();
-        }
+        //private void Play_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // TODO Dialog
+        //    if(vm.SlideshowManager.Slideshow.Files.Count == 0)
+        //    {
+        //        MessageBox.Show("No files to slideshow!", "No files!", MessageBoxButton.OK, MessageBoxImage.Error);
+        //    }
+        //    PlayerViewModel playerVm = new PlayerViewModel(vm.SlideshowManager.Slideshow.Title, vm.SlideshowManager.Slideshow.Files, vm.SlideshowManager.Slideshow.Interval);
+        //    Player player = new Player();
+        //    // Bind OnClose event
+        //    playerVm.OnClose += delegate { this.Close(); };
+        //    player.DataContext = playerVm;
+        //    player.Show();
+        //}
 
         // TODO This will be moved to an about dialog
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -108,7 +112,8 @@ namespace Assignment2.View
         /// Sometimes code-behind isn't that bad.
         private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            
+
+            NewWindowViewModel vm = this.DataContext as NewWindowViewModel;
             vm.AddCommand.Execute(filesListBox.SelectedItem);
         }
     }

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Assignment2.DAL.Models
 {
-    public class Album: Base
+    public class AlbumDTO: Base
     {
         // No properties yet
-        [Required]
+        public int id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<AlbumFile> Files { get; set; }
-
+        public int NumberOfImages { get; set; }
+        public int NumberOfVideos { get; set; }
     }
 }

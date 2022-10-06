@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assignment2.ViewModel
+namespace Assignment2.BLL.Model
 {
     public static class ValidExtensions
     {
@@ -16,14 +16,14 @@ namespace Assignment2.ViewModel
         {
             get
             {
-                return new List<string> { "*.jpg", "*.bmp", "*.png"};
+                return new List<string> { ".jpg", ".bmp", ".png"};
             }
         }
         public static List<string> VideoExtensions
         {
             get
             {
-                return new List<string> { "*.mov", "*.avi", "*.mpg", "*.mp4" };
+                return new List<string> { ".mov", ".avi", ".mpg", ".mp4" };
             }
         }
         public static List<string> AllValidExtensions

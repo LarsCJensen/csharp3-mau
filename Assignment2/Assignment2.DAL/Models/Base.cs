@@ -19,5 +19,7 @@ namespace Assignment2.DAL.Models
         // Not sure why
         //private Date _updatedTime;
         public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
+        public int NumberOfImages { get; set; }
+        public int NumberOfVideos { get; set; }
     }
 }

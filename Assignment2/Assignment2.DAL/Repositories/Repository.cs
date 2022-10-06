@@ -20,7 +20,6 @@ namespace Assignment2.DAL.Repositories
             {
                 return SaveNew(entity);
             }
-            // TODO Var ok?
             var dbItem = GetById(entity.id);
             _context.Entry(dbItem).CurrentValues.SetValues(entity);
             _context.SaveChanges();
@@ -41,12 +40,7 @@ namespace Assignment2.DAL.Repositories
                 throw new InvalidOperationException("Item not found in database!");
             }
             _context.Set<T>().Remove(dbItem);
-            _context.SaveChanges();
-            // Get entity
-            // If not found
-            // ThrowError
-            // Remove
-            // Save changes
+            _context.SaveChanges();            
         }
 
         public T GetById(int id)

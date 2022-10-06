@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assignment2.BLL.Model
+namespace Assignment2.DAL.Models
 {
     /// <summary>
     /// File Database Object
     /// </summary>
-    public class FileObject
+    public class FileBase : Base
     {
-        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Extension { get; set; }
         public string FullName { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         [Required]
-        public int Position { get; set; }
+        public int Position { get; set; }        
     }
 }
