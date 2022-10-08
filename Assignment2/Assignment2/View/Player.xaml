@@ -12,10 +12,10 @@
             <RowDefinition Height="25" />
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
-        <Border BorderThickness="1">
+        <Border BorderThickness="1" BorderBrush="Black">
             <MediaElement Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding VideoSource}" Margin="10,10,10,10" Visibility="{Binding IsVideo, Converter={StaticResource BoolToVis}}"/>            
         </Border>
-        <Border BorderThickness="1">
+        <Border BorderThickness="1" BorderBrush="Black">
             <Image Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Source="{Binding ImageSource}" Margin="10,10,10,10" Visibility="{Binding IsImage, Converter={StaticResource BoolToVis}}"/>
         </Border>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Background="LightGray">
@@ -26,9 +26,9 @@
                 </Style>
             </StackPanel.Resources>
             <Button Content="Play" Command="{Binding PlayCommand}" />
-            <Button Content="Pause" Command="{Binding PauseCommand}" />
-            <Button Content="Back" Command="{Binding BackCommand}" />
-            <Button Content="Forward" Command="{Binding ForwardCommand}" />            
+            <Button Content="Pause" IsEnabled="False" Command="{Binding PauseCommand}" />
+            <Button Content="Back" IsEnabled="False" Command="{Binding BackCommand}" />
+            <Button Content="Forward" IsEnabled="False" Command="{Binding ForwardCommand}" />            
         </StackPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True"   Grid.Row="2">
             <ListView ItemsSource="{Binding SlideShowFiles}" >

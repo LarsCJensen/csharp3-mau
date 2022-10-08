@@ -41,14 +41,25 @@ namespace Assignment2.ViewModel
             }
         }
         #endregion      
+        #region EventHandlers
+        public event EventHandler OnClose;
+        #endregion
         protected BaseViewModel()
         {
+            // If I want general commands I can add them here
             RegisterCommands();
         }
         protected virtual void RegisterCommands() 
         {
             
         }
-        
+        public void Close()
+        {
+            if (OnClose != null)
+            {
+                OnClose(this, EventArgs.Empty);
+            }
+        }
+
     }
 }

@@ -8,8 +8,7 @@
         xmlns:viewmodel="clr-namespace:Assignment2.ViewModel"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="{Binding Title, FallbackValue='Home Media Player'}" Height="700" Width="1024" Loaded="Window_Loaded">
-    
+        Title="{Binding Title, FallbackValue='Home Media Player'}" Height="700" Width="1024" Loaded="Window_Loaded">    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -98,7 +97,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="40" />
                         </Grid.ColumnDefinitions>
-                        <Grid.Resources>
+                        <!--<Grid.Resources>
                             <Style TargetType="TextBox">                                
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -116,7 +115,7 @@
                                     </Setter.Value>
                                 </Setter>
                             </Style>
-                        </Grid.Resources>
+                        </Grid.Resources>-->
                         <!-- ALBUM -->
                         <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Visibility="{Binding Path=IsAlbum, Converter={StaticResource BoolToVis}}" Background="LightGray">                            
                             <StackPanel Orientation="Horizontal" >

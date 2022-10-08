@@ -96,7 +96,8 @@ namespace Assignment2.ViewModel
         #endregion
 
         #region EventHandlers
-        public event EventHandler OnClose;
+        // TODO REMOVE
+        //public event EventHandler OnClose;
         #endregion
         public PlayerViewModel() { }
         public PlayerViewModel(string title, ICollection<SlideshowFile> slideshowFiles, int interval)
@@ -126,8 +127,7 @@ namespace Assignment2.ViewModel
                 {
                     continue;
                 }
-                // An "ugly" work-around to match extension
-                if (ValidExtensions.ImageExtensions.Contains($"*{file.Extension.ToLower()}"))
+                if (ValidExtensions.ImageExtensions.Contains($"{file.Extension.ToLower()}"))
                 {
                     if (Utilities.Utilities.IsNotNull(ImageSource))
                     {
@@ -138,8 +138,8 @@ namespace Assignment2.ViewModel
                     ImageSource = file.FullName;
                     await Task.Delay(Interval * 1000);
                 }
-                                                                    // An "ugly" work-around to match extension
-                else if (ValidExtensions.VideoExtensions.Contains($"*{file.Extension.ToLower()}"))
+                                                                    
+                else if (ValidExtensions.VideoExtensions.Contains($"{file.Extension.ToLower()}"))
                 {
                     IsImage = false;
                     IsVideo = true;

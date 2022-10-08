@@ -164,7 +164,8 @@ namespace Assignment2.ViewModel
         #endregion
 
         #region EventHandlers
-        public event EventHandler OnClose;
+        // TODO REMOVE
+        //public event EventHandler OnClose;
         public event EventHandler OnSave;
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
         #endregion
@@ -224,13 +225,14 @@ namespace Assignment2.ViewModel
             CloseCommand = new RelayCommand(Close);
             //ReloadTreeViewCommand = new RelayCommand(LoadTreeView);
         }
-        public void Close()
-        {
-            if (OnClose != null)
-            {
-                OnClose(this, EventArgs.Empty);
-            }
-        }
+        // TODO REMOVE
+        //public void Close()
+        //{
+        //    if (OnClose != null)
+        //    {
+        //        OnClose(this, EventArgs.Empty);
+        //    }
+        //}
         private async void SelectFolderExcecute(object sender)
         {
             SpinnerVisible = true;
@@ -275,7 +277,8 @@ namespace Assignment2.ViewModel
                     DialogService.OpenDialog(errorVM);
                 } else
                 {
-                    MessageBox.Show($"Album {AlbumManager.Album.Title} saved!", "Saved!", MessageBoxButton.OK);
+                    DialogViewModelBase vm = new Dialogs.DialogOk.DialogOkViewModel("Saved!", $"Album {AlbumManager.Album.Title} saved to DB!");
+                    DialogService.OpenDialog(vm);
                     OnSave(this, EventArgs.Empty);
                     OnClose(this, EventArgs.Empty);
                 }
@@ -289,12 +292,14 @@ namespace Assignment2.ViewModel
                     {
                         validationMessage += $"{entry.Key}: {entry.Value}\n";
                     }
+
                     DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("Validation errors!", validationMessage);
                     DialogService.OpenDialog(errorVM);
                 }
                 else
                 {
-                    MessageBox.Show($"Slideshow {SlideshowManager.Slideshow.Title} Saved to DB", "Saved!", MessageBoxButton.OK);
+                    DialogViewModelBase vm = new Dialogs.DialogOk.DialogOkViewModel("Saved!", $"Slideshow {SlideshowManager.Slideshow.Title} Saved to DB!");
+                    DialogService.OpenDialog(vm);
                     OnSave(this, EventArgs.Empty);
                     OnClose(this, EventArgs.Empty);
                 }
@@ -330,7 +335,8 @@ namespace Assignment2.ViewModel
         {
             if(selectedIndex == 0) 
             {
-                MessageBox.Show("Can't move the top file up!", "Unallowed!", MessageBoxButton.OK);
+                DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("Unallowed!", "Can't move the top file up!");
+                DialogService.OpenDialog(errorVM);
                 return;
             }
             if (AlbumManager != null)
@@ -346,7 +352,8 @@ namespace Assignment2.ViewModel
         {
             if (selectedIndex == ChosenFiles.Count()-1)
             {
-                MessageBox.Show("Can't move the bottom file down!", "Unallowed!", MessageBoxButton.OK);
+                DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("Unallowed!", "Can't move the bottom file down!");
+                DialogService.OpenDialog(errorVM);
                 return;
             }
             if (AlbumManager != null)
@@ -373,7 +380,8 @@ namespace Assignment2.ViewModel
                 }
             } catch (Exception exc)
             {
-                MessageBox.Show(@$"Error: {exc.Message}");
+                DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("An error occured!", @$"Error: {exc.Message}");
+                DialogService.OpenDialog(errorVM);
             }
             
             UpdateChosenFiles();
@@ -392,6 +400,7 @@ namespace Assignment2.ViewModel
         }
         #endregion
         #region Validation
+        // FUTURE Not implemented yet!
         public bool HasErrors => _propertyErrors.Any();
         public bool CanSave => !HasErrors;
 

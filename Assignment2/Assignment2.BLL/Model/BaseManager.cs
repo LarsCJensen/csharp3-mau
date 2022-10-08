@@ -54,5 +54,6 @@ namespace Assignment2.BLL
             var extensionsCount = filesExtensions.Count(f => extensions.Contains(f));
             return extensionsCount;
         }
+        public abstract List<T> SearchItems(string searchText, string searchProperty);
     }
 }

@@ -36,6 +36,8 @@ namespace Assignment2.DAL
             options.UseSqlServer(@"data source=(LocalDb)\MSSQLLocalDB;initial catalog=Assignment2.DAL.MediaPlayerContext;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework");
             // To use LazyLoading of relationships
             options.UseLazyLoadingProxies();
+            // To not get old data back
+            //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder) 

@@ -11,22 +11,15 @@ using Assignment2.BLL.Model;
 namespace Assignment2.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for NewWindow.xaml
     /// </summary>
     public partial class NewWindow : Window
     {
         private object? dummyNode = null;
-        // TODO REMOVE
-        //NewWindowViewModel vm = new NewWindowViewModel();
         public NewWindow()
         {
             InitializeComponent();
-            // TODO REMOVE
-            //DataContext = vm;            
-            InitializeGUI();
-            // TODO REMOVE
-            //vm.OnClose += delegate { this.Close(); };
-
+            InitializeGUI();            
         }
         private void InitializeGUI()
         {
@@ -72,37 +65,12 @@ namespace Assignment2.View
                 }
                 catch (Exception ex)
                 {
-                    //MessageBox.Show(ex.Message, "Exception occurred!", MessageBoxButton.OK, MessageBoxImage.Error);
                     Dialogs.DialogService.DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("Exception occurred!", ex.Message);
                     Dialogs.DialogService.DialogService.OpenDialog(errorVM);
                 }
             }
         }
-
-        //private void Play_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // TODO Dialog
-        //    if(vm.SlideshowManager.Slideshow.Files.Count == 0)
-        //    {
-        //        MessageBox.Show("No files to slideshow!", "No files!", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    }
-        //    PlayerViewModel playerVm = new PlayerViewModel(vm.SlideshowManager.Slideshow.Title, vm.SlideshowManager.Slideshow.Files, vm.SlideshowManager.Slideshow.Interval);
-        //    Player player = new Player();
-        //    // Bind OnClose event
-        //    playerVm.OnClose += delegate { this.Close(); };
-        //    player.DataContext = playerVm;
-        //    player.Show();
-        //}
-
-        // TODO This will be moved to an about dialog
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            string aboutMessage = "To create a new album use menu File -> New Album.";
-            aboutMessage += "\nTo create a new slideshow use menu File -> New slideshow.";
-            aboutMessage += $"\n\nBrowse for files through the tree view. Supported file types are {String.Join(",", ValidExtensions.AllValidExtensions)}.";
-            aboutMessage += "\n\nFor slideshows you can choose interval to be used between images. Videos will be played in its full length.";
-            MessageBox.Show(aboutMessage, "How to?", MessageBoxButton.OK);
-        }
+        
         /// <summary>
         /// Event for double click on image
         /// </summary>

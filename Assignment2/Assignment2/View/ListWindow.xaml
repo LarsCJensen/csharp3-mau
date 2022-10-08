@@ -25,8 +25,10 @@
         </Grid>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Background="LightGray">
             <Label Content="Search"/>
-            <TextBlock Text="{Binding SearchText, FallbackValue='Free text search'}" Width="300" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding SearchProperties}" SelectedItem="{Binding SelectedProperty}" Width="100" Margin="0, 0, 5, 5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding SearchText, FallbackValue='Text search'}" Width="300" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Button Content="Search" Command="{Binding SearchCommand}" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Label Content="{Binding SearchResult}" Visibility="{Binding SearchResultVisible, Converter={StaticResource BoolToVisiblityConverter}}" Foreground="Red"/>
         </StackPanel>
         <TabControl Grid.Row="2" SelectedIndex="{Binding SelectedIndex}">
             <!--Albums-->
@@ -65,7 +67,7 @@
                     <Setter Property="Height" Value="25" />
                 </Style>
             </StackPanel.Resources>
-            <Button Content="Play" IsEnabled="{Binding IsSlideshow}" Click="Play_Click" CommandParameter="{Binding ElementName=SlideshowList, Path=SelectedItem}" />
+            <Button Content="Play" Visibility="{Binding IsSlideshow, Converter={StaticResource BoolToVisiblityConverter}}" IsEnabled="{Binding EditDeleteActive}" Click="Play_Click" CommandParameter="{Binding ElementName=SlideshowList, Path=SelectedItem}" />
             <Button Content="New album" Click="NewAlbum_Click" />
             <Button Content="New slideshow" Click="NewSlideshow_Click" />
             <Button Content="Edit" Click="Edit_Click" IsEnabled="{Binding EditDeleteActive}"/>

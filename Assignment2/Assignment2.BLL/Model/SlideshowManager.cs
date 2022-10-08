@@ -71,5 +71,9 @@ namespace Assignment2.BLL
         {
             return _slideshowService.GetItems().ToList();
         }
+        public override List<Slideshow> SearchItems(string searchText, string searchProperty)
+        {
+            return _slideshowService.SearchItems(searchText, searchProperty).ToList();
+        }
     }
 }

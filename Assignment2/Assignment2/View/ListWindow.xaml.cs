@@ -1,4 +1,5 @@
 ﻿using Assignment2.DAL.Models;
+using Assignment2.Dialogs.DialogService;
 using Assignment2.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -28,13 +29,18 @@ namespace Assignment2.View
             this.DataContext = vm;
             vm.OnClose += delegate { this.Close(); };
         }
+        /// <summary>
+        /// Event for Play slideshow. I find this is ok to have in code-behind 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Play_Click(object sender, RoutedEventArgs e)
         {
-            // TODO Dialog
             if (vm.SelectedSlideshow == null)
             {
-                MessageBox.Show("No slideshow selected!", "Please select slideshow", MessageBoxButton.OK, MessageBoxImage.Error);
-
+                DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("Please select slideshow", "No slideshow selected!");
+                DialogService.OpenDialog(errorVM);
+                
             } else
             {
                 PlayerViewModel playerVm = new PlayerViewModel(vm.SelectedSlideshow.Title, vm.SelectedSlideshow.Files, vm.SelectedSlideshow.Interval);
@@ -45,29 +51,48 @@ namespace Assignment2.View
                 player.Show();
             }
         }
-
+        /// <summary>
+        /// Event for new album button click. I think it is ok to have this in code-behind
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewAlbum_Click(object sender, RoutedEventArgs e)
         {
             OpenNewWindow(false);
         }
+        /// <summary>
+        /// Event for new slideshow button click. I think it is ok to have this in code-behind
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewSlideshow_Click(object sender, RoutedEventArgs e)
         {
             OpenNewWindow(true);
         }
+        /// <summary>
+        /// Helper to open window with correct type
+        /// </summary>
+        /// <param name="slideshow">Set is slideshow</param>
         private void OpenNewWindow(bool slideshow)
         {
             NewWindowViewModel newVm = new NewWindowViewModel(slideshow);
             NewWindow newWindow = new NewWindow();
 
-            // Bind OnClose event
             newWindow.DataContext = newVm;
+            // Bind OnClose event
             newVm.OnClose += delegate { newWindow.Close(); };
+            // Bind OnSave event
             newVm.OnSave += vm.OnSave;
             newWindow.Show();
         }
-
+        /// <summary>
+        /// Event for edit button click. I think it is ok to have this in code-behind
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Edit_Click(object sender, RoutedEventArgs e)
         {
+            // A bit ugly, but works
             NewWindow newWindow = new NewWindow();
             NewWindowViewModel newVm = null;
             if (vm.SelectedAlbum != null)
@@ -82,9 +107,9 @@ namespace Assignment2.View
             // Bind OnClose event
             newWindow.DataContext = newVm;
             newVm.OnClose += delegate { newWindow.Close(); };
+            // Bind OnSave event
             newVm.OnSave += vm.OnSave;
             newWindow.Show();
-
         }
     }
 }

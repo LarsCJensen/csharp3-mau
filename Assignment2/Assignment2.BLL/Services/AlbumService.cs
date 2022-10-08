@@ -13,11 +13,10 @@ namespace Assignment2.BLL.Services
     public class AlbumService: BaseService<Album> 
     {
         private readonly Dictionary<string, string> _validationErrors = new Dictionary<string, string>();
-        private readonly IRepository<Album> _repository;
+        private IRepository<Album> _repository;
         public AlbumService()
         {
-            MediaPlayerDbContext _context = new MediaPlayerDbContext();
-            _repository = new Repository<Album>(_context);
+            RecreateContext();
         }
 
         public override Dictionary<string, string> Save(Album album)
@@ -26,7 +25,8 @@ namespace Assignment2.BLL.Services
             {
                 return _validationErrors;
             }
-
+            RecreateContext();
+            // TODO try catch
             _repository.Save(album);
             return new Dictionary<string, string>();
         }
@@ -34,13 +34,16 @@ namespace Assignment2.BLL.Services
         {
             // TODO Go through servicelayer
             // See IDataErrorInfo region in MyGames
-            // VALIDATE this, create data model            
+            // VALIDATE this, create data model
+            
+            RecreateContext();
             _repository.Delete(albumId);
             return true;
         }
 
         public override IEnumerable<Album> GetItems()
         {
+            RecreateContext();
             return _repository.GetEntities();
         }
         protected override bool Validate(Album albumToValidate)
@@ -75,7 +78,25 @@ namespace Assignment2.BLL.Services
 
         public override Album GetById(int id)
         {
+            RecreateContext();
             return _repository.GetById(id);
+        }
+
+        public override void RecreateContext()
+        {
+            MediaPlayerDbContext _context = new MediaPlayerDbContext();
+            _repository = new Repository<Album>(_context);
+        }
+        /// <summary>
+        /// Helper method to search albums. 
+        /// </summary>
+        /// <param name="searchText">Text to search for</param>
+        /// <param name="searchProperty">Property to search in</param>
+        /// <returns>Search result</returns>        
+        public override IEnumerable<Album> SearchItems(string searchText, string searchProperty)
+        {
+            RecreateContext();
+            return _repository.SearchEntities(searchText, searchProperty);
         }
     }
 }

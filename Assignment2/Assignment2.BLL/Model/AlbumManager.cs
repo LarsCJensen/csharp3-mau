@@ -73,6 +73,11 @@ namespace Assignment2.BLL
         {
             return _albumService.GetItems().ToList();
         }
+
+        public override List<Album> SearchItems(string searchText, string searchProperty)
+        {
+            return _albumService.SearchItems(searchText, searchProperty).ToList();
+        }
     }
 }
 

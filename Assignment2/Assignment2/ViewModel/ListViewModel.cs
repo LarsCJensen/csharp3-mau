@@ -1,5 +1,7 @@
 ﻿using Assignment2.BLL;
+using Assignment2.BLL.Model;
 using Assignment2.DAL.Models;
+using Assignment2.Dialogs.DialogService;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
@@ -13,9 +15,12 @@ using System.Windows.Documents;
 
 namespace Assignment2.ViewModel
 {
-    public class ListViewModel: BaseViewModel
+    public class ListViewModel : BaseViewModel
     {
-        public string Title { get; set; } = "Albums/Slideshows";
+        /// <summary>
+        /// ViewModel for ListView, which is the main view
+        /// </summary>
+        public string Title { get; } = "Albums/Slideshows";
         private AlbumManager _albumManager;
         public AlbumManager AlbumManager
         {
@@ -51,11 +56,13 @@ namespace Assignment2.ViewModel
             }
             set
             {
+                // When changing tabs, certain properties should be reset
                 _selectedIndex = value;
                 EditDeleteActive = false;
+                SearchText = string.Empty;
+                SearchResultVisible = false;
                 LoadList(value);
                 OnPropertyChanged("SelectedIndex");
-                
             }
         }
         private Album _selectedAlbum;
@@ -69,9 +76,7 @@ namespace Assignment2.ViewModel
             {
                 _selectedAlbum = value;
                 EditDeleteActive = true;
-                //SelectedSlideshow = null;
                 OnPropertyChanged("SelectedAlbum");
-
             }
         }
         private Slideshow _selectedSlideshow;
@@ -85,9 +90,7 @@ namespace Assignment2.ViewModel
             {
                 _selectedSlideshow = value;
                 EditDeleteActive = true;
-                //SelectedAlbum = null;
                 OnPropertyChanged("SelectedSlideshow");
-
             }
         }
         private bool _isSlideshow;
@@ -102,9 +105,19 @@ namespace Assignment2.ViewModel
                 _isSlideshow = value;
                 OnPropertyChanged("IsSlideshow");
             }
-
         }
-        public string SearchText { get; set; }
+        private string _searchText;
+        public string SearchText { 
+            get
+            {
+                return _searchText;
+            } 
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged("SearchText");
+            }
+        }
         private ObservableCollection<Album> _albums = new ObservableCollection<Album>();
         public ObservableCollection<Album> Albums
         {
@@ -131,6 +144,27 @@ namespace Assignment2.ViewModel
                 OnPropertyChanged("Slideshows");
             }
         }
+        // An ugly way to have which properties to search for
+        public List<string> SearchProperties 
+        { 
+            get
+            {
+                return new List<string>() { "Title", "Description", "Filename" };
+            }
+        }
+        private string _selectedProperty;
+        public string SelectedProperty
+        {
+            get
+            {
+                return _selectedProperty;
+            }
+            set
+            {
+                _selectedProperty = value;
+                OnPropertyChanged("SelectedProperty");
+            }
+        }
         private bool _editDeleteActive;
         public bool EditDeleteActive
         {
@@ -141,14 +175,42 @@ namespace Assignment2.ViewModel
                 OnPropertyChanged("EditDeleteActive");
             }
         }
+        private bool _searchResultVisible;
+        public bool SearchResultVisible
+        {
+            get
+            {
+                return _searchResultVisible;
+            }
+            set
+            {
+                _searchResultVisible = value;
+                OnPropertyChanged("SearchResultVisible");
+            }
+        }
+        private string _searchResult;
+        public string SearchResult
+        {
+            get
+            {
+                return _searchResult;
+            }
+            set
+            {
+                _searchResult = value;
+                OnPropertyChanged("SearchResult");
+            }
+        }
 
         #region Commands
         public RelayCommand OpenAbout { get; set; }
         public RelayCommand DeleteCommand { get; set; }
+        public RelayCommand SearchCommand { get; set; }
         public RelayCommand CloseCommand { get; set; }
-        public event EventHandler OnClose;
-
         #endregion
+        //#region EventHandlers
+        //public event EventHandler OnClose;
+        //#endregion
         public ListViewModel()
         {
             AlbumManager = new AlbumManager();
@@ -162,21 +224,34 @@ namespace Assignment2.ViewModel
             OpenAbout = new RelayCommand(OpenAboutExecute);
             DeleteCommand = new RelayCommand(DeleteExecute);
             CloseCommand = new RelayCommand(Close);
+            SearchCommand = new RelayCommand(SearchExecute);
 
     }
         private void OpenAboutExecute()
-        {
-            // TODO Open About
+        {            
+            string aboutMessage = "To create a new album use new Album button.";
+            aboutMessage += "\nTo create a new slideshow use New Slideshow button.";
+            aboutMessage += $"\n\nBrowse for files through the tree view.\nSupported file types are {String.Join(", ", ValidExtensions.AllValidExtensions)}.";
+            aboutMessage += "\n\nFor slideshows you can choose interval to be used between images. \nVideos will be played in its full length.";
+
+            DialogViewModelBase aboutVM = new Dialogs.DialogOk.DialogOkViewModel("About Home Media Player!", aboutMessage);
+            DialogService.OpenDialog(aboutVM);
+
         }
-        public void Close()
-        {
-            if (OnClose != null)
-            {
-                OnClose(this, EventArgs.Empty);
-            }
-        }
+        // TODO REMOVE
+        //public void Close()
+        //{
+        //    if (OnClose != null)
+        //    {
+        //        OnClose(this, EventArgs.Empty);
+        //    }
+        //}
+        /// <summary>
+        /// Handler for Delete command
+        /// </summary>
         private void DeleteExecute()
         {
+            // TODO
             if(SelectedAlbum != null)
             {
                 bool result = AlbumManager.Delete(SelectedAlbum.id);
@@ -187,6 +262,42 @@ namespace Assignment2.ViewModel
             }
             LoadList(SelectedIndex);
         }
+        /// <summary>
+        /// Handler for SearchCommand
+        /// </summary>
+        private void SearchExecute()
+        {
+            if(SearchText == null || SearchText == string.Empty)
+            {
+                DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("No search text!", "You must enter text to search for!");
+                DialogService.OpenDialog(errorVM);
+                return;
+            } 
+            if(SelectedProperty == null)
+            {
+                DialogViewModelBase errorVM = new Dialogs.DialogOk.DialogOkViewModel("No property selected!", "You must choose property to search in!");
+                DialogService.OpenDialog(errorVM);
+                return;
+            }
+            SearchResult = "Number of matches: ";
+            if (SelectedIndex == 0)
+            {                
+                Albums = new ObservableCollection<Album>(AlbumManager.SearchItems(SearchText, SelectedProperty));
+                IsSlideshow = false;
+                SearchResult += Albums.Count().ToString();
+            }else if(SelectedIndex == 1)
+            {
+                Slideshows = new ObservableCollection<Slideshow>(SlideshowManager.SearchItems(SearchText, SelectedProperty));
+                IsSlideshow = true;
+                
+                SearchResult += Slideshows.Count().ToString();
+            }
+            SearchResultVisible = true;
+        }
+        /// <summary>
+        /// Helper method to load list of items
+        /// </summary>
+        /// <param name="selectedIndex">Which tab that is active</param>
         public void LoadList(int selectedIndex)
         {
             switch(selectedIndex)
@@ -201,7 +312,11 @@ namespace Assignment2.ViewModel
                     break;
             }
         }
-
+        /// <summary>
+        /// Handler for OnSave event. Used to reload list after album is added/edited
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void OnSave(object sender, EventArgs e)
         {
             LoadList(SelectedIndex);
