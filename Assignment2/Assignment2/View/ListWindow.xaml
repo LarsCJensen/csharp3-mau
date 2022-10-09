@@ -27,6 +27,7 @@
             <Label Content="Search"/>
             <ComboBox ItemsSource="{Binding SearchProperties}" SelectedItem="{Binding SelectedProperty}" Width="100" Margin="0, 0, 5, 5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <TextBox Text="{Binding SearchText, FallbackValue='Text search'}" Width="300" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding SearchCriteria}" SelectedItem="{Binding SelectedCriteria}" Width="100" Margin="5, 0, 0, 5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Button Content="Search" Command="{Binding SearchCommand}" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Label Content="{Binding SearchResult}" Visibility="{Binding SearchResultVisible, Converter={StaticResource BoolToVisiblityConverter}}" Foreground="Red"/>
         </StackPanel>

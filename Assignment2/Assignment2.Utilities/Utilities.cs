@@ -11,6 +11,9 @@ namespace Assignment2.Utilities
 {
     public static class Utilities
     {
+        /// <summary>
+        /// General utility functions which can be useful to have
+        /// </summary>
         public static bool IsNotNull([NotNullWhen(true)] object? obj) => obj != null;
         public static bool IsNull([NotNullWhen(true)] object? obj) => obj == null;
         /// <summary>

@@ -16,32 +16,37 @@ namespace Assignment2.BLL.Services
         private IRepository<Slideshow> _repository;
         public SlideshowService()
         {
-            // TODO Remove
-            //MediaPlayerDbContext _context = new MediaPlayerDbContext();
-            //_repository = new Repository<Slideshow>(_context);
         }
 
         public override Dictionary<string, string> Save(Slideshow slideshow)
         {
-            // TODO Go through servicelayer
-            // See IDataErrorInfo region in MyGames
-            // VALIDATE this, create data model
             if (!Validate(slideshow))
             {
                 return _validationErrors;
             }
             RecreateContext();
-            _repository.Save(slideshow);
+            try
+            {
+                _repository.Save(slideshow);
+            }
+            catch (InvalidOperationException)
+            {
+                new Dictionary<string, string>() { { "Slideshow not found!", $"Item with id {slideshow.id} not found in database!" } };
+            }
             return new Dictionary<string, string>();
         }
         public override bool Delete(int slideshowId)
         {
-            // TODO Go through servicelayer
-            // See IDataErrorInfo region in MyGames
-            // VALIDATE this, create data model
             RecreateContext();
-            // TODO try catch
-            _repository.Delete(slideshowId);
+            try
+            {
+                _repository.Delete(slideshowId);
+            }
+            catch (InvalidOperationException)
+            {
+                new Dictionary<string, string>() { { "Slideshow not found!", $"Item with id {slideshowId} not found in database!" } };
+            }
+            
             return true;
         }
         public override IEnumerable<Slideshow> GetItems()
@@ -49,15 +54,14 @@ namespace Assignment2.BLL.Services
             RecreateContext();
             return _repository.GetEntities();
         }
+        /// <summary>
+        /// Validation for Slideshow. Would prefer to have the validation in ViewModel, but I didn't have time to implement IDataError
+        /// </summary>
+        /// <param name="slideshowToValidate">Slideshow to validate</param>
+        /// <returns></returns>
         protected override bool Validate(Slideshow slideshowToValidate)
         {
             bool isValid = true;
-            // TODO How to return this to the view?
-
-            // CHeck if description is set
-            // Check if files.descriptions etc is set
-
-            // Create a dictionary to expose?
             if (slideshowToValidate.Title == null || slideshowToValidate.Title.Trim().Length == 0)
             {
                 _validationErrors.Add(nameof(slideshowToValidate.Title), "Title is required.");
@@ -78,12 +82,19 @@ namespace Assignment2.BLL.Services
 
             return isValid;
         }
-
+        /// <summary>
+        /// Method to get by id
+        /// </summary>
+        /// <param name="id">Id to get</param>
+        /// <returns>Slideshow with id</returns>
         public override Slideshow GetById(int id)
         {
             RecreateContext();
             return _repository.GetById(id);
         }
+        /// <summary>
+        /// Work around to make sure not to get old values based on context cache
+        /// </summary>
         public override void RecreateContext()
         {
             MediaPlayerDbContext _context = new MediaPlayerDbContext();
@@ -95,10 +106,10 @@ namespace Assignment2.BLL.Services
         /// <param name="searchText">Text to search for</param>
         /// <param name="searchProperty">Property to search in</param>
         /// <returns>Search result</returns>        
-        public override IEnumerable<Slideshow> SearchItems(string searchText, string searchProperty)
+        public override IEnumerable<Slideshow> SearchItems(string searchText, string searchProperty, string searchCriteria)
         {
             RecreateContext();
-            return _repository.SearchEntities(searchText, searchProperty);
+            return _repository.SearchEntities(searchText, searchProperty, searchCriteria);
         }
     }
 }

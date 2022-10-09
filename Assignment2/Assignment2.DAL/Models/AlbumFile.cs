@@ -10,6 +10,7 @@ namespace Assignment2.DAL.Models
     [Table("AlbumFiles")]
     public class AlbumFile: FileBase
     {
+        /// Album files
         public int AlbumId { get; set; }
         public virtual Album Album { get; set; }
 

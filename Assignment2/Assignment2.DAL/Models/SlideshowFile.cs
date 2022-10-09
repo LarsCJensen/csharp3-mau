@@ -10,6 +10,9 @@ namespace Assignment2.DAL.Models
     [Table("SlideshowFiles")]
     public class SlideshowFile: FileBase
     {
+        /// <summary>
+        /// Model for slideshow file
+        /// </summary>
         public int SlideshowId { get; set; }
         public virtual Slideshow Slideshow { get; set; }
 

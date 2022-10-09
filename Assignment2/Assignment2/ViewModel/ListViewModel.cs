@@ -149,9 +149,10 @@ namespace Assignment2.ViewModel
         { 
             get
             {
-                return new List<string>() { "Title", "Description", "Filename" };
+                return new List<string>() { "Title", "Description" };
             }
         }
+        
         private string _selectedProperty;
         public string SelectedProperty
         {
@@ -163,6 +164,26 @@ namespace Assignment2.ViewModel
             {
                 _selectedProperty = value;
                 OnPropertyChanged("SelectedProperty");
+            }
+        }
+        public List<string> SearchCriteria
+        {
+            get
+            {
+                return new List<string>() { "Equals", "Contains" };
+            }
+        }
+        private string _selectedCriteria;
+        public string SelectedCriteria
+        {
+            get
+            {
+                return _selectedCriteria;
+            }
+            set
+            {
+                _selectedCriteria = value;
+                OnPropertyChanged("SelectedCriteria");
             }
         }
         private bool _editDeleteActive;
@@ -238,27 +259,26 @@ namespace Assignment2.ViewModel
             DialogService.OpenDialog(aboutVM);
 
         }
-        // TODO REMOVE
-        //public void Close()
-        //{
-        //    if (OnClose != null)
-        //    {
-        //        OnClose(this, EventArgs.Empty);
-        //    }
-        //}
         /// <summary>
         /// Handler for Delete command
         /// </summary>
         private void DeleteExecute()
         {
-            // TODO
             if(SelectedAlbum != null)
             {
-                bool result = AlbumManager.Delete(SelectedAlbum.id);
+                if(!AlbumManager.Delete(SelectedAlbum.id))
+                {
+                    DialogViewModelBase vm = new Dialogs.DialogOk.DialogOkViewModel("Could not delete!", "The album could not be deleted!");
+                    DialogService.OpenDialog(vm);
+                };
             }
             if (SelectedSlideshow != null)
             {
-                bool result = SlideshowManager.Delete(SelectedSlideshow.id);
+                if(!SlideshowManager.Delete(SelectedSlideshow.id))
+                {
+                    DialogViewModelBase vm = new Dialogs.DialogOk.DialogOkViewModel("Could not delete!", "The slideshow could not be deleted!");
+                    DialogService.OpenDialog(vm);
+                }
             }
             LoadList(SelectedIndex);
         }
@@ -282,12 +302,12 @@ namespace Assignment2.ViewModel
             SearchResult = "Number of matches: ";
             if (SelectedIndex == 0)
             {                
-                Albums = new ObservableCollection<Album>(AlbumManager.SearchItems(SearchText, SelectedProperty));
+                Albums = new ObservableCollection<Album>(AlbumManager.SearchItems(SearchText, SelectedProperty, SelectedCriteria));
                 IsSlideshow = false;
                 SearchResult += Albums.Count().ToString();
             }else if(SelectedIndex == 1)
             {
-                Slideshows = new ObservableCollection<Slideshow>(SlideshowManager.SearchItems(SearchText, SelectedProperty));
+                Slideshows = new ObservableCollection<Slideshow>(SlideshowManager.SearchItems(SearchText, SelectedProperty, SelectedCriteria));
                 IsSlideshow = true;
                 
                 SearchResult += Slideshows.Count().ToString();

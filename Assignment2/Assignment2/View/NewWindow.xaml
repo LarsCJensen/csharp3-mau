@@ -8,7 +8,7 @@
         xmlns:viewmodel="clr-namespace:Assignment2.ViewModel"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="{Binding Title, FallbackValue='Home Media Player'}" Height="700" Width="1024" Loaded="Window_Loaded">    
+        Title="{Binding Title, FallbackValue='Home Media Player'}" Height="700" Width="1024">    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

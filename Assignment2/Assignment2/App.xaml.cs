@@ -19,11 +19,11 @@ namespace Assignment2
         protected override void OnStartup(StartupEventArgs e)
         {
             // TODO Upgrade if migration
-            string config = ConfigurationManager.ConnectionStrings["MyLocalDB"].ToString();
-            var builder = new DbContextOptionsBuilder<MediaPlayerDbContext>();
-            builder.UseSqlServer(config);
-            // TODO Use this to upgrade
-            MediaPlayerDbContext context = new MediaPlayerDbContext(builder.Options);
+            //string config = ConfigurationManager.ConnectionStrings["MyLocalDB"].ToString();
+            //var builder = new DbContextOptionsBuilder<MediaPlayerDbContext>();
+            //builder.UseSqlServer(config);
+            //// TODO Use this to upgrade
+            //MediaPlayerDbContext context = new MediaPlayerDbContext(builder.Options);
             base.OnStartup(e);
         }
 

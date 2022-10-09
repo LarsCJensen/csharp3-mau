@@ -9,7 +9,7 @@ namespace Assignment2.DAL.Models
 {
     public class AlbumDTO: Base
     {
-        // No properties yet
+        /// Album model DTO
         public int id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

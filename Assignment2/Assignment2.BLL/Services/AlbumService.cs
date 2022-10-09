@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace Assignment2.BLL.Services
 {
-    // TODO Create base service?
     public class AlbumService: BaseService<Album> 
     {
+        /// <summary>
+        /// Service for Albums
+        /// </summary>
         private readonly Dictionary<string, string> _validationErrors = new Dictionary<string, string>();
         private IRepository<Album> _repository;
         public AlbumService()
@@ -26,18 +28,32 @@ namespace Assignment2.BLL.Services
                 return _validationErrors;
             }
             RecreateContext();
-            // TODO try catch
-            _repository.Save(album);
+            try
+            {
+                _repository.Save(album);
+            } catch(InvalidOperationException)
+            {
+                new Dictionary<string, string>() { { "Album not found!", $"Item with id {album.id} not found in database!" } };
+            }
+            
             return new Dictionary<string, string>();
         }
+        /// <summary>
+        /// Method for delete
+        /// </summary>
+        /// <param name="albumId">Album ID</param>
+        /// <returns>True/False</returns>
         public override bool Delete(int albumId)
         {
-            // TODO Go through servicelayer
-            // See IDataErrorInfo region in MyGames
-            // VALIDATE this, create data model
-            
             RecreateContext();
-            _repository.Delete(albumId);
+            try
+            {
+                _repository.Delete(albumId);
+
+            } catch(InvalidOperationException)
+            {
+                new Dictionary<string, string>() { { "Album not found!", $"Item with id {albumId} not found in database!" } };
+            }
             return true;
         }
 
@@ -46,15 +62,14 @@ namespace Assignment2.BLL.Services
             RecreateContext();
             return _repository.GetEntities();
         }
+        /// <summary>
+        /// Validation for Album. Would prefer to have the validation in ViewModel, but I didn't have time to implement IDataError
+        /// </summary>
+        /// <param name="albumToValidate">Album to validate</param>
+        /// <returns>True or False</returns>
         protected override bool Validate(Album albumToValidate)
         {
             bool isValid = true;
-            // TODO How to return this to the view?
-
-            // CHeck if description is set
-            // Check if files.descriptions etc is set
-
-            // Create a dictionary to expose?
             if (albumToValidate.Title == null || albumToValidate.Title.Trim().Length == 0)
             {
                 _validationErrors.Add(nameof(albumToValidate.Title), "Title is required.");
@@ -75,13 +90,19 @@ namespace Assignment2.BLL.Services
 
             return isValid;
         }
-
+        /// <summary>
+        /// Method to get by ID
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns>Item</returns>
         public override Album GetById(int id)
         {
             RecreateContext();
             return _repository.GetById(id);
         }
-
+        /// <summary>
+        /// Work around to make sure not to get old values based on context cache
+        /// </summary>
         public override void RecreateContext()
         {
             MediaPlayerDbContext _context = new MediaPlayerDbContext();
@@ -93,10 +114,10 @@ namespace Assignment2.BLL.Services
         /// <param name="searchText">Text to search for</param>
         /// <param name="searchProperty">Property to search in</param>
         /// <returns>Search result</returns>        
-        public override IEnumerable<Album> SearchItems(string searchText, string searchProperty)
+        public override IEnumerable<Album> SearchItems(string searchText, string searchProperty, string searchCriteria)
         {
             RecreateContext();
-            return _repository.SearchEntities(searchText, searchProperty);
+            return _repository.SearchEntities(searchText, searchProperty, searchCriteria);
         }
     }
 }

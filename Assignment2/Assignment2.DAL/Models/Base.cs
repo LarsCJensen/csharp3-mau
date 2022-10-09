@@ -10,16 +10,13 @@ namespace Assignment2.DAL.Models
 {
     public class Base
     {
+        /// <summary>
+        /// Base class
+        /// </summary>
         // Let id be incremented automatically and used as key
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
-        // TODO
-        // This doesn't work without the private declaration.
-        // Not sure why
-        //private Date _updatedTime;
-        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
-        public int NumberOfImages { get; set; }
-        public int NumberOfVideos { get; set; }
+        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;        
     }
 }

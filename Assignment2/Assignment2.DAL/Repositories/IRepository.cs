@@ -14,7 +14,7 @@ namespace Assignment2.DAL.Repositories
         /// </summary>
         /// <returns></returns>
         IEnumerable<T> GetEntities();
-        IEnumerable<T> SearchEntities(string searchText, string searchProperty);
+        IEnumerable<T> SearchEntities(string searchText, string searchProperty, string searchCriteria);
         T GetById(int id);
         T Save(T entity);
         void Delete(int id);

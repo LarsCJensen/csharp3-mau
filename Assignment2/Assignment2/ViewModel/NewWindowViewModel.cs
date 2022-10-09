@@ -164,8 +164,6 @@ namespace Assignment2.ViewModel
         #endregion
 
         #region EventHandlers
-        // TODO REMOVE
-        //public event EventHandler OnClose;
         public event EventHandler OnSave;
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
         #endregion
@@ -223,16 +221,9 @@ namespace Assignment2.ViewModel
             DownCommand = new RelayCommand<int>(param => Down(param));
             DeleteCommand = new RelayCommand<int>(param => Delete(param));
             CloseCommand = new RelayCommand(Close);
+            // TODO
             //ReloadTreeViewCommand = new RelayCommand(LoadTreeView);
         }
-        // TODO REMOVE
-        //public void Close()
-        //{
-        //    if (OnClose != null)
-        //    {
-        //        OnClose(this, EventArgs.Empty);
-        //    }
-        //}
         private async void SelectFolderExcecute(object sender)
         {
             SpinnerVisible = true;
@@ -280,7 +271,8 @@ namespace Assignment2.ViewModel
                     DialogViewModelBase vm = new Dialogs.DialogOk.DialogOkViewModel("Saved!", $"Album {AlbumManager.Album.Title} saved to DB!");
                     DialogService.OpenDialog(vm);
                     OnSave(this, EventArgs.Empty);
-                    OnClose(this, EventArgs.Empty);
+                    //OnClose(this, EventArgs.Empty);
+                    Close();
                 }
                 
             } else
@@ -301,18 +293,18 @@ namespace Assignment2.ViewModel
                     DialogViewModelBase vm = new Dialogs.DialogOk.DialogOkViewModel("Saved!", $"Slideshow {SlideshowManager.Slideshow.Title} Saved to DB!");
                     DialogService.OpenDialog(vm);
                     OnSave(this, EventArgs.Empty);
-                    OnClose(this, EventArgs.Empty);
-                }
-                
-            }
-            
+                    //OnClose(this, EventArgs.Empty);
+                    Close();
+                }                
+            }            
         }
         #region CommandExecutes
         private void AddFile(object sender)
         {
             if(sender == null)
             {
-                MessageBox.Show("Please choose file to add!", "Error!", MessageBoxButton.OK);
+                DialogViewModelBase vmError = new Dialogs.DialogOk.DialogOkViewModel("Error!", "Please choose file to add!");
+                DialogService.OpenDialog(vmError);
                 return;
             }
             if (IsAlbum)
@@ -391,10 +383,10 @@ namespace Assignment2.ViewModel
             // TODO Would be nice to have general for both types
             if(AlbumManager != null)
             {
-                ChosenFiles = new ObservableCollection<FileBase>(AlbumManager.Files);
+                ChosenFiles = new ObservableCollection<FileBase>(AlbumManager.Files.OrderBy(f => f.Position));
             } else
             {
-                ChosenFiles = new ObservableCollection<FileBase>(SlideshowManager.Files);
+                ChosenFiles = new ObservableCollection<FileBase>(SlideshowManager.Files.OrderBy(f => f.Position));
             }
             
         }

@@ -13,6 +13,9 @@ namespace Assignment2.BLL
 {
     public class AlbumManager: BaseManager<Album>, ICollectionManager<AlbumFile>
     {
+        /// <summary>
+        /// Manage for Albums
+        /// </summary>
         private AlbumService _albumService = new AlbumService();
         public Album Album { get; set; }
         public List<AlbumFile> Files { get; set; } = new List<AlbumFile>();
@@ -35,31 +38,44 @@ namespace Assignment2.BLL
         public bool MoveItem(int oldPos, int newPos)
         {
             Files = Utilities.Utilities.Move(Files, oldPos, newPos);
+            int pos = 0;
+            foreach(AlbumFile file in Files)
+            {
+                file.Position = pos;
+                pos++;
+            }
             return true;
         }
+        // Not inplemented
         public bool CopyToFolder { get; set; }  
         public AlbumManager()
         {
-            // TODO Remove if needed
             Album = new Album();
         }
         public AlbumManager(int albumId)
         {
-            // TODO Remove if needed
             Album = _albumService.GetById(albumId);
         }
-
+        /// <summary>
+        /// Method to save
+        /// </summary>
+        /// <returns>Dictionary of validation errors</returns>
         public override Dictionary<string, string> Save()
         {
-            // TODO Go through servicelayer
-            // See IDataErrorInfo region in MyGames
-            // VALIDATE this, create data model 
-            Album.Files = Files;   
+            Album.Files = Files;
+            // Get all fileextensions
             List<string> fileExtensions = Files.Select(f => f.Extension.ToLower()).ToList();  
+            // Count images
             Album.NumberOfImages = GetCount(fileExtensions, ValidExtensions.ImageExtensions);
+            // Count videos
             Album.NumberOfVideos = GetCount(fileExtensions, ValidExtensions.VideoExtensions);
             return _albumService.Save(Album);
         }
+        /// <summary>
+        /// Method to delete
+        /// </summary>
+        /// <param name="albumId">Album ID to delete</param>
+        /// <returns>Bool if success or not</returns>
         public override bool Delete(int albumId)
         {
             if (_albumService.Delete(albumId))
@@ -69,14 +85,23 @@ namespace Assignment2.BLL
 
             return true;
         }
+        /// <summary>
+        /// Get all items
+        /// </summary>
+        /// <returns>List of items</returns>
         public override List<Album> GetItems()
         {
             return _albumService.GetItems().ToList();
         }
-
-        public override List<Album> SearchItems(string searchText, string searchProperty)
+        /// <summary>
+        /// Search Album items
+        /// </summary>
+        /// <param name="searchText">String to search for </param>
+        /// <param name="searchProperty">In which property to search in</param>
+        /// <returns>List of results</returns>
+        public override List<Album> SearchItems(string searchText, string searchProperty, string searchCriteria)
         {
-            return _albumService.SearchItems(searchText, searchProperty).ToList();
+            return _albumService.SearchItems(searchText, searchProperty, searchCriteria).ToList();
         }
     }
 }

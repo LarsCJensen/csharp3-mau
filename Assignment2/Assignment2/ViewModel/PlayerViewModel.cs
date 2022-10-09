@@ -11,6 +11,8 @@ using System.Windows;
 using System.Diagnostics;
 using Assignment2.DAL.Models;
 using Assignment2.BLL.Model;
+using System.IO;
+using Assignment2.Dialogs.DialogService;
 
 namespace Assignment2.ViewModel
 {
@@ -95,10 +97,6 @@ namespace Assignment2.ViewModel
         public RelayCommand ForwardCommand { get; private set; }
         #endregion
 
-        #region EventHandlers
-        // TODO REMOVE
-        //public event EventHandler OnClose;
-        #endregion
         public PlayerViewModel() { }
         public PlayerViewModel(string title, ICollection<SlideshowFile> slideshowFiles, int interval)
         {
@@ -123,7 +121,9 @@ namespace Assignment2.ViewModel
             VideoSource = null;
             foreach (FileBase file in SlideShowFiles)
             {
-                if (Utilities.Utilities.IsNull(file.Extension) || Utilities.Utilities.IsNull(file.FullName))
+                // If the data is wrong or file no longer exist just play next
+                // Would be nice to show the user which files no longer exist
+                if (Utilities.Utilities.IsNull(file.Extension) || Utilities.Utilities.IsNull(file.FullName) || !File.Exists(file.FullName))
                 {
                     continue;
                 }
@@ -150,9 +150,8 @@ namespace Assignment2.ViewModel
                     await Task.Delay(videoLength);                    
                 }
             }
-            // TODO
-            // Would have implemented custom dialog for this
-            MessageBox.Show("Slideshow done!", "Done!", MessageBoxButton.OK);
+            DialogViewModelBase vm = new Dialogs.DialogOk.DialogOkViewModel("Done!", "Slideshow done!");
+            DialogService.OpenDialog(vm);
         }
         private void Pause()
         {
@@ -169,7 +168,8 @@ namespace Assignment2.ViewModel
 
         private void NotImplementedMessage()
         {
-            MessageBox.Show("Not implemented yet!", "Not implemented!", MessageBoxButton.OK);
+            DialogViewModelBase vm = new Dialogs.DialogOk.DialogOkViewModel("Not implemented!", "Not implemented yet!");
+            DialogService.OpenDialog(vm);            
         }
     }
 }

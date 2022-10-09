@@ -13,6 +13,9 @@ namespace Assignment2.DAL
 {
     public class MediaPlayerDbContext: DbContext
     {
+        /// <summary>
+        /// Database context for app
+        /// </summary>
         public MediaPlayerDbContext()
         {
 
@@ -26,26 +29,12 @@ namespace Assignment2.DAL
         public DbSet<Album> Albums { get; set; }
         public DbSet<Slideshow> Slideshows{ get; set; }
 
-        // TODO Not used
-        //private static DbContextOptions GetOptions(DbContextOptionsBuilder<MediaPlayerDbContext> options)
-        //{
-        //    return SqlServerDbContextOptionsExtensions.UseSqlServer(options).Options;
-        //}
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseSqlServer(@"data source=(LocalDb)\MSSQLLocalDB;initial catalog=Assignment2.DAL.MediaPlayerContext;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework");
             // To use LazyLoading of relationships
-            options.UseLazyLoadingProxies();
-            // To not get old data back
-            //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            options.UseLazyLoadingProxies();            
         }
-
-        //protected override void OnModelCreating(ModelBuilder modelBuilder) 
-        //{
-        //    modelBuilder.Entity<File>()
-        //        .HasOne(a => a.Album)
-        //        .OnDelete(DeleteBehavior.Cascade);
-        //}
     }
 
     public class MediaPlayerDbContextFactory : IDesignTimeDbContextFactory<MediaPlayerDbContext>
