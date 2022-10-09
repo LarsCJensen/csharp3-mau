@@ -23,7 +23,8 @@ namespace Assignment2
             //var builder = new DbContextOptionsBuilder<MediaPlayerDbContext>();
             //builder.UseSqlServer(config);
             //// TODO Use this to upgrade
-            //MediaPlayerDbContext context = new MediaPlayerDbContext(builder.Options);
+            MediaPlayerDbContext context = new MediaPlayerDbContext();
+            context.Database.EnsureCreated();
             base.OnStartup(e);
         }
 

@@ -78,12 +78,7 @@ namespace Assignment2.BLL
         /// <returns>Bool if success or not</returns>
         public override bool Delete(int albumId)
         {
-            if (_albumService.Delete(albumId))
-            {
-                return false;
-            }
-
-            return true;
+            return _albumService.Delete(albumId);
         }
         /// <summary>
         /// Get all items

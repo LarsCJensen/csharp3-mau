@@ -65,12 +65,7 @@ namespace Assignment2.BLL
         }
         public override bool Delete(int slideshowId)
         {
-            if (_slideshowService.Delete(slideshowId))
-            {
-                return false;
-            }
-
-            return true;
+            return _slideshowService.Delete(slideshowId);            
         }
         /// <summary>
         /// Get all items

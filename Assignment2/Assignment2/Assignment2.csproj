@@ -35,7 +35,6 @@
     <ProjectReference Include="..\Assignment2.BLL\Assignment2.BLL.csproj" />
     <ProjectReference Include="..\Assignment2.DAL\Assignment2.DAL.csproj" />
     <ProjectReference Include="..\Assignment2.Utilities\Assignment2.Utilities.csproj" />
-    <ProjectReference Include="..\Data\Assignment2.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>
