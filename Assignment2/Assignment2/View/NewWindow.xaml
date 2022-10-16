@@ -1,0 +1,208 @@
+﻿<Window x:Class="Assignment2.View.NewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:local="clr-namespace:Assignment2.View"
+        xmlns:viewmodel="clr-namespace:Assignment2.ViewModel"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Title="{Binding Title, FallbackValue='Home Media Player'}" Height="700" Width="1024">    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>            
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="1. Choose folder with images/videos" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <!--TODO-->
+                <!--<Button Content="Reload" Width="50" Height="20" Margin="40,0,0,0" Command="{Binding ReloadTreeViewCommand}"/>-->
+            </StackPanel>
+            <Label Content="2. Choose image/video to add" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <TreeView x:Name="fileTreeView">
+                    <!--Triggers for SelectedItemChanged, binding command and parameter with element--> 
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectedItemChanged">
+                            <i:InvokeCommandAction Command="{Binding SelectFolder}" CommandParameter="{Binding ElementName=fileTreeView, Path=SelectedItem}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TreeView>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="400"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <GroupBox Grid.Row="0" Margin="100" x:Name="grpSpinner" BorderThickness="0" Panel.ZIndex="1" >
+                    <GroupBox.Style>
+                        <Style TargetType="{x:Type GroupBox}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=SpinnerVisible, Mode=TwoWay}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </GroupBox.Style>
+                    <!--Using font-awesome nuget spinner-->
+                    <fa5:ImageAwesome Icon="Solid_Spinner" Spin="True" SpinDuration="10"/>
+                </GroupBox>
+                <Grid Grid.Row="0">                        
+                    <ListBox x:Name="filesListBox" ItemsSource="{Binding Files}" VerticalAlignment="Top" HorizontalAlignment="Left" Height="400" Width="700" >
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4" VerticalAlignment="Top" HorizontalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" IsItemsHost="True"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>                                    
+                                <StackPanel MaxWidth="150">
+                                    <Image HorizontalAlignment="Left" VerticalAlignment="Top" Height="75" Width="100" Source="{Binding FullName, Converter={StaticResource ImageConverter},FallbackValue={StaticResource TestImage}, TargetNullValue={StaticResource TestImage}}">
+                                        <Image.Style>
+                                            <Style/>
+                                        </Image.Style>                                            
+                                    </Image>
+                                    <TextBlock Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Name}" />
+                                </StackPanel>
+                            </DataTemplate>                                
+                        </ListBox.ItemTemplate> 
+                    </ListBox>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="10" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="40" />
+                        </Grid.ColumnDefinitions>
+                        <!--<Grid.Resources>
+                            <Style TargetType="TextBox">                                
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TextBox">
+                                            <StackPanel>
+                                                <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Foreground="Red" Text="{Binding ErrorContent}" />
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Grid.Resources>-->
+                        <!-- ALBUM -->
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Visibility="{Binding Path=IsAlbum, Converter={StaticResource BoolToVis}}" Background="LightGray">                            
+                            <StackPanel Orientation="Horizontal" >
+                                <StackPanel.Resources>
+                                    <Style x:Key="Margin"  TargetType="{x:Type Control}">
+                                        <Setter Property="Margin" Value="10,5,0,5"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                        <Setter Property="Height" Value="30"/>                                        
+                                    </Style>
+                                </StackPanel.Resources>                                   
+                                <Label Content="Title" Style="{StaticResource Margin}" />
+                                <!--<TextBox Style="{StaticResource Margin}" Width="75">
+                                    <TextBox.Text>
+                                        <Binding Path="AlbumTitle" UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" Mode="TwoWay" />
+                                    </TextBox.Text>
+                                </TextBox>-->
+                                <TextBox Style="{StaticResource Margin}" Text="{Binding AlbumManager.Album.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Width="75"/>
+                                <Label Content="Description" Style="{StaticResource Margin}" />
+                                <TextBox Style="{StaticResource Margin}" Text="{Binding AlbumManager.Album.Description}"  Width="200" />
+                                <CheckBox Style="{StaticResource Margin}" Content="Copy to folder" IsChecked="{Binding AlbumManager.CopyToFolder}"/>
+                                <Button Style="{StaticResource Margin}" Content="Save album" IsEnabled="{Binding CanSave}" Command="{Binding SaveCommand}" Width="65" HorizontalAlignment="Left" />
+                                <Button Style="{StaticResource Margin}" Content="Add file" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListBox, Path=SelectedItem}"/>
+                            </StackPanel>                                                          
+                        </StackPanel>
+                        <!-- SLIDESHOW -->
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Visibility="{Binding Path=IsSlideshow, Converter={StaticResource BoolToVis}}" Background="LightGray">                                
+                            <StackPanel Orientation="Horizontal" >
+                                <StackPanel.Resources>
+                                    <Style x:Key="Margin"  TargetType="{x:Type Control}">
+                                        <Setter Property="Margin" Value="5,5,0,5"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                        <Setter Property="Height" Value="30"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Label Content="Title" Style="{StaticResource Margin}" />
+                                <TextBox Style="{StaticResource Margin}" Text="{Binding SlideshowManager.Slideshow.Title, TargetNullValue='Write title', FallbackValue='Write title'}" Width="75" />
+                                <Label Content="Description" Style="{StaticResource Margin}" />
+                                <TextBox Style="{StaticResource Margin}" Text="{Binding SlideshowManager.Slideshow.Description, TargetNullValue='Write description', FallbackValue='Write description'}"  Width="160" />
+                                <Label Content="Interval (sec)" Style="{StaticResource Margin}" />
+                                <TextBox Style="{StaticResource Margin}" Text="{Binding SlideshowManager.Slideshow.Interval, FallbackValue=3}" Width="20" />
+                                <Button Style="{StaticResource Margin}" Content="Save slideshow" Command="{Binding SaveCommand}" Width="85" HorizontalAlignment="Left" />
+                                <Button Style="{StaticResource Margin}" Content="Add file" Command="{Binding AddCommand}" Width="50" HorizontalAlignment="Left" CommandParameter="{Binding ElementName=filesListBox, Path=SelectedItem}"/>
+                                <!--<Button Style="{StaticResource Margin}" Content="Open player" Click="Play_Click" Width="70" HorizontalAlignment="Left"/>-->
+                            </StackPanel>                                
+                        </StackPanel>
+                        <!-- Set VirtualizingPanel.IsVirtualizing to False to prevent crash -->
+                        <StackPanel  Grid.Row="1" Grid.Column="0">
+                            <Label Content="Chosen files in Album/Slideshow" HorizontalAlignment="Stretch"  Background="LightGray"/>
+                            <DataGrid x:Name="chosenFilesGrid" Height="150" ItemsSource="{Binding ChosenFiles}" HorizontalAlignment="Stretch" AutoGenerateColumns="False" VerticalAlignment="Top" VirtualizingPanel.IsVirtualizing="False" CanUserAddRows="false">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" Width="200" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Filetype" Binding="{Binding Path=Extension}" Width="50" IsReadOnly="True"/>
+                                    <DataGridTemplateColumn Width="*" Header="Description">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBox Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Background="LightGray"  Orientation="Vertical" VerticalAlignment="Stretch">
+                            <StackPanel.Resources>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Margin" Value="0,52,0,-43"/>
+                                    <Setter Property="Width" Value="30" />
+                                    <Setter Property="Height" Value="30" />
+                                </Style>
+                                <ImageBrush x:Key="ArrowUpImageBrush" ImageSource="{StaticResource ArrowUp}" Stretch="UniformToFill"/>
+                                <ImageBrush x:Key="ArrowDownImageBrush" ImageSource="{StaticResource ArrowDown}" Stretch="UniformToFill"/>
+                                <ImageBrush x:Key="RedCrossImageBrush" ImageSource="{StaticResource RedCross}" Stretch="UniformToFill"/>
+                            </StackPanel.Resources>
+                            <Button Background="{StaticResource ArrowUpImageBrush}" Command="{Binding UpCommand}" CommandParameter="{Binding ElementName=chosenFilesGrid, Path=SelectedIndex}"/>
+                            <Button Background="{StaticResource ArrowDownImageBrush}" Command="{Binding DownCommand}" CommandParameter="{Binding ElementName=chosenFilesGrid, Path=SelectedIndex}"/>
+                            <Button Background="{StaticResource RedCrossImageBrush}" Command="{Binding DeleteCommand}" CommandParameter="{Binding ElementName=chosenFilesGrid, Path=SelectedIndex}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Background="LightGray" />
+                    </Grid>                        
+                </Grid>
+            </Grid>
+        </Grid>        
+    </Grid>
+</Window>

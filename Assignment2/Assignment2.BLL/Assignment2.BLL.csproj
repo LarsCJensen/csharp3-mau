@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Assignment2.DAL\Assignment2.DAL.csproj" />
+    <ProjectReference Include="..\Assignment2.Utilities\Assignment2.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,32 @@
+﻿<Application x:Class="Assignment2.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Assignment2" 
+             xmlns:vm="clr-namespace:Assignment2.ViewModel"
+             xmlns:vw="clr-namespace:Assignment2.View" 
+             xmlns:dialogYesNo="clr-namespace:Assignment2.Dialogs.DialogYesNo"
+             xmlns:dialogOk="clr-namespace:Assignment2.Dialogs.DialogOk"
+             xmlns:converters="clr-namespace:Assignment2.Utilities;assembly=Assignment2.Utilities"
+             StartupUri="View/ListWindow.xaml">
+    <Application.Resources>
+        <DataTemplate DataType="{x:Type vm:NewWindowViewModel}">
+            <vw:NewWindow />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PlayerViewModel}">
+            <vw:Player />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type dialogYesNo:DialogYesNoViewModel}">
+            <dialogYesNo:DialogYesNoView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type dialogOk:DialogOkViewModel}">
+            <dialogOk:DialogOkView />
+        </DataTemplate>
+        <BitmapImage x:Key="TestImage" UriSource="/Assignment2;component/Assets/movie.png" />
+        <BitmapImage x:Key="ArrowUp" UriSource="/Assignment2;component/Assets/arrow-up.png" />
+        <BitmapImage x:Key="ArrowDown" UriSource="/Assignment2;component/Assets/arrow-down.png" />
+        <BitmapImage x:Key="RedCross" UriSource="/Assignment2;component/Assets/red-cross.png" />
+        <converters:ImageConverter x:Key="ImageConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisiblityConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Application.Resources>
+</Application>
