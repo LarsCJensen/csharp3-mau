@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="{Binding Title}" Height="450" Width="800">
     <Grid>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="30" />
@@ -17,8 +18,6 @@
             <ColumnDefinition Width="100" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="100" />
-
-
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.ColumnSpan="3">
             <Menu>
@@ -26,7 +25,12 @@
                     <MenuItem Header="_Save" Command="{Binding SaveCommand}" />
                     <MenuItem Header="_Load" Command="{Binding LoadCommand}" />
                     <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
-                </MenuItem>                
+                </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem Header="_Developers" Click="Developers_Click" />
+                    <MenuItem Header="_Categories" Command="{Binding CategoriesCommand}" />
+                    <MenuItem Header="_Status" Command="{Binding StatusCommand}" />
+                </MenuItem>
             </Menu>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1">
@@ -34,19 +38,33 @@
         </Grid>
         <Grid Grid.Row="2" Grid.Column="1">
             <ListView ItemsSource="{Binding Bugs}" SelectedItem="{Binding SelectedBug}" Margin="10">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <!--<ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                    </Style>
+                </ListView.ItemContainerStyle>-->
                 <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding Path=Title}" Width="150" >
                             <GridViewColumnHeader>Title</GridViewColumnHeader>
                         </GridViewColumn>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Category}" Width="150">
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Category}" Width="60">
                             <GridViewColumnHeader >Category</GridViewColumnHeader>
                         </GridViewColumn>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Status}" Width="150">
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Status}" Width="100">
                             <GridViewColumnHeader >Status</GridViewColumnHeader>
                         </GridViewColumn>
                         <GridViewColumn DisplayMemberBinding="{Binding Path=CreatedDate, StringFormat='yyyy-MM-dd'}" Width="100">
                             <GridViewColumnHeader>Created</GridViewColumnHeader>
+                        </GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=AssignedDeveloper.FullName}" Width="150">
+                            <GridViewColumnHeader>Assigned Developer</GridViewColumnHeader>
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>            
@@ -62,8 +80,8 @@
                     </Style>
                 </StackPanel.Resources>
                 <Button Content="New" Click="New_Click"/>
-                <Button Content="Open"/>
-                <Button Content="Delete"/>
+                <Button Content="Open" Click="Open_Click"/>
+                <Button Content="Delete" Command="{Binding DeleteCommand}"/>
             </StackPanel>    
         </Grid>
     </Grid>

@@ -35,10 +35,31 @@ namespace Assignment3.View
             BugViewModel bugViewModel = new BugViewModel();
             BugView bugView = new BugView();
             bugView.DataContext = bugViewModel;
+            // Lambda Expression 1
             bugViewModel.OnClose += delegate { bugView.Close(); };
             // Bind to event OnSave from bug window
             bugViewModel.OnSave += vm.OnSave;
             bugView.Show();
         }
+
+        private void Developers_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Open Developers view");
+        }
+        private void Open_Click(object sender, RoutedEventArgs e)
+        {
+            BugViewModel bugViewModel = new BugViewModel(vm.SelectedBug);
+            BugView bugView = new BugView();
+            bugView.DataContext = bugViewModel;
+            // Lambda Expression 1
+            bugViewModel.OnClose += delegate { bugView.Close(); };
+            // Bind to event OnSave from bug window
+            bugViewModel.OnSave += vm.OnSave;
+            bugView.Show();
+        }
+        private void ListViewItem_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Test");
+        }        
     }
 }

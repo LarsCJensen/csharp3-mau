@@ -8,13 +8,14 @@ using Assignment3.BLL.Enums;
 
 namespace Assignment3.BLL.Model
 {
+    [Serializable]
     public class Bug : Base
     {
         public string Title { get; set; }
         public string Description { get; set; }
         public CategoryEnum Category { get; set; }
         public StatusEnum Status { get; set; }
-        public Developer AssignedTo { get; set; }
+        public Developer AssignedDeveloper { get; set; }
         public int StoryPoints { get; set; }
         public Bug()
         {

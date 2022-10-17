@@ -12,6 +12,6 @@ namespace Assignment3.BLL.Enums
         Planned,
         InProgress,
         Finished,
-        Denied,
+        Closed,
     }
 }

@@ -104,13 +104,15 @@ namespace Assignment3.ViewModel
         }
         public event EventHandler<Bug> OnSave;
         public BugViewModel()
-        {
-            // New Bug
+        {            
             Bug = new Bug();
+            CreateDevelopers();
         }
         public BugViewModel(Bug bug)
         {
-
+            Bug = bug;
+            WindowTitle = $"Bug: {bug.Title}";
+            CreateDevelopers();
         }
         protected override void RegisterCommands()
         {
@@ -121,7 +123,16 @@ namespace Assignment3.ViewModel
         {
             // TODO Validate
             OnSave(this, Bug);
-            Close();            
+            Close();               
+        }
+        private void CreateDevelopers()
+        {
+            Developers = new ObservableCollection<Developer>()
+            {
+               new Developer{ FirstName="Lars", LastName="Jensen", Email="lars.jensen@company.com" },
+               new Developer{ FirstName="John", LastName="Rambo", Email="john.rambo@company.com" },
+               new Developer{ FirstName="Jane", LastName="Seymore", Email="jane.seymore@company.com" },
+            };
         }
     }
 }

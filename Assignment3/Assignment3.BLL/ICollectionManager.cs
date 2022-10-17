@@ -28,6 +28,6 @@ namespace Assignment2.BLL.Interface
         /// </summary>
         /// <param name="pos">Position to delete</param>
         /// <returns>Item at position</returns>
-        public T GetItemAt(int pos);
+        public T GetItemAt(int pos);        
     }
 }

@@ -68,8 +68,8 @@
         <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" Margin="0,5,0,5">
             <ComboBox ItemsSource="{Binding Status}"  SelectedItem="{Binding Bug.Status}" Width="75"/>
         </StackPanel>
-        <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" Margin="0,5,0,5">            
-            <ComboBox ItemsSource="{Binding Developers}" SelectedItem="{Binding Bug.AssignedDeveloper}" Width="100"/>            
+        <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" Margin="0,5,0,5">
+            <ComboBox ItemsSource="{Binding Developers}" SelectedItem="{Binding Bug.AssignedDeveloper}" DisplayMemberPath="FullName" SelectedValuePath="Bug.AssignedDeveloper.Id" SelectedValue="{Binding Bug.AssignedDeveloper.Id, Mode=TwoWay}" Width="100"/>            
         </StackPanel>
         <StackPanel Grid.Row="8" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left">
             <Button Content="Save" Command="{Binding SaveCommand}" Width="50" Height="30"/>
