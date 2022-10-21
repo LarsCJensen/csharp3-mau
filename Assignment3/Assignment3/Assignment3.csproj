@@ -8,8 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\horray.png" />
+    <None Remove="Assets\much_rejoicing.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Utilities\Utilities\Utilities.csproj" />
     <ProjectReference Include="..\Assignment3.BLL\Assignment3.BLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\horray.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\much_rejoicing.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

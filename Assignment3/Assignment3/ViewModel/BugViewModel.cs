@@ -69,7 +69,7 @@ namespace Assignment3.ViewModel
                 OnPropertyChanged("SelectedStatus");
             }
         }
-        private ObservableCollection<Developer> _developers;
+        private ObservableCollection<Developer> _developers = new ObservableCollection<Developer>();
         public ObservableCollection<Developer> Developers
         {
             get { return _developers; }
@@ -125,14 +125,20 @@ namespace Assignment3.ViewModel
             OnSave(this, Bug);
             Close();               
         }
+        /// <summary>
+        /// Just a helper function to create developers. Would be separate form
+        /// </summary>
         private void CreateDevelopers()
         {
-            Developers = new ObservableCollection<Developer>()
+            if(Developers.Count == 0)
             {
-               new Developer{ FirstName="Lars", LastName="Jensen", Email="lars.jensen@company.com" },
-               new Developer{ FirstName="John", LastName="Rambo", Email="john.rambo@company.com" },
-               new Developer{ FirstName="Jane", LastName="Seymore", Email="jane.seymore@company.com" },
-            };
+                Developers = new ObservableCollection<Developer>()
+                {
+                   new Developer{ FirstName="Lars", LastName="Jensen", Email="lars.jensen@company.com" },
+                   new Developer{ FirstName="John", LastName="Rambo", Email="john.rambo@company.com" },
+                   new Developer{ FirstName="Jane", LastName="Seymore", Email="jane.seymore@company.com" },
+                };
+            }            
         }
     }
 }

@@ -10,14 +10,6 @@ namespace Assignment3.BLL.Model
     [Serializable]
     public class Base
     {
-        private static int _idCounter = 0;
-        public int Id { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        internal int getId()
-        {
-            _idCounter = _idCounter += 1;
-            return _idCounter;
-        }
-
+        public DateTime CreatedDate { get; set; } = DateTime.Now;        
     }
 }

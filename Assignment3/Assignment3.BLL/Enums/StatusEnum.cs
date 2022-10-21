@@ -8,6 +8,7 @@ namespace Assignment3.BLL.Enums
 {
     public enum StatusEnum
     {
+        Reported,
         Verified,
         Planned,
         InProgress,

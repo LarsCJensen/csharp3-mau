@@ -48,18 +48,25 @@ namespace Assignment3.View
         }
         private void Open_Click(object sender, RoutedEventArgs e)
         {
-            BugViewModel bugViewModel = new BugViewModel(vm.SelectedBug);
-            BugView bugView = new BugView();
-            bugView.DataContext = bugViewModel;
-            // Lambda Expression 1
-            bugViewModel.OnClose += delegate { bugView.Close(); };
-            // Bind to event OnSave from bug window
-            bugViewModel.OnSave += vm.OnSave;
-            bugView.Show();
+            if(vm.SelectedBug != null)
+            {
+                BugViewModel bugViewModel = new BugViewModel(vm.SelectedBug);
+                BugView bugView = new BugView();
+                bugView.DataContext = bugViewModel;
+                // Lambda Expression 1
+                bugViewModel.OnClose += delegate { bugView.Close(); };
+                // Bind to event OnSave from bug window
+                bugViewModel.OnSave += vm.OnSave;
+                bugView.Show();
+            } else
+            {
+                MessageBox.Show("Please choose bug to open!", "Choose bug!");
+            }
+            
         }
         private void ListViewItem_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Test");
+            Open_Click(sender, e);
         }        
     }
 }

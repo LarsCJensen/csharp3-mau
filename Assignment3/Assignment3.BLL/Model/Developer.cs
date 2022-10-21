@@ -11,6 +11,9 @@ namespace Assignment3.BLL.Model
     [Serializable]
     public class Developer : Base
     {
+        private static int _idCounter = 0;
+        public int Id { get; set; }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -20,11 +23,15 @@ namespace Assignment3.BLL.Model
                 return $"{FirstName} {LastName}"; 
             }             
         }
-        //public Developer(string firstName, string lastName, string email)
-        //{
-        //    FirstName = firstName;
-        //    LastName = lastName;
-        //    Email = email;
-        //}
+        public Developer()
+        {
+            Id = getId();
+        }
+        private int getId()
+        {
+            _idCounter = _idCounter += 1;
+            return _idCounter;
+        }
+
     }
 }
