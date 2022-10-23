@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Assignment3.BLL.Enums
 {
+    /// <summary>
+    /// Enum for categories
+    /// </summary>
     public enum CategoryEnum
     {
         A,

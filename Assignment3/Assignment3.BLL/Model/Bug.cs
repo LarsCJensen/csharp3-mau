@@ -8,6 +8,9 @@ using Assignment3.BLL.Enums;
 
 namespace Assignment3.BLL.Model
 {
+    /// <summary>
+    /// Model for Bug
+    /// </summary>
     [Serializable]
     public class Bug : Base
     {
@@ -19,6 +22,7 @@ namespace Assignment3.BLL.Model
         public StatusEnum Status { get; set; }
         public Developer AssignedDeveloper { get; set; }
         public int StoryPoints { get; set; }
+        public string CloseReason { get; set; }
         public Bug()
         {
             Id = getId();

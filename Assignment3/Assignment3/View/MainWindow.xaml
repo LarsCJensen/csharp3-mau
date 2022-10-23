@@ -38,9 +38,9 @@
                     <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
                 </MenuItem>
                 <MenuItem Header="_Options">
-                    <MenuItem Header="_Developers" Click="Developers_Click" />
-                    <MenuItem Header="_Categories" Command="{Binding CategoriesCommand}" />
-                    <MenuItem Header="_Status" Command="{Binding StatusCommand}" />
+                    <MenuItem Header="_Developers" Click="Developers_Click" IsEnabled="False"/>
+                    <MenuItem Header="_Categories" Command="{Binding CategoriesCommand}" IsEnabled="False" />
+                    <MenuItem Header="_Status" Command="{Binding StatusCommand}" IsEnabled="False" />
                 </MenuItem>
             </Menu>
         </Grid>
@@ -49,11 +49,7 @@
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
                     
-                    <!--<Style TargetType="{x:Type ComboBox}">
-                        <Setter Property="Margin" Value="5,5,5,5"/>                        
-                    </Style>-->
                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MarginBaseStyle}">
-                        <!--<Setter Property="Margin" Value="5,5,5,5"/>-->
                         <Setter Property="Width" Value="100" />
                     </Style>
                     <Style TargetType="{x:Type Label}">
@@ -64,7 +60,6 @@
                 <ComboBox SelectedItem="{Binding SelectedStatus}" Style="{StaticResource MarginBaseStyle}">
                     <ComboBox.ItemsSource >
                         <CompositeCollection>
-                            <ComboBoxItem IsEnabled="False" Foreground="Black" IsSelected="True">Select status</ComboBoxItem>
                             <CollectionContainer Collection="{Binding Source={StaticResource StatusSource}}" />
                         </CompositeCollection>
                     </ComboBox.ItemsSource>

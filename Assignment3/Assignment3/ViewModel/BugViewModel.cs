@@ -15,6 +15,9 @@ namespace Assignment3.ViewModel
 {
     public class BugViewModel: BaseViewModel
     {
+        /// <summary>
+        /// ViewModel for Bug
+        /// </summary>
         private string _windowTitle = "New bug";
         public string WindowTitle
         {
@@ -49,6 +52,7 @@ namespace Assignment3.ViewModel
             set
             {
                 _selectedCategory = value;
+                Bug.Category = value;
                 OnPropertyChanged("SelectedCategory");
             }
         }
@@ -66,10 +70,18 @@ namespace Assignment3.ViewModel
             set 
             { 
                 _selectedStatus = value;
+                Bug.Status = value;
+                if (value.Equals(StatusEnum.Rejected) || value.Equals(StatusEnum.Finished)) {
+                    ShowCloseReason = true;
+                } else
+                {
+                    Bug.CloseReason = String.Empty;
+                    ShowCloseReason = false;
+                }                
                 OnPropertyChanged("SelectedStatus");
             }
         }
-        private ObservableCollection<Developer> _developers = new ObservableCollection<Developer>();
+        private ObservableCollection<Developer> _developers;
         public ObservableCollection<Developer> Developers
         {
             get { return _developers; }
@@ -86,59 +98,125 @@ namespace Assignment3.ViewModel
             set
             {
                 _assignedDeveloper = value;
+                Bug.AssignedDeveloper = value;
                 OnPropertyChanged("AssignedDeveloper");
             }
         }
+        private string _validationMessage;
+        public string ValidationMessage { 
+            get { return _validationMessage; }
+            set 
+            { _validationMessage = value;
+                OnPropertyChanged("ValidationMessage");
+            } 
+        }
+        #region Commands
         private ICommand _saveCommand;
         public ICommand SaveCommand
         {
             get { return _saveCommand; }
         }
+        private ICommand _exitCommand;
+        public ICommand ExitCommand
+        {
+            get { return _exitCommand; }
+        }
+        #endregion
         public bool CanExecute
         {
             get
             {
-                // TODO Check stuff?
+                // TODO Check stuff
                 return true;
             }
         }
-        public event EventHandler<Bug> OnSave;
-        public BugViewModel()
-        {            
-            Bug = new Bug();
-            CreateDevelopers();
-        }
-        public BugViewModel(Bug bug)
+        private bool _showCloseReason = false;
+        public bool ShowCloseReason
         {
-            Bug = bug;
+            get
+            {
+                return _showCloseReason;
+            }
+            set
+            {
+                _showCloseReason = value;
+                OnPropertyChanged("ShowCloseReason");
+            }
+        }
+        // Event for OnSave
+        public event EventHandler<Bug> OnSave;
+        // Func, perhaps not the best example but couldn't think of a better one :P
+        Func<bool> ValidateBug;
+        public BugViewModel(List<Developer> developers)
+        {
+            RegisterCommands();
+            Developers = new ObservableCollection<Developer>(developers);            
+            ValidateBug = Validate;
+            Bug = new Bug();
+        }
+        public BugViewModel(Bug bug, List<Developer> developers)
+        {
+            RegisterCommands();
+            ValidateBug = Validate;
             WindowTitle = $"Bug: {bug.Title}";
-            CreateDevelopers();
+            Developers = new ObservableCollection<Developer>(developers);            
+            Bug = bug;
+            SelectedCategory = bug.Category;
+            SelectedStatus = bug.Status;
+            AssignedDeveloper = bug.AssignedDeveloper;
+            if(bug.CloseReason != null && bug.CloseReason != "")
+            {
+                ShowCloseReason = true;
+            }            
         }
         protected override void RegisterCommands()
         {
             base.RegisterCommands();
+            // Lambda Expression 2
             _saveCommand = new CommandHandler(() => Save(), () => CanExecute);
-        }
-        private void Save()
-        {
-            // TODO Validate
-            OnSave(this, Bug);
-            Close();               
+            _exitCommand = new CommandHandler(() => Exit(), () => CanExecute);
         }
         /// <summary>
-        /// Just a helper function to create developers. Would be separate form
+        /// Helper method for Save
         /// </summary>
-        private void CreateDevelopers()
+        private void Save()
         {
-            if(Developers.Count == 0)
+            if(ValidateBug())
             {
-                Developers = new ObservableCollection<Developer>()
-                {
-                   new Developer{ FirstName="Lars", LastName="Jensen", Email="lars.jensen@company.com" },
-                   new Developer{ FirstName="John", LastName="Rambo", Email="john.rambo@company.com" },
-                   new Developer{ FirstName="Jane", LastName="Seymore", Email="jane.seymore@company.com" },
-                };
-            }            
+                OnSave(this, Bug);
+                Exit();
+            }        
         }
+        /// <summary>
+        /// Helper method for Exit
+        /// /// </summary>
+        private void Exit()
+        {
+            Close();
+        }
+        /// <summary>
+        /// Helper method for Validate
+        /// </summary>
+        /// <returns>Bool</returns>
+        private bool Validate()
+        {
+            if(Bug.Title == null || Bug.Title.Length == 0)
+            {
+                ValidationMessage = "You need to add a title!";
+                return false;
+            }
+            if(Bug.Description == null || Bug.Description.Length == 0)
+            {
+                ValidationMessage = "You need to add a description!";
+                return false;
+            }
+            if((Bug.Status.Equals(StatusEnum.Rejected) || Bug.Status.Equals(StatusEnum.Finished)) && (Bug.CloseReason == null || Bug.CloseReason.Length == 0))
+            {
+                ValidationMessage = "You need to provide a closing reason when\nrejecting/finishing a bug!";
+                return false;
+            }
+            ValidationMessage = "";
+            return true;
+        }        
     }
 }

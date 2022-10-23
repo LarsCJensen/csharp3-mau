@@ -27,12 +27,17 @@ namespace Assignment3.View
         {
             InitializeComponent();
             this.DataContext = vm;
+            // Lambda - bind to OnClose event
             vm.OnClose += delegate { this.Close(); };
         }
-
+        /// <summary>
+        /// Event for new bug. Using code-behind for this
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void New_Click(object sender, RoutedEventArgs e)
         {
-            BugViewModel bugViewModel = new BugViewModel();
+            BugViewModel bugViewModel = new BugViewModel(vm.Developers);
             BugView bugView = new BugView();
             bugView.DataContext = bugViewModel;
             // Lambda Expression 1
@@ -41,16 +46,25 @@ namespace Assignment3.View
             bugViewModel.OnSave += vm.OnSave;
             bugView.Show();
         }
-
+        /// <summary>
+        /// Not implemented!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Developers_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Open Developers view");
         }
+        /// <summary>
+        /// Event for open bug
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Open_Click(object sender, RoutedEventArgs e)
         {
             if(vm.SelectedBug != null)
             {
-                BugViewModel bugViewModel = new BugViewModel(vm.SelectedBug);
+                BugViewModel bugViewModel = new BugViewModel(vm.SelectedBug, vm.Developers);
                 BugView bugView = new BugView();
                 bugView.DataContext = bugViewModel;
                 // Lambda Expression 1
@@ -64,6 +78,11 @@ namespace Assignment3.View
             }
             
         }
+        /// <summary>
+        /// Event for mouse double click on bug
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ListViewItem_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
             Open_Click(sender, e);

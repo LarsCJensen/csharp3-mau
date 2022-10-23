@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,13 +15,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Utilities;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace Assignment3.ViewModel
 {
     public class MainViewModel: BaseViewModel
     {
-        // TODO Is this needed?
-        public BugManager BugManager = new BugManager();
+        /// <summary>
+        /// Viewmodel for Main
+        /// </summary>
         private bool _dataDirty;
         private string _dataFileName;
         public ObservableCollection<Bug> _bugs;
@@ -50,7 +53,7 @@ namespace Assignment3.ViewModel
             set
             {
                 _filteredBugs = value;
-                BugsCountText = $"{FilteredBugs.Count()}({Bugs.Count()}) bugs in the system!";
+                BugsCountText = $"{FilteredBugs.Count()}({UnFilteredBugs.Count()}) bugs in the system!";
             }
         }
         private string _title = "You got bugs!";
@@ -62,6 +65,7 @@ namespace Assignment3.ViewModel
                 OnPropertyChanged("Title");
             }
         }
+        public List<Developer> Developers { get; set; } = new List<Developer>();     
         private string _bugsCountText = "0 bugs in the system";
         public string BugsCountText
         {
@@ -92,8 +96,8 @@ namespace Assignment3.ViewModel
                 return Enum.GetValues(typeof(CategoryEnum)).Cast<CategoryEnum>().ToList();
             }
         }
-        private CategoryEnum _selectedCategory;
-        public CategoryEnum SelectedCategory
+        private CategoryEnum? _selectedCategory;
+        public CategoryEnum? SelectedCategory
         {
             get { return _selectedCategory; }
             set
@@ -109,8 +113,8 @@ namespace Assignment3.ViewModel
                 return Enum.GetValues(typeof(StatusEnum)).Cast<StatusEnum>().ToList();
             }
         }
-        private StatusEnum _selectedStatus;
-        public StatusEnum SelectedStatus
+        private StatusEnum? _selectedStatus;
+        public StatusEnum? SelectedStatus
         {
             get { return _selectedStatus; }
             set
@@ -155,6 +159,12 @@ namespace Assignment3.ViewModel
         {
             get { return _clearFilterCommand; }
         }
+        private ICommand _closeCommand;
+        public ICommand CloseCommand
+        {
+            get { return _closeCommand; }
+        }
+        #endregion
         public bool CanExecute
         {
             get
@@ -163,16 +173,25 @@ namespace Assignment3.ViewModel
                 return true;
             }
         }
-        #endregion
+        // Action to show error message
+        Action<string> ErrorMessage;
         public MainViewModel()
         {
+            CreateDevelopers();
             RegisterCommands();
             Bugs = new ObservableCollection<Bug>();
             // Lambda statement 2
             Bugs.CollectionChanged += (s, e) =>
             {
-                BugsCountText = $"{Bugs.Count()} bugs in the system!";
+                BugsCountText = $"{UnFilteredBugs.Count()} bugs in the system!";
             };
+            //Lambda expression 3
+            ErrorMessage = (s) => ShowErrorMessage(s);
+            UnFilteredBugs = new ObservableCollection<Bug>();
+            UnFilteredBugs.CollectionChanged += (s, e) =>
+            {
+                BugsCountText = $"{UnFilteredBugs.Count()} bugs in the system!";
+            };            
         }
         protected override void RegisterCommands()
         {
@@ -183,9 +202,13 @@ namespace Assignment3.ViewModel
             _deleteCommand = new CommandHandler(() => ExecuteDeleteCommand(), () => CanExecute);
             _filterCommand = new CommandHandler(() => ExecuteFilterCommand(), () => CanExecute);
             _clearFilterCommand = new CommandHandler(() => ExecuteClearFilterCommand(), () => CanExecute);
+            _closeCommand = new CommandHandler(() => ExecuteCloseCommand(), () => CanExecute);
 
         }
         #region ExecuteCommands
+        /// <summary>
+        /// Method to execute save bugs command
+        /// </summary>
         private void ExecuteSaveCommand()
         {
             if(_dataFileName == null)
@@ -200,19 +223,22 @@ namespace Assignment3.ViewModel
             }
             try
             {
-                Serializer.XmlFileSerialize<ObservableCollection<Bug>>(_dataFileName, Bugs);                    
+                Serializer.XmlFileSerialize<ObservableCollection<Bug>>(_dataFileName, UnFilteredBugs);                    
                 _dataDirty = false;
             }
             catch (SerializerException ex)
             {
-                MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                ErrorMessage(ex.Message);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                ErrorMessage(ex.ToString());
             }            
         }
-
+        /// <summary>
+        /// Method to execute load bugs command
+        /// </summary>
         public void ExecuteLoadCommand()
         {
             var dialog = new OpenFileDialog();
@@ -234,55 +260,86 @@ namespace Assignment3.ViewModel
                 }
                 catch (SerializerException ex)
                 {
-                    MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ErrorMessage(ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString(), "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ErrorMessage(ex.ToString());
                 }
             }
         }
+        /// <summary>
+        /// Method to execute delete bug command
+        /// </summary>
         private void ExecuteDeleteCommand()
         {
+            if(SelectedBug == null)
+            {
+                ErrorMessage("Please choose bug to delete!");
+                return;
+            }
+
             UnFilteredBugs.Remove(SelectedBug);
             Bugs = UnFilteredBugs;
         }
-
+        /// <summary>
+        /// Method to execute filter bug command
+        /// </summary
         private void ExecuteFilterCommand()
         {
-            // SelectedCategory
-            //SelectedStatus
-            //FilterSearch
-
-            FilteredBugs = new ObservableCollection<Bug>(Bugs.Where(b => b.Category.Equals(SelectedCategory)).ToList());
+            if(UnFilteredBugs.Count == 0)
+            {
+                ErrorMessage("Nothing to filter on!");
+                return;
+            }
+            // Filter on the selected attributes if applicable
+            FilteredBugs = new ObservableCollection<Bug>(
+                UnFilteredBugs.Where(
+                    b => (SelectedCategory == null || b.Category.Equals(SelectedCategory)) 
+                    && (SelectedStatus == null || b.Status.Equals(SelectedStatus))
+                    && (FilterSearch == null || b.Title.Contains(FilterSearch))
+               ).ToList());
+            // Bind collection changed to update text 
             FilteredBugs.CollectionChanged += (s, e) =>
             {
                 BugsCountText = $"{FilteredBugs.Count()}({UnFilteredBugs.Count()}) bugs in the system!";
             };
             Bugs = FilteredBugs;
-
         }
         private void ExecuteClearFilterCommand()
         {
             Bugs = UnFilteredBugs;
             BugsCountText = $"{UnFilteredBugs.Count()} bugs in the system!";
+            SelectedCategory = null;
+            SelectedStatus = null;
+            FilterSearch = "";
+        }
+        private void ExecuteCloseCommand()
+        {
+            Close();
         }
         #endregion
+        /// <summary>
+        /// Helper method for onsave event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="bug"></param>
         public void OnSave(object sender, Bug bug)
         {
-            // TODO Check if it is checked off, perhaps play a jingle?            
-            // TODO  Check if bug already is in the list
+            // If bug is new, add it to collection
             if(!UnFilteredBugs.Contains(bug))
             {
                 UnFilteredBugs.Add(bug);
             }
-            _dataDirty = true;
+            _dataDirty = true;  
+            // If bug is solved, show splash and play a jingle!
             if(bug.Status == StatusEnum.Finished)
             {
                 SplashScreen splash = new SplashScreen(@"../Assets/horray.png");
                 splash.Show(true);
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer();
-                player.SoundLocation = @"../Assets/much_rejoicing.wav";
+                Uri uri = new Uri(@"pack://application:,,,/Assets/much_rejoicing.wav");
+                Stream fileStream = Application.GetResourceStream(uri).Stream;
+                System.Media.SoundPlayer player = new System.Media.SoundPlayer(fileStream);
                 // Play sound from the scene of one of my favorite movies
                 player.Play();
                 // Wait three seconds and then close splash
@@ -291,10 +348,30 @@ namespace Assignment3.ViewModel
             {
                 MessageBox.Show("Saved!");
             }
-            Bugs = UnFilteredBugs;
+            Bugs = new ObservableCollection<Bug>(UnFilteredBugs);
         }        
+        /// <summary>
+        /// Helper method for Action
+        /// </summary>
+        /// <param name="msg">Message to show</param>
+        private void ShowErrorMessage(string msg)
+        {
+            MessageBox.Show(msg, "Error!");
+        }
+        /// <summary>
+        /// Just a helper function to create developers. Would be separate form
+        /// </summary>
+        private void CreateDevelopers()
+        {
+            if (Developers.Count == 0)
+            {
+                Developers = new List<Developer>()
+                {
+                   new Developer{ FirstName="Lars", LastName="Jensen", Email="lars.jensen@company.com" },
+                   new Developer{ FirstName="John", LastName="Rambo", Email="john.rambo@company.com" },
+                   new Developer{ FirstName="Jane", LastName="Seymore", Email="jane.seymore@company.com" },
+                };
+            }
+        }
     }
-    
-    // TODO Bind to event on save in bugs view
-
 }

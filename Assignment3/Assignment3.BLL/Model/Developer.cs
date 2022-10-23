@@ -8,6 +8,9 @@ using System.Xml.Serialization;
 
 namespace Assignment3.BLL.Model
 {
+    /// <summary>
+    /// Model for Developer
+    /// </summary>
     [Serializable]
     public class Developer : Base
     {

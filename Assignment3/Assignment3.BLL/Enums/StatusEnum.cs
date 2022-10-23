@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Assignment3.BLL.Enums
 {
+    /// <summary>
+    /// Enum for bug status
+    /// </summary>
     public enum StatusEnum
     {
         Reported,
@@ -13,6 +16,6 @@ namespace Assignment3.BLL.Enums
         Planned,
         InProgress,
         Finished,
-        Closed,
+        Rejected,
     }
 }

@@ -4,13 +4,12 @@
              xmlns:local="clr-namespace:Assignment3"
              xmlns:vm="clr-namespace:Assignment3.ViewModel"
              xmlns:vw="clr-namespace:Assignment3.View" 
+             xmlns:converters="clr-namespace:Utilities;assembly=Utilities"
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
         <DataTemplate DataType="{x:Type vm:MainViewModel}">
             <vw:MainWindow />
         </DataTemplate>
-        <!--<DataTemplate DataType="{x:Type vm:BugViewModel}">
-            <vw:BugView />
-        </DataTemplate>-->
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisiblityConverter" />
     </Application.Resources>
 </Application>
