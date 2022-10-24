@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Used for showing files in ListView">
+    <Position X="1.156" Y="0.729" Height="0.521" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Used for showing selected files in DataGrid">
+    <Position X="1.229" Y="3.208" Height="0.521" Width="1.7" />
+  </Comment>
+  <Class Name="Assignment4B.BLL.Album" Collapsed="true">
+    <Position X="3.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Album.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Assignment4B.BLL.Base" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAgAAAAAQAAAARAgAAAAAAAAIAAAAAAAIA=</HashCode>
+      <FileName>Base.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Assignment4B.BLL.ChosenFile" Collapsed="true">
+    <Position X="1.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ChosenFile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Assignment4B.BLL.File" Collapsed="true">
+    <Position X="1.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAIAAAAAAAQAAAEAARAAAEAEAAAAAAA=</HashCode>
+      <FileName>File.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Assignment4B.BLL.Slideshow" Collapsed="true">
+    <Position X="6.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Slideshow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Assignment4B.BLL.Interface.ICollectionManager&lt;T&gt;" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAQAAAABAgAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Interface\ICollectionManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
