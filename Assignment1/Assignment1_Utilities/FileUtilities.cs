@@ -26,28 +26,40 @@ namespace Assignment1_Utilities
         /// <param name="extensions">List of extensions to check for</param>
         /// <returns>List of strings</returns>
         public static List<string> GetFilesInDirectory(string chosenDir, List<string> extensions = null)
-        {
-            try
+        {            
+            if (extensions == null)
             {
-                if (extensions == null)
+                try
                 {
                     return new List<string>(Directory.GetFiles(chosenDir));
                 }
-                else
+                catch (UnauthorizedAccessException ex)
                 {
-                    List<string> files = new List<string>();
-                    foreach (string ext in extensions.Distinct().ToList())
+                    string errorMessage = $"Unable to access files because of unauthorized exception: {ex.Message}";
+                    MessageBox.Show(errorMessage, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Return empty list
+                    return new List<string>();
+                }
+            }
+            else
+            {                    
+                List<string> files = new List<string>();
+                foreach (string ext in extensions.Distinct().ToList())
+                {
+                    try
                     {
                         files.AddRange(Directory.GetFiles(chosenDir, ext));
                     }
-                    return files;
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        string errorMessage = $"Unable to access files because of unauthorized exception: {ex.Message}";
+                        MessageBox.Show(errorMessage, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                        continue;
+                    }
                 }
-            } catch (System.UnauthorizedAccessException)
-            {
-                MessageBox.Show("Unable to access files because of unauthorized exception", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                return new List<string>();                
+                return files;
             }
-            
+                        
         }
 
         public static List<FileInfo> GetFileInfoFromDirectory(string? chosenDir, List<string> extensions = null)
