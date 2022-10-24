@@ -16,7 +16,7 @@ namespace Utilities
         /// Creates instance of the command handler
         /// </summary>
         /// <param name="action">Action to be executed by the command</param>
-        /// <param name="canExecute">A bolean property to containing current permissions to execute the command</param>
+        /// <param name="canExecute">A boolean property to containing current permissions to execute the command</param>
         public CommandHandler(Action action, Func<bool> canExecute)
         {
             _action = action;
@@ -41,7 +41,10 @@ namespace Utilities
         {
             return _canExecute.Invoke();
         }
-
+        /// <summary>
+        /// Execute bound action
+        /// </summary>
+        /// <param name="parameter"></param>
         public void Execute(object parameter)
         {
             _action();
