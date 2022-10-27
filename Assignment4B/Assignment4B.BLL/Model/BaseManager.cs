@@ -15,6 +15,8 @@ namespace Assignment4B.BLL
     public abstract class BaseManager<T>
     {        
         public abstract Dictionary<string, string> Save();
+        // TODO Since this is the same for both album and slideshow,
+        // can I make it general? Files is a list of generic type though
         public abstract bool Delete(int id);
         public abstract List<T> GetItems();
         /// <summary>
@@ -29,5 +31,7 @@ namespace Assignment4B.BLL
             return extensionsCount;
         }
         public abstract List<T> SearchItems(string searchText, string searchProperty, string searchCriteria);
+        // TODO Add public bool MoveItem(int oldPos, int newPos) to this instead of two implementations
+        
     }
 }

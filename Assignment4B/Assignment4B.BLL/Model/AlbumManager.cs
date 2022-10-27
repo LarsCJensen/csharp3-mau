@@ -62,6 +62,7 @@ namespace Assignment4B.BLL
         /// <returns>Dictionary of validation errors</returns>
         public override Dictionary<string, string> Save()
         {
+            // TODO Add Try/Except as extension might not exist
             Album.Files = Files;
             // Get all fileextensions
             List<string> fileExtensions = Files.Select(f => f.Extension.ToLower()).ToList();  

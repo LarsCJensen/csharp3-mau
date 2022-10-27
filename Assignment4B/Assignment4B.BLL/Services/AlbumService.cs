@@ -82,7 +82,7 @@ namespace Assignment4B.BLL.Services
                 isValid = false;
             }
                 
-            if (albumToValidate.Files.Count == 0)
+            if (albumToValidate.Files == null || albumToValidate.Files.Count == 0)
             {
                 _validationErrors.Add(nameof(albumToValidate.Files), "You need to add files!");
                 isValid = false;
