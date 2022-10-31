@@ -49,7 +49,7 @@ namespace Assignment4B.BLL.Tests.AlbumManagerTests
             albumManager.AddItem(albumFile);
             // act
             albumManager.MoveItem(3, 0);
-            // assert
+            // assert position is correct
             Assert.AreEqual(albumFile, albumManager.Files[0]);
         }
         [TestMethod]
