@@ -3,7 +3,6 @@ using Assignment4B.DAL.Models;
 
 namespace Assignment4B.BLL.Tests.AlbumManagerTests
 {
-    // TODO This should be test base test
     [TestClass]
     public class AlbumManagerTests
     {
@@ -17,7 +16,7 @@ namespace Assignment4B.BLL.Tests.AlbumManagerTests
             Assert.IsTrue(albumManager.Files.Count == 0);
             // act
             albumManager.AddItem(albumFile);
-            // assert
+            // assert file is added
             Assert.IsTrue(albumManager.Files.Count == 1);
         }
         [TestMethod]
@@ -35,7 +34,7 @@ namespace Assignment4B.BLL.Tests.AlbumManagerTests
             Assert.IsTrue(albumManager.Files.Count == 3);
             // act
             albumManager.DeleteItem(1);
-            // assert
+            // assert file is deleted
             Assert.IsTrue(albumManager.Files.Count() == 2);            
         }
         [TestMethod]
@@ -60,7 +59,7 @@ namespace Assignment4B.BLL.Tests.AlbumManagerTests
             var albumManager = PreparedAlbumManager();
             // act
             albumManager.Save();
-            // assert
+            // assert number of images is correctly set
             Assert.AreEqual(2, albumManager.Album.NumberOfImages);
         }
         // I would probably not have this in a separate test since it is testing the same method as the above test
@@ -71,9 +70,13 @@ namespace Assignment4B.BLL.Tests.AlbumManagerTests
             var albumManager = PreparedAlbumManager();
             // act
             albumManager.Save();
-            // assert
+            // assert number of videos is correctly set
             Assert.AreEqual(1, albumManager.Album.NumberOfVideos);
         }
+        /// <summary>
+        /// Helper method to prepare AlbumManager
+        /// </summary>
+        /// <returns></returns>
 
         private AlbumManager PreparedAlbumManager()
         {

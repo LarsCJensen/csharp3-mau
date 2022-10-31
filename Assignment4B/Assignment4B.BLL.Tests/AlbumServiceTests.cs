@@ -14,8 +14,8 @@ namespace Assignment4B.BLL.Tests.AlbumServicesTest
             // arrange
             var album = PreparedAlbum();
             // act            
-            // assert
-            Assert.IsTrue(Validate(album)==true);
+            // assert Validate album with title is true
+            Assert.IsTrue(Validate(album) == true);
 
         }
         [TestMethod]
@@ -25,7 +25,7 @@ namespace Assignment4B.BLL.Tests.AlbumServicesTest
             var album = PreparedAlbum();
             album.Title = String.Empty;
             // act
-            // assert
+            // assert Validate album with no title is false
             Assert.IsTrue(Validate(album) == false);
         }
         [TestMethod]
@@ -34,7 +34,7 @@ namespace Assignment4B.BLL.Tests.AlbumServicesTest
             // arrange
             var album = PreparedAlbum();
             // act
-            // assert
+            // assert Validate album with description is true
             Assert.IsTrue(Validate(album) == true);
         }
         [TestMethod]
@@ -44,7 +44,7 @@ namespace Assignment4B.BLL.Tests.AlbumServicesTest
             var album = PreparedAlbum();
             album.Description = String.Empty;
             // act
-            // assert that no title return false
+            // assert Validate album with description is false
             Assert.IsTrue(Validate(album) == false);
         }
         [TestMethod]
@@ -53,7 +53,7 @@ namespace Assignment4B.BLL.Tests.AlbumServicesTest
             // arrange
             var album = PreparedAlbum();
             // act
-            // assert that no description return false
+            // assert album with files returns true
             Assert.IsTrue(Validate(album) == true);
         }
         [TestMethod]
@@ -63,7 +63,7 @@ namespace Assignment4B.BLL.Tests.AlbumServicesTest
             var album = PreparedAlbum();
             album.Files = new List<AlbumFile>();
             // act
-            // assert that no files return false
+            // assert that album with no files return false
             Assert.IsTrue(Validate(album) == false);
         }     
         private Album PreparedAlbum()

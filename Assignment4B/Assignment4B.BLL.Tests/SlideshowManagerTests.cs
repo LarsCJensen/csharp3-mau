@@ -16,7 +16,7 @@ namespace Assignment4B.BLL.Tests.SlideshowManagerTests
             Assert.IsTrue(SlideshowManager.Files.Count == 0);
             // act
             SlideshowManager.AddItem(SlideshowFile);
-            // assert
+            // assert file is added
             Assert.IsTrue(SlideshowManager.Files.Count == 1);
         }
         [TestMethod]
@@ -34,7 +34,7 @@ namespace Assignment4B.BLL.Tests.SlideshowManagerTests
             Assert.IsTrue(SlideshowManager.Files.Count == 3);
             // act
             SlideshowManager.DeleteItem(1);
-            // assert
+            // assert file is deleted
             Assert.IsTrue(SlideshowManager.Files.Count() == 2);
         }
         [TestMethod]
@@ -49,7 +49,7 @@ namespace Assignment4B.BLL.Tests.SlideshowManagerTests
             SlideshowManager.AddItem(SlideshowFile);
             // act
             SlideshowManager.MoveItem(3, 0);
-            // assert
+            // assert position is correct
             Assert.AreEqual(SlideshowFile, SlideshowManager.Files[0]);
         }
         [TestMethod]
@@ -59,7 +59,7 @@ namespace Assignment4B.BLL.Tests.SlideshowManagerTests
             var SlideshowManager = PreparedSlideshowManager();
             // act
             SlideshowManager.Save();
-            // assert
+            // assert number of images is correctly set
             Assert.AreEqual(2, SlideshowManager.Slideshow.NumberOfImages);
         }
         // I would probably not have this in a separate test since it is testing the same method as the above test
@@ -70,10 +70,13 @@ namespace Assignment4B.BLL.Tests.SlideshowManagerTests
             var SlideshowManager = PreparedSlideshowManager();
             // act
             SlideshowManager.Save();
-            // assert
+            // assert number of videos is correctly set
             Assert.AreEqual(1, SlideshowManager.Slideshow.NumberOfVideos);
         }
-
+        /// <summary>
+        /// Helper method to prepare SlideshowManager
+        /// </summary>
+        /// <returns></returns>
         private SlideshowManager PreparedSlideshowManager()
         {
             var SlideshowManager = new SlideshowManager();

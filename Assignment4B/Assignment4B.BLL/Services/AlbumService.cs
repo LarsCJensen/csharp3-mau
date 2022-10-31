@@ -67,7 +67,7 @@ namespace Assignment4B.BLL.Services
         /// </summary>
         /// <param name="albumToValidate">Album to validate</param>
         /// <returns>True or False</returns>
-        protected override bool Validate(Album albumToValidate)
+        public override bool Validate(Album albumToValidate)
         {
             bool isValid = true;
             if (albumToValidate.Title == null || albumToValidate.Title.Trim().Length == 0)
@@ -81,8 +81,10 @@ namespace Assignment4B.BLL.Services
                 _validationErrors.Add(nameof(albumToValidate.Description), "Description is required.");
                 isValid = false;
             }
-                
-            if (albumToValidate.Files == null || albumToValidate.Files.Count == 0)
+
+            //if (albumToValidate.Files == null || albumToValidate.Files.Count == 0)
+            // Hard to find bug
+            if (albumToValidate.Files.Count == 0)
             {
                 _validationErrors.Add(nameof(albumToValidate.Files), "You need to add files!");
                 isValid = false;

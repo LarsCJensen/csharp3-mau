@@ -19,11 +19,6 @@ namespace Assignment4B.DAL.Models
         public int NumberOfVideos { get; set; }
         public virtual ICollection<SlideshowFile> Files { get; set; }
         public int Interval { get; set; }
-        public int LengthInSeconds { get; set; }
-        
-        //// Foreign Key
-        //public int AuthorId { get; set; }
-        //// Navigation property
-        //public Author Author { get; set; }
+        public int LengthInSeconds { get; set; }        
     }
 }

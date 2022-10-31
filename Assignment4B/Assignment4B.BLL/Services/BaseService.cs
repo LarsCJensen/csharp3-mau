@@ -13,7 +13,7 @@ namespace Assignment4B.BLL.Services
         public abstract T GetById(int id);
         public abstract IEnumerable<T> GetItems();
         public abstract IEnumerable<T> SearchItems(string searchText, string searchProperty, string searchCriteria);
-        protected abstract bool Validate(T entity);
+        public abstract bool Validate(T entity);
         // Work-around to not get old data back when using LazyLoading
         public abstract void RecreateContext();
     }

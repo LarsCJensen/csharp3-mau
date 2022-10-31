@@ -26,7 +26,7 @@ namespace Assignment4B.DAL
         }
         public DbSet<AlbumFile> AlbumFiles { get; set; }
         public DbSet<SlideshowFile> SlideshowFiles { get; set; }
-        public DbSet<Album> Albums { get; set; }
+        public virtual DbSet<Album> Albums { get; set; }
         public DbSet<Slideshow> Slideshows{ get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

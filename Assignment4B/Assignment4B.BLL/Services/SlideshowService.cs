@@ -59,7 +59,7 @@ namespace Assignment4B.BLL.Services
         /// </summary>
         /// <param name="slideshowToValidate">Slideshow to validate</param>
         /// <returns></returns>
-        protected override bool Validate(Slideshow slideshowToValidate)
+        public override bool Validate(Slideshow slideshowToValidate)
         {
             bool isValid = true;
             if (slideshowToValidate.Title == null || slideshowToValidate.Title.Trim().Length == 0)

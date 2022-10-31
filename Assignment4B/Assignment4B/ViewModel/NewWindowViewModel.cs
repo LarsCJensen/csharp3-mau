@@ -79,23 +79,6 @@ namespace Assignment4B.ViewModel
                 OnPropertyChanged("AlbumManager");
             }
         }
-        // TODO Validation
-        //public string AlbumTitle
-        //{
-        //    get
-        //    {
-        //        return _albumManager.Album.Title;
-        //    }
-        //    set
-        //    {
-        //        RemoveError(nameof(AlbumTitle));
-        //        if (value == null || value.Length == 0)
-        //        {
-        //            AddError(nameof(AlbumTitle), "You must give the album a name!");
-        //        }
-        //        _albumManager.Album.Title = value;
-        //    }
-        //}
         
         private bool _isAlbum = true;
         public bool IsAlbum

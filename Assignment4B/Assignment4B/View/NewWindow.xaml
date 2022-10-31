@@ -20,9 +20,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
-                <Label Content="1. Choose folder with images/videos" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-                <!--TODO-->
-                <!--<Button Content="Reload" Width="50" Height="20" Margin="40,0,0,0" Command="{Binding ReloadTreeViewCommand}"/>-->
+                <Label Content="1. Choose folder with images/videos" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>               
             </StackPanel>
             <Label Content="2. Choose image/video to add" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
         </Grid>

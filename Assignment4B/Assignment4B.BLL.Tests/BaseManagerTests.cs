@@ -18,7 +18,7 @@ namespace Assignment4B.BLL.Tests.BaseManagerTests
             var listOfExtensions = new List<string> { ".jpg", ".png", ".mov" };
             // act
             var numberOfImages = albumManager.GetCount(listOfExtensions, ValidExtensions.ImageExtensions);            
-            // assert
+            // assert number of images is correct
             Assert.AreEqual(2, numberOfImages);
         }
         public void TestGetCountReturnsCorrectValuesForVideos()
@@ -28,7 +28,7 @@ namespace Assignment4B.BLL.Tests.BaseManagerTests
             var listOfExtensions = new List<string> { ".jpg", ".png", ".mov" };
             // act
             var numberOfVideos = albumManager.GetCount(listOfExtensions, ValidExtensions.VideoExtensions);
-            // assert
+            // assert number of videos is correct
             Assert.AreEqual(1, numberOfVideos);
 
         }

@@ -61,10 +61,11 @@ namespace Assignment4B.DAL.Repositories
         }
         /// <summary>
         /// Helper method to save a new entity
+        /// Is virtual to be able to be testable
         /// </summary>
         /// <param name="entity">Entity to save</param>
         /// <returns>Entity</returns>
-        private T SaveNew(T entity)
+        public virtual T SaveNew(T entity)
         {
             _context.Set<T>().Add(entity);
             _context.SaveChanges();
@@ -89,7 +90,7 @@ namespace Assignment4B.DAL.Repositories
         /// </summary>
         /// <param name="id">Id of entity to get</param>
         /// <returns>Entity</returns>
-        public T GetById(int id)
+        public virtual T GetById(int id)
         {
             return GetEntities().FirstOrDefault(x => x.id == id);
         }
@@ -141,14 +142,7 @@ namespace Assignment4B.DAL.Repositories
             // Get the Contains method instead of using Equal
             var method = typeof(string).GetMethod("Contains", new Type[] { typeof(string) }); ;
             var call = Expression.Call(propExpression, method, Expression.Constant(value));
-            // TODO Break out
-            //var filterLambda = Expression.Lambda<Func<T, bool>>(
-            //    Expression.Equal(
-            //        propExpression,
-            //        Expression.Constant(value)
-            //    ),
-            //    param
-            //);
+            
             var filterLambda = Expression.Lambda<Func<T, bool>>(
                 call,
                 param
