@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assignment4B.BLL.Tests
+namespace Assignment4B.BLL.Tests.GradeB
 {
     [TestClass]
-    public class GradeBTest: AlbumService
+    public class GradeBTest
     {
         [TestMethod]
         public void FindHardToFindBug1()
@@ -21,6 +21,7 @@ namespace Assignment4B.BLL.Tests
             // act
             var result = albumManager.Delete(idNotFound);
             // assert deleting album returns false if not found
+            // This won't "work" since the method always return True after raise
             Assert.IsFalse(result);
         }
         [TestMethod]
@@ -33,7 +34,7 @@ namespace Assignment4B.BLL.Tests
             album.Description = "My album description";
             // act
             var isValid = albumService.Validate(album);
-            // assert album is valid, but will throw exception because album.Files is null
+            // assert album is valid, but will throw exception because album.Files is null which is not checked for
             Assert.IsTrue(isValid);
         }
     }
