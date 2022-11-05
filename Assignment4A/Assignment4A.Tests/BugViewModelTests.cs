@@ -1,9 +1,11 @@
 
 
+using Assignment4A.BLL.Enums;
 using Assignment4A.BLL.Model;
 using Assignment4A.View;
 using Assignment4A.ViewModel;
 using Moq;
+using System.ComponentModel;
 using System.Net.Sockets;
 using System.Reflection;
 
@@ -86,6 +88,7 @@ namespace Assignment4A.Tests.BugViewModelTests
         [Test]
         public void ValidateBug_ValidBug_OnSaveIsNotCalledAndValidationErrorMessageIncludesClosingReason()
         {
+            // arrange
             var bugVm = GetPreparedBugVM();
             var bug = new Bug()
             {
@@ -105,8 +108,47 @@ namespace Assignment4A.Tests.BugViewModelTests
             // assert that validation message includes string
             Assert.IsTrue(bugVm.ValidationMessage.Contains("provide a closing reason"));
         }
-        // Test Bugs.CollectionChanged updates BugsCountText
-        // Test BugViewModel med CloseReason == ShowCloseReason
+        [Test]
+        public void ValidBug_CloseReason_ShowCloseReasonIsTrueWhenStatusIsRejected()
+        {
+            // arrange
+            var bugVm = GetPreparedBugVM();
+            Assert.That(bugVm.ShowCloseReason, Is.False);
+            // act
+            bugVm.SelectedStatus = StatusEnum.Rejected;
+            // assert that ShowCloseReason is true
+            Assert.That(bugVm.ShowCloseReason, Is.True);
+        }
+        [Test]
+        public void ValidBug_CloseReason_ShowCloseReasonIsTrueWhenStatusIsFinished()
+        {
+            // arrange
+            var bugVm = GetPreparedBugVM();
+            Assert.That(bugVm.ShowCloseReason, Is.False);
+            // act
+            bugVm.SelectedStatus = StatusEnum.Finished;
+            // assert that ShowCloseReason is true
+            Assert.That(bugVm.ShowCloseReason, Is.True);
+        }
+        [Test]
+        public void ValidBug_CloseReason_CloseReasonIsEmptyStringTrueWhenStatusIsChangedToPlanned()
+        {
+            // arrange
+            var bugVm = GetPreparedBugVM();
+            var bug = new Bug()
+            {
+                Id = 1,
+                Title = "Bug Title",
+                Description = "Bug Description",
+                Status = StatusEnum.Finished,
+                CloseReason = "This bug is finished",
+            };
+            bugVm.Bug = bug;
+            // act
+            bugVm.SelectedStatus = StatusEnum.Planned;
+            // assert that ShowCloseReason is true
+            Assert.That(bugVm.Bug.CloseReason, Is.EqualTo(String.Empty));
+        }
         private BugViewModel GetPreparedBugVM()
         {
             var developers = new List<Developer>()
