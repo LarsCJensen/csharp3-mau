@@ -14,7 +14,6 @@ namespace Assignment5.Model
         /// </summary>
         public abstract int Id { get; }
         protected abstract Position[][] Form { get; }
-        protected abstract Color Color { get; }
         protected abstract Position StartPosition { get;  }
         private int _state;
         private readonly Position _position;
@@ -35,12 +34,16 @@ namespace Assignment5.Model
                 yield return new Position(p.Row + _position.Row, p.Column + _position.Column);
             }
         }
+        /// <summary>
+        /// Method to rotate
+        /// </summary>
         public void RotateClockWise()
-        {
-            // TODO Why modulus?
+        {         
             _state = (_state + 1) % Form.Length;
         }
-
+        /// <summary>
+        /// Method to rotate
+        /// </summary>
         public void RotateCounterClockWise() 
         { 
             if(_state == 0)
@@ -52,11 +55,24 @@ namespace Assignment5.Model
                 _state--;
             }        
         }
+        /// <summary>
+        /// Method to move a block
+        /// </summary>
+        /// <param name="rows">Row-step to move</param>
+        /// <param name="columns">Column-step to move</param>
         public void Move(int rows, int columns)
         {
             _position.Row += rows;
             _position.Column += columns;
         }
-        // TODO Reset?
+        /// <summary>
+        /// Reset state of block when new block is generated
+        /// </summary>
+        public void Reset()
+        {
+            _state = 0;
+            _position.Row = StartPosition.Row;
+            _position.Column = StartPosition.Column;
+        }
     }
 }

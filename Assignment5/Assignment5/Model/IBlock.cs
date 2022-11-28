@@ -22,9 +22,7 @@ namespace Assignment5.Model
         };
         public override int Id => 1;
         // Have the start position be in the invisible row
-        protected override Position StartPosition => new Position(-1, 3);
+        protected override Position StartPosition => new Position(0, 3);
         protected override Position[][] Form => form;
-
-        protected override Color Color => Color.AliceBlue;
     }
 }

@@ -11,14 +11,10 @@ namespace Assignment5.Model
     {
         private readonly Position[][] form = new Position[][]
         {
-            new Position[] { new Position(0,0), new Position(0,1), new Position(1,0), new Position(0,4) }
+            new Position[] { new Position(0,0), new Position(0,1), new Position(1,0), new Position(1,1) }
         };
         public override int Id => 4;
         protected override Position StartPosition => new Position(0,4);
-        protected override Position[][] Form => form;
-
-        protected override Color Color => Color.Yellow;
+        protected override Position[][] Form => form;        
     }
 }
-
-// TODO ADd block queue for next block 

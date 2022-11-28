@@ -16,39 +16,125 @@ namespace Assignment5.Model
         /// </summary>
         
         // Two-dimensional array
-        private readonly int[,] testrisGrid;
+        private readonly int[,] tetrisGrid;
         public int Rows { get;  }
         public int Columns { get; }
-        static private Brush NoBrush = Brushes.Transparent; // For empty labels
-        static private Brush SilverBrush = Brushes.Gray; // For borders
         // Indexer to let the consumer more easily get/set values from the grid class
         public int this[int row, int column]
         {
-            get => testrisGrid[row, column];
-            set => testrisGrid[row, column] = value;
+            get => tetrisGrid[row, column];
+            set => tetrisGrid[row, column] = value;
         }
         // TODO Use in MainViewModel
         public TetrisGrid(int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
-            testrisGrid = new int[Rows, Columns];
-            // TODO REMOVE
-            //BlockControls = new Label[Columns, Rows];
-            //for (int i = 0; i < Columns; i++)
-            //{
-            //    for (int j = 0; j < Rows; j++)
-            //    {
-            //        BlockControls[i, j] = new Label();
-            //        BlockControls[i, j].Background = NoBrush;
-            //        BlockControls[i, j].BorderBrush = SilverBrush;
-            //        BlockControls[i, j].BorderThickness = new Thickness(1, 1, 1, 1);
-            //        Grid.SetRow(BlockControls[i, j], j);
-            //        Grid.SetColumn(BlockControls[i, j], i);
-            //        TetrisGrid.Children.Add(BlockControls[i, j]);
-            //    }
-            //}
+            tetrisGrid = new int[Rows, Columns];
         }
-        // HELPER METHODS NEEDED
+        /// <summary>
+        /// Check if block is inside the tetrisGrid
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns>True/False</returns>
+        public bool IsInside(int row, int column)
+        {
+            return row >= 0 && row < Rows && column >= 0 && column < Columns;
+        }
+        /// <summary>
+        /// Check if square is empty
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public bool IsEmpty(int row, int column)
+        {
+            return IsInside(row, column) && tetrisGrid[row, column] == 0;
+        }
+        /// <summary>
+        /// Helper method to check if row is empty
+        /// </summary>
+        /// <param name="row">Row to check</param>
+        /// <returns></returns>
+        public bool IsRowEmpty(int row)
+        {
+            for (int col = 0; col < Columns; col++)
+            {
+                if (tetrisGrid[row, col] != 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        /// <summary>
+        /// Check if row is full
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        public bool IsRowFull(int row)
+        {
+            for (int col = 0; col < Columns; col++)
+            {
+                if (tetrisGrid[row, col] == 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        /// <summary>
+        /// Set row to empty
+        /// </summary>
+        /// <param name="row">Which row to empty</param>
+        private void ClearRow(int row)
+        {
+            for (int col = 0; col < Columns; col++)
+            {
+                tetrisGrid[row, col] = 0;
+            }
+        }
+        /// <summary>
+        /// Move row down after row is cleared
+        /// </summary>
+        /// <param name="row">Row</param>
+        /// <param name="numRows">How many to remove</param>
+        private void MoveRowDown(int row, int numRows)
+        {
+            for (int col = 0; col < Columns; col++)
+            {
+                tetrisGrid[row + numRows, col] = tetrisGrid[row, col];
+                tetrisGrid[row, col] = 0;
+            }
+        }
+        /// <summary>
+        /// If row is full, clear it and then move other row down
+        /// </summary>
+        /// <returns></returns>
+        public int ClearFullRows()
+        {
+            // TODO TEST
+            int cleared = 0;
+
+            for (int row = Rows - 1; row >= 0; row--)
+            {
+                if (IsRowFull(row))
+                {
+                    ClearRow(row);
+                    cleared++;
+                }
+                else if (cleared > 0)
+                {
+                    MoveRowDown(row, cleared);
+                }
+            }
+
+            return cleared;
+        }
+
+        
     }
 }
