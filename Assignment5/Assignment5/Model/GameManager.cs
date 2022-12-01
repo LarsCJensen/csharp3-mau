@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Assignment5.Model
     public class GameManager
     {
         // Array of colors to map the blocks to
-        private Brush[] tileColors = new Brush[]
+        private readonly Brush[] tileColors = new Brush[]
         {
             Brushes.Transparent,
             Brushes.AliceBlue,
@@ -26,9 +27,9 @@ namespace Assignment5.Model
             Brushes.Red,
         };
 
-        private Random random = new Random();
+        private readonly Random random = new Random();
         // Array of blocks to get a random block for
-        private Block[] blocks = new Block[]
+        private readonly Block[] blocks = new Block[]
         {
             new IBlock(),
             new JBlock(),
@@ -59,6 +60,7 @@ namespace Assignment5.Model
                 }
             }
         }
+        public Block NextBlock { get; private set; }
         public int Score { get; set; }
         private Label[,] _gameGrid;
         
@@ -70,6 +72,7 @@ namespace Assignment5.Model
             _gameGrid = labels;
             GameOver = false;
             CurrentBlock = GetRandomBlock();
+            Score = 0;
         }
         public async Task AsyncStartGame()
         {
@@ -114,9 +117,30 @@ namespace Assignment5.Model
                 _gameGrid[p.Row, p.Column].Background = tileColors[CurrentBlock.Id];                
             }
         }
+        /// <summary>
+        /// Method to draw block
+        /// </summary>
+        private void DrawNextBlock()
+        {
+            foreach (Position p in CurrentBlock.FormPositions())
+            {
+                _gameGrid[p.Row, p.Column].Background = tileColors[CurrentBlock.Id];
+            }
+        }
         private Block GetRandomBlock()
         {
-            return blocks[random.Next(blocks.Length)];
+            if(CurrentBlock == null)
+            {
+                return blocks[random.Next(blocks.Length)];
+            } else
+            {
+                do
+                {
+                    NextBlock = blocks[random.Next(blocks.Length)];
+                } while (NextBlock.Id == CurrentBlock.Id);
+                return NextBlock;
+            }
+            
         }
         /// <summary>
         /// Helper method to return if a block fits
@@ -216,7 +240,5 @@ namespace Assignment5.Model
                 CurrentBlock = GetRandomBlock();
             }
         }
-
-
     }
 }

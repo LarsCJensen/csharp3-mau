@@ -2,6 +2,7 @@
 using Assignment5.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Utilities;
 using static System.Formats.Asn1.AsnWriter;
 using Block = Assignment5.Model.Block;
 
@@ -25,7 +27,7 @@ namespace Assignment5.View
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private GameManager _player1GameManager;
         private GameManager _player2GameManager;
@@ -39,7 +41,40 @@ namespace Assignment5.View
         static private Brush SilverBrush = Brushes.Gray; // For borders
         public bool GameOver { get; set; }
         public Block CurrentBlock { get; private set; }
-        public int Score { get; set; }
+        private int _player1Score = 0;
+        public int Player1Score
+        {
+            get { return _player1Score; }
+            set
+            {
+                _player1Score = value;
+                OnPropertyChanged("Player1Score");
+            }
+        }
+        #region INotifyPropertyChanged
+        // Property changed event handler
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            this.VerifyPropertyName(propertyName);
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                PropertyChangedEventArgs e = new PropertyChangedEventArgs(propertyName);
+                handler(this, e);
+            }
+        }
+        public void VerifyPropertyName(string propertyName)
+        {
+            // Verify that the property name matches a real, public, instance property on this object. 
+            if (TypeDescriptor.GetProperties(this)[propertyName] == null)
+            {
+                string msg = "Invalid property name: " + propertyName;
+                throw new VerifyPropertyException(msg);
+            }
+        }
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
@@ -122,6 +157,7 @@ namespace Assignment5.View
         public async Task AsyncStartGamePlayer1()
         {
             _player1GameManager = new GameManager(BlockLabelsPlayer1, _rows, _columns);
+            Player1Score = _player1GameManager.Score;
             await _player1GameManager.AsyncStartGame();
         }
         /// <summary>
