@@ -15,7 +15,7 @@ namespace Assignment5
         /// Class which holds the game grid 
         /// </summary>
         
-        // Two-dimensional array
+        // Two-dimensional array of ints
         private readonly int[,] tetrisGrid;
         public int Rows { get;  }
         public int Columns { get; }
@@ -25,7 +25,6 @@ namespace Assignment5
             get => tetrisGrid[row, column];
             set => tetrisGrid[row, column] = value;
         }
-        // TODO Use in MainViewModel
         public TetrisGrid(int rows, int columns)
         {
             Rows = rows;
@@ -87,7 +86,7 @@ namespace Assignment5
             return true;
         }
         /// <summary>
-        /// Set row to empty
+        /// Clear row
         /// </summary>
         /// <param name="row">Which row to empty</param>
         private void ClearRow(int row)
@@ -116,7 +115,6 @@ namespace Assignment5
         /// <returns></returns>
         public int ClearFullRows()
         {
-            // TODO TEST
             int cleared = 0;
 
             for (int row = Rows - 1; row >= 0; row--)
@@ -133,8 +131,6 @@ namespace Assignment5
             }
 
             return cleared;
-        }
-
-        
+        }        
     }
 }

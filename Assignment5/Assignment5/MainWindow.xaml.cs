@@ -1,4 +1,8 @@
-﻿using System;
+﻿/***
+ * Lars Jensen 2022-12-04
+ */
+ 
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -50,7 +54,8 @@ namespace Assignment5
             CreatePlayer2GameGrid(_player2Grid);           
         }
         
-        // TODO Refactor   
+        // Helper function to create a playgrid with labels dynamically
+        // Could be refactored
         private void CreatePlayer1GameGrid(Grid grid)
         {
             GridPlayer1.Children.Clear();
@@ -83,6 +88,8 @@ namespace Assignment5
             }
             GridPlayer1.Children.Add(grid);            
         }
+        // Helper function to create a playgrid with labels dynamically
+        // Could be refactored
         private void CreatePlayer2GameGrid(Grid grid)
         {
             GridPlayer2.Children.Clear();
@@ -166,6 +173,7 @@ namespace Assignment5
         //        }
         //    }
         //}
+        #region Tasks
         /// <summary>
         /// Task for Player1 game loop
         /// </summary>
@@ -206,6 +214,7 @@ namespace Assignment5
                 MessageBox.Show("We have a draw!");
             }
         }
+        #endregion
         #region Draw function
         public void Draw(GameManager gameManager)
         {
@@ -252,18 +261,20 @@ namespace Assignment5
             }
         }
         #endregion
+        /// <summary>
+        /// Eventhandler for key down events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (_player1GameManager.GameOver || _player2GameManager.GameOver)
             {
                 return;
-            }
-
-            // Keymap - Player1 kör vissa tasks
-            // Player2 kör andra
-
+            }            
             switch (e.Key)
             {
+                // For each key down, run a new task
                 #region Player1 Controls
                 case Key.Left:
                     Task Player1MoveLeft = Task.Run(() => _player1GameManager.MoveBlockLeft());
@@ -285,9 +296,6 @@ namespace Assignment5
                     Task Player1RotateBlockCounterClockWise = Task.Run(() => _player1GameManager.RotateBlockCCW());
                     Player1RotateBlockCounterClockWise.Wait();
                     break;
-                //case Key.Space:
-                //    _gameManager.DropBlock();
-                //    break;
                 #endregion
                 #region Player2 controls
                 case Key.A:
@@ -311,7 +319,6 @@ namespace Assignment5
                     Player2RotateBlockCounterClockWise.Wait();
                     break;
                 #endregion
-                // TODO Pause game
                 default:
                     return;
             }            

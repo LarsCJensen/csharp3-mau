@@ -1,31 +1,13 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
 
 namespace Assignment5
 {
     public class GameManager
     {
-        // Array of colors to map the blocks to
-        private readonly Brush[] tileColors = new Brush[]
-        {
-            Brushes.Transparent,
-            Brushes.AliceBlue,
-            Brushes.Blue,
-            Brushes.Orange,
-            Brushes.Yellow,
-            Brushes.Green,
-            Brushes.Purple,
-            Brushes.Red,
-        };
+        /// <summary>
+        /// Class to handle game for each player
+        /// </summary>        
 
         private readonly Random random = new Random();
         // Array of blocks to get a random block for
@@ -76,8 +58,12 @@ namespace Assignment5
             CurrentBlock = GetBlock();
             Score = 0;
         }        
+        /// <summary>
+        /// Method to get a new block
+        /// </summary>
+        /// <returns></returns>
         private Block GetBlock()
-        {
+        {            
             Block block = NextBlock;
             do
             {

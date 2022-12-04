@@ -10,16 +10,19 @@ namespace Assignment5
     public abstract class Block
     {
         /// <summary>
-        /// Class for blocks
+        /// Base class for blocks
         /// </summary>
         public abstract int Id { get; }
+        // Which form(s) the block has
         protected abstract Position[][] Form { get; }
         protected abstract Position StartPosition { get;  }
         private int _state;
+        // Position of block
         private readonly Position _position;
 
         public Block()
         {
+            // Set start position for block
             _position = new Position(StartPosition.Row, StartPosition.Column);
             _state = 0;            
         }
@@ -31,6 +34,7 @@ namespace Assignment5
         {
             foreach(Position p in Form[_state])
             {
+                // Yield returns value within the iteration
                 yield return new Position(p.Row + _position.Row, p.Column + _position.Column);
             }
         }

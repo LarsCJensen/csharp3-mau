@@ -9,6 +9,9 @@ namespace Assignment5
 {
     public class IBlock: Block
     {
+        /// <summary>
+        /// Definition of block positions
+        /// </summary>
         private readonly Position[][] form = new Position[][]
         {
             // state == 0
@@ -21,7 +24,7 @@ namespace Assignment5
             new Position[] { new Position(0, 1), new Position(1,1), new Position(2, 1), new Position(3,1)}
         };
         public override int Id => 1;
-        // Have the start position be in the invisible row
+        // Have the start position be in the row above the actual game field
         protected override Position StartPosition => new Position(0, 3);
         protected override Position[][] Form => form;
     }

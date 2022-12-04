@@ -55,9 +55,9 @@
         </Grid>        
         <Label Grid.Row="1" Grid.Column="2" Content="Player2" FontSize="20" FontFamily="Arial" FontWeight="ExtraBold" HorizontalContentAlignment="Center" Foreground="White" Background="Black" Width="250" Height="40" Margin="0,0,0,20" VerticalAlignment="Top" Panel.ZIndex="1"/>
         <Grid x:Name="GridPlayer2" Grid.Row="1" Grid.Column="2" Background="Black" HorizontalAlignment="Stretch" />
-        <TextBox Text="Player1 uses arrows and M to rotate  counter clockwise" TextWrapping="Wrap" Width="200" Grid.Row="2" Grid.Column="0" Background="Transparent" Foreground="White"/>
+        <TextBlock Text="Player1 uses arrows and M to rotate  counter clockwise" TextWrapping="Wrap" Width="200" Grid.Row="2" Grid.Column="0" Background="Transparent" Foreground="White"/>
         <Button x:Name="start" Grid.Column="1" Content="Start" Click="start_Click" HorizontalAlignment="Left" Height="30" Grid.Row="2" VerticalAlignment="Center" Width="50"/>
         <Button x:Name="quit" Grid.Column="1" Content="Quit" Click="quit_Click"  HorizontalAlignment="Left" Height="30" Margin="55,0,0,0" Grid.Row="2" VerticalAlignment="Center" Width="50" RenderTransformOrigin="1.287,0.71"/>
-        <TextBox Text="Player2 uses WASD and Z to rotate counter clockwise" TextWrapping="Wrap" Width="200" Grid.Row="2" Grid.Column="2" Background="Transparent" Foreground="White"/>
+        <TextBlock Text="Player2 uses WASD and Z to rotate counter clockwise" TextWrapping="Wrap" Width="200" Grid.Row="2" Grid.Column="2" Background="Transparent" Foreground="White"/>
     </Grid>
 </Window>
