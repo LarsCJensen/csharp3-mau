@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 
-namespace Assignment5.Model
+namespace Assignment5
 {
     public class TetrisGrid
     {
@@ -98,7 +98,7 @@ namespace Assignment5.Model
             }
         }
         /// <summary>
-        /// Move row down after row is cleared
+        /// Move row down number of rows that are cleared
         /// </summary>
         /// <param name="row">Row</param>
         /// <param name="numRows">How many to remove</param>

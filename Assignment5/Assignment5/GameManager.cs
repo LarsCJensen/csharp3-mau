@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace Assignment5.Model
+namespace Assignment5
 {
     public class GameManager
     {
@@ -62,84 +62,37 @@ namespace Assignment5.Model
         }
         public Block NextBlock { get; private set; }
         public int Score { get; set; }
-        private Label[,] _gameGrid;
-        
+        public Label[,] GameGrid { get; private set; }
+        public Label[,] NextGrid { get; private set; }
+
         public GameManager(Label[,] labels, int rows, int colums)
         {
             // Array of the game area
             TetrisGrid = new TetrisGrid(rows, colums);
             // Labels corresponding to the tetris grid
-            _gameGrid = labels;
+            GameGrid = labels;
             GameOver = false;
-            CurrentBlock = GetRandomBlock();
+            NextBlock = GetRandomBlock();
+            CurrentBlock = GetBlock();
             Score = 0;
-        }
-        public async Task AsyncStartGame()
+        }        
+        private Block GetBlock()
         {
-            Draw();
-            while (!GameOver)
+            Block block = NextBlock;
+            do
             {
-                int delay = Math.Max(75, 1000 - (Score * 25));
-                await Task.Delay(delay);
-                MoveBlockDown();
-                Draw();
-            }
-        }
-
-        public void Draw()
-        {
-            DrawGrid();
-            DrawBlock();
+                NextBlock = GetRandomBlock();
+            } while (block.Id == NextBlock.Id); // Don't return same block as current
+            return block;            
         }
 
         /// <summary>
-        /// Method to draw grid with blocks
+        /// Gets a random block
         /// </summary>
-        private void DrawGrid()
-        {            
-            for (int r = 0; r < TetrisGrid.Rows; r++)
-            {
-                for (int c = 0; c < TetrisGrid.Columns; c++)
-                {
-                    int id = TetrisGrid[r, c];
-                    // For each tile, change background to the corresponding color
-                    _gameGrid[r, c].Background = tileColors[id];
-                }
-            }
-        }
-        /// <summary>
-        /// Method to draw block
-        /// </summary>
-        private void DrawBlock()
-        {
-            foreach (Position p in CurrentBlock.FormPositions())
-            {               
-                _gameGrid[p.Row, p.Column].Background = tileColors[CurrentBlock.Id];                
-            }
-        }
-        /// <summary>
-        /// Method to draw block
-        /// </summary>
-        private void DrawNextBlock()
-        {
-            foreach (Position p in CurrentBlock.FormPositions())
-            {
-                _gameGrid[p.Row, p.Column].Background = tileColors[CurrentBlock.Id];
-            }
-        }
+        /// <returns></returns>
         private Block GetRandomBlock()
         {
-            if(CurrentBlock == null)
-            {
-                return blocks[random.Next(blocks.Length)];
-            } else
-            {
-                do
-                {
-                    NextBlock = blocks[random.Next(blocks.Length)];
-                } while (NextBlock.Id == CurrentBlock.Id);
-                return NextBlock;
-            }
+            return blocks[random.Next(blocks.Length)];            
             
         }
         /// <summary>
@@ -181,6 +134,9 @@ namespace Assignment5.Model
                 PlaceBlock();
             }
         }
+        /// <summary>
+        /// Helper method to move block left
+        /// </summary>
         public void MoveBlockLeft()
         {
             CurrentBlock.Move(0, -1);
@@ -190,7 +146,9 @@ namespace Assignment5.Model
                 CurrentBlock.Move(0, 1);
             }
         }
-
+        /// <summary>
+        /// Helper method to move block right
+        /// </summary>
         public void MoveBlockRight()
         {
             CurrentBlock.Move(0, 1);
@@ -200,7 +158,9 @@ namespace Assignment5.Model
                 CurrentBlock.Move(0, -1);
             }
         }
-
+        /// <summary>
+        /// Helper method to rotate block
+        /// </summary>
         public void RotateBlockCW()
         {
             CurrentBlock.RotateClockWise();
@@ -210,7 +170,9 @@ namespace Assignment5.Model
                 CurrentBlock.RotateCounterClockWise();
             }
         }
-
+        /// <summary>
+        /// Helper method to rotate block
+        /// </summary>
         public void RotateBlockCCW()
         {
             CurrentBlock.RotateCounterClockWise();
@@ -221,7 +183,9 @@ namespace Assignment5.Model
             }
         }
         #endregion
-
+        /// <summary>
+        /// Helper method to place block when it has reached a stop
+        /// </summary>
         private void PlaceBlock()
         {
             foreach (Position p in CurrentBlock.FormPositions())
@@ -237,7 +201,7 @@ namespace Assignment5.Model
             }
             else
             {
-                CurrentBlock = GetRandomBlock();
+                CurrentBlock = GetBlock();
             }
         }
     }
