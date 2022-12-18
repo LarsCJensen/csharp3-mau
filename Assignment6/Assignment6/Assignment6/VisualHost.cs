@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
+using Point = System.Windows.Point;
 
 namespace Assignment6
 {
@@ -17,12 +14,15 @@ namespace Assignment6
         double _yHeight;
         double _xScale;
         double _yScale;
-        // TODO REMOVE
+        // TODO Are these used?
         private double _xActualSize;
         private double _yActualSize;
+        // TODO Make Local
+        private double _stepValueX;
+        private double _stepValueY;
         public VisualHost()
         {
-            _children = new VisualCollection(this);
+            _children = new VisualCollection(this);            
         }
         // Provide a required override for the VisualChildrenCount property.
         protected override int VisualChildrenCount => _children.Count;
@@ -36,35 +36,12 @@ namespace Assignment6
             }
 
             return _children[index];
-        }
-        // TODO REMOVE
-        public void DrawStuff()
-        {
-            PointCollection points = new PointCollection();
-            points.Add(new Point(50, 20));
-            points.Add(new Point(80, 30));
-            points.Add(new Point(120, 40));
-            DrawingVisual visual = new DrawingVisual();
-            DrawingContext context = visual.RenderOpen();
-            Pen pen = new Pen(Brushes.Black, 5);
-            Point lastPoint = new Point();
-            foreach (Point point in points)
-            {
-                if (lastPoint.X.Equals(null))
-                {
-                    lastPoint = point;
-                    continue;
-                }
-                context.DrawLine(pen, lastPoint, point);
-                lastPoint = point;
-            }
-            context.Close();
-            _children.Add(visual);
-        }
-        public void DrawScale(int xMax, int xInterval, double xWidth, int yMax, int yInterval, double yHeight)
+        }      
+        
+        public void DrawScale(int xMax, int xInterval, double xWidth, int yMax, int yInterval, double yHeight, string title)
         {
             _yHeight = yHeight;
-            // TODO Calculate _scale
+            // TODO Is this used?
             _xActualSize = CalculateActualSize(xWidth, _offset);
             _yActualSize = CalculateActualSize(yHeight, _offset);
             // TODO Delete?
@@ -72,23 +49,30 @@ namespace Assignment6
             _yScale = _yActualSize / yMax;
 
             int numberOfPoints = xMax / xInterval;
-            PointCollection xPoints = CalculatePointsForScale(numberOfPoints, _xActualSize, _offset, yHeight - _offset);
+            _stepValueX = CalculateStepValue(numberOfPoints, _xActualSize);
+            PointCollection xPoints = CalculatePointsForScale(numberOfPoints, _stepValueX, _offset, yHeight - _offset);
             numberOfPoints = yMax / yInterval;
-            PointCollection yPoints = CalculatePointsForScale(numberOfPoints, _yActualSize, _offset, yHeight - _offset, false);
+            _stepValueY = CalculateStepValue(numberOfPoints, _yActualSize);
+            PointCollection yPoints = CalculatePointsForScale(numberOfPoints, _stepValueY, _offset, yHeight - _offset, false);
 
             _children.Add(DrawLine(xPoints, Brushes.Black, 2));
             _children.Add(DrawLine(yPoints, Brushes.Black, 2));
             // Draw scale markers using Ellips            
             _children.Add(DrawEllipse(xPoints, Brushes.Black, 3, 3));
             _children.Add(DrawEllipse(yPoints, Brushes.Black, 3, 3));
-            // TODO Should be 00
+            
+            // Draw the figures on the axises
             _children.Add(DrawScaleText(xPoints, xInterval, 10, Brushes.Black));
-            _children.Add(DrawScaleText(yPoints, yInterval, 10, Brushes.Black, false));            
+            _children.Add(DrawScaleText(yPoints, yInterval, 10, Brushes.Black, false));
+
+            // Draw the title 
+            Point titlePoint = new Point((200 * _xScale) +_offset, (0 * _yScale));
+            _children.Add(DrawDiagramTitle(title, titlePoint));
         }
         public void DrawPoints(PointCollection points)
         {
             // TODO Use calculatepoints for
-            PointCollection calculatedPoints = TransformPoints(points);
+            PointCollection calculatedPoints = TransformPointsToCanvas(points);
             _children.Add(DrawLine(calculatedPoints, Brushes.Black, 1));
         }
         // Helper function to calculate scale
@@ -96,13 +80,19 @@ namespace Assignment6
         {
             return source - offset * 2;
         }
+
+        private double CalculateStepValue(int numberOfPoints, double size)
+        {
+            return Math.Round(size / numberOfPoints);
+        }
         // Helper function to calculate point collection for x and y
-        private PointCollection CalculatePointsForScale(int numberOfPoints, double size, int offset, double startY, bool x = true)
+        private PointCollection CalculatePointsForScale(int numberOfPoints, double stepValue, int offset, double startY, bool x = true)
         {
             PointCollection points = new PointCollection();
             // Calculate stepValue based on the scale
             // We want some room in the top and bottom
-            double stepValue = Math.Round(size / numberOfPoints);
+            // TODO Keep this?
+            //double stepValue = Math.Round(size / numberOfPoints);
             // Add starting point            
             points.Add(new Point(offset, startY));    
             for(int i = 1; i < numberOfPoints + 1; i++)
@@ -119,7 +109,7 @@ namespace Assignment6
             }
             return points;
         }
-        private PointCollection TransformPoints(PointCollection points)
+        private PointCollection TransformPointsToCanvas(PointCollection points)
         {
             // TODO Vi måste ha med scale
             // xMin/yMin xMax/yMax
@@ -128,9 +118,18 @@ namespace Assignment6
             {
                 //double scaledXPoint = point.X * _xScale;
                 //double scaledYPoint = point.Y * _yScale;
-                transformedPoints.Add(new Point(point.X + _offset, _yHeight - ((point.Y * _yScale) + _offset)));
+                // Use step
+                transformedPoints.Add(new Point((point.X * _xScale) + _offset, _yHeight - ((point.Y * _yScale) + _offset)));
             }
             return transformedPoints;
+        }
+        
+        public Point TransformCanvasToPoints(Point point)
+        {
+            // 0, 0 == top left
+            // 0, 0 på skalan == 40, 330
+            // 0, 0 på skalan maximerad == 40, 885
+            return new Point(point.X - _offset, (_yHeight - _offset) - point.Y);
         }
 
         public DrawingVisual DrawLine(PointCollection points, Brush color, int size)
@@ -169,7 +168,7 @@ namespace Assignment6
             context.Close();
             return visual;
         }
-        public DrawingVisual DrawScaleText(PointCollection points, int interval, int size, Brush color, bool x = true)
+        private DrawingVisual DrawScaleText(PointCollection points, int interval, int size, Brush color, bool x = true)
         {
 
             DrawingVisual visual = new DrawingVisual();
@@ -204,6 +203,16 @@ namespace Assignment6
             }
             context.Close();
             return visual;
+        }
+        private DrawingVisual DrawDiagramTitle(string title, Point point)
+        {
+            DrawingVisual visual = new DrawingVisual();
+            DrawingContext context = visual.RenderOpen();
+            FlowDirection direction = FlowDirection.LeftToRight;
+            DrawText(ref context, title, point, direction, 20, Brushes.DarkRed);
+            context.Close();
+            return visual;
+
         }
         private void DrawText(ref DrawingContext context, string text, Point point, FlowDirection flowDirection, int size, Brush color)
         {

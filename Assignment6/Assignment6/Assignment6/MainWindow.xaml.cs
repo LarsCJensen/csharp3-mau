@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace Assignment6
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<Point> _points = new List<Point>();
         VisualHost _visualHost = new VisualHost();
         int _xMax = 0;
         int _xInterval = 0;
@@ -29,9 +31,14 @@ namespace Assignment6
         int _yMax = 0;
         int _yInterval = 0;
         double _yHeight = 0;
+        string _diagramTitle;
+        CollectionView _view;
         public MainWindow()
         {
             InitializeComponent();
+            groupBoxCoordinates.IsEnabled = false;
+            Coordinates.ItemsSource = _points;
+            _view = (CollectionView)CollectionViewSource.GetDefaultView(Coordinates.ItemsSource);
         }
         
         private void Clear_Diagram_Click(object sender, RoutedEventArgs e)
@@ -39,6 +46,9 @@ namespace Assignment6
             // Clears the children, which allows other children to be added
             diagramCanvas.Children.Clear();
             groupSettings.IsEnabled = true;
+            groupBoxCoordinates.IsEnabled = false;
+            Coordinates.ItemsSource = null;
+            _points = new List<Point>();
         }
 
         private void Save_Settings_Click(object sender, RoutedEventArgs e)
@@ -49,18 +59,26 @@ namespace Assignment6
             _yMax = TryParseToInt(YMax.Text);
             _yInterval = TryParseToInt(YInterval.Text);
             _yHeight = diagramCanvas.ActualHeight;
-            if (NoZeroValues())
+            _diagramTitle = DiagramTitle.Text;
+            if (NoZeroValues() && _diagramTitle is not "")
             {
                 groupSettings.IsEnabled = false;
+                groupBoxCoordinates.IsEnabled = true;
+                _visualHost.DrawScale(_xMax, _xInterval, _xWidth, _yMax, _yInterval, _yHeight, _diagramTitle);
+                diagramCanvas.Children.Add(_visualHost);
             } else
             {
-                MessageBox.Show("Zero values is not allowed!", "No zero values!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Title required and zero values is not allowed!", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            Coordinates.Items.Add(new Point(TryParseToInt(XCoordinate.Text), TryParseToInt(YCoordinate.Text)));
+            _points.Add(new Point(TryParseToInt(XCoordinate.Text), TryParseToInt(YCoordinate.Text)));
+            Coordinates.ItemsSource = _points;
+            // Clear filter
+            _view.SortDescriptions.Clear();
+            Coordinates.Items.Refresh();
             XCoordinate.Text = string.Empty;
             YCoordinate.Text = string.Empty;
         }
@@ -79,22 +97,25 @@ namespace Assignment6
             _visualHost = new VisualHost();
             _xWidth = diagramCanvas.ActualWidth;
             _yHeight = diagramCanvas.ActualHeight;
-            Draw();            
+            // This check is needed since SizeChanged is called before settings are set
+            if (NoZeroValues())
+            {
+                Draw();
+            }
         }
         private void Draw()
         {
-            if(NoZeroValues())
+            _visualHost.DrawScale(_xMax, _xInterval, _xWidth, _yMax, _yInterval, _yHeight, _diagramTitle);
+            PointCollection points = new PointCollection();
+            foreach(Point point in Coordinates.Items)
             {
-                _visualHost.DrawScale(_xMax, _xInterval, _xWidth, _yMax, _yInterval, _yHeight);
-                PointCollection points = new PointCollection();
-                foreach(Point point in Coordinates.Items)
-                {
-                    points.Add(point);
-                }
-                _visualHost.DrawPoints(points);
-                diagramCanvas.Children.Add(_visualHost);
-            }            
+                points.Add(point);
+            }
+            _visualHost.DrawPoints(points);
+            diagramCanvas.Children.Add(_visualHost);
+            
         }
+        // Helper function to make sure we don't get zero values
         private bool NoZeroValues()
         {
             if (_xMax == 0 || _xInterval == 0 || _xWidth == 0 || _yMax == 0 || _yInterval == 0 || _yHeight == 0)
@@ -108,9 +129,43 @@ namespace Assignment6
                 return i;
             } else
             {
-                MessageBox.Show("Could not parse text to int", "Parse error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show("Could not parse text to int", "Parse error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return 0;
             }
+        }
+        // Function to Exit program
+        private void Close_Executed(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+        // Simple event to sort by X/Y
+        private void Sort_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = e.OriginalSource as MenuItem;
+            string menuHeader = menuItem.Header as string;
+            _view.SortDescriptions.Clear();
+            if (menuHeader == "_Sort_by_X")
+            {
+                // Sort listview by X
+                _view.SortDescriptions.Add(new SortDescription("X", ListSortDirection.Ascending));
+            }
+            else
+            {
+                // Sort listview by Y
+                _view.SortDescriptions.Add(new SortDescription("Y", ListSortDirection.Ascending));
+            }
+        }
+        private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!NoZeroValues())
+                return;
+            // Transform point before adding it
+            // X - offset
+            Point newPoint = e.GetPosition((UIElement)sender);
+            Point transFormedPoint = _visualHost.TransformCanvasToPoints(newPoint);
+            _points.Add(transFormedPoint);
+            Coordinates.Items.Refresh();
+            Draw_Click(sender, e);
         }
     }
 }

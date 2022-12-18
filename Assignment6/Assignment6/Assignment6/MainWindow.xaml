@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Assignment6"
         mc:Ignorable="d"
-        Title="Diagran Generator" Height="500" Width="800" SizeChanged="Window_SizeChanged">
+        Title="Diagram Generator" Height="500" Width="800" SizeChanged="Window_SizeChanged">
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="Close_Executed" />
+    </Window.CommandBindings>
+    
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.483,0.988" StartPoint="0.041,0.082">
@@ -23,8 +27,14 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Menu x:Name="menu" Grid.Row="0" Grid.ColumnSpan="2">
-            <MenuItem Header="MenuItem1" />
-            <MenuItem Header="MenuItem2"/>
+            <MenuItem Header="File">
+                <MenuItem Header="_Exit" Command="Close" />
+            </MenuItem>
+
+            <MenuItem Header="Data">
+                <MenuItem Header="_Sort_by_X" Click="Sort_Click" />
+                <MenuItem Header="_Sort_by_Y" Click="Sort_Click" />
+            </MenuItem>
         </Menu>
         <GroupBox x:Name="groupSettings" Header="Settings"  Grid.Row="1" Grid.Column="0" Height="175" VerticalAlignment="Top" >
             <Grid>
@@ -37,7 +47,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Orientation="Horizontal" >
                     <Label Content="Title" Height="25"/>
-                    <TextBox Height="20" Width="150" VerticalAlignment="Center"/>
+                    <TextBox x:Name="DiagramTitle" Height="20" Width="150" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
                     <Label Content="Max" Height="25"/>
@@ -92,7 +102,7 @@
                 <Button Grid.Row="4" Grid.ColumnSpan="2" Content="Draw" Click="Draw_Click" Height="20" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="35,0,0,0"/>
             </Grid>
         </GroupBox>
-        <Canvas x:Name="diagramCanvas" Grid.Row="1" Grid.Column="1" Margin="10" Background="White"/>
+        <Canvas x:Name="diagramCanvas" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" Grid.Row="1" Grid.Column="1" Margin="10" Background="White" Visibility="Visible"/>
         <Button Grid.Row="2" Grid.Column="1" Content="Clear diagram" Click="Clear_Diagram_Click" Width="100" Height="25" HorizontalAlignment="Right" Margin="0,0,100,0"/>
 
     </Grid>
