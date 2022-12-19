@@ -12,14 +12,15 @@ namespace Assignment6
         private VisualCollection _children;
         int _offset = 40;
         double _yHeight;
-        double _xScale;
-        double _yScale;
-        // TODO Are these used?
+        // Local variables to hold the scale when transforming points
+        double _xCanvasScale;
+        double _yCanvasScale;
+        double _xPointScale;
+        double _yPointScale;
+        
         private double _xActualSize;
         private double _yActualSize;
-        // TODO Make Local
-        private double _stepValueX;
-        private double _stepValueY;
+        
         public VisualHost()
         {
             _children = new VisualCollection(this);            
@@ -41,22 +42,29 @@ namespace Assignment6
         public void DrawScale(int xMax, int xInterval, double xWidth, int yMax, int yInterval, double yHeight, string title)
         {
             _yHeight = yHeight;
-            // TODO Is this used?
+            // Actual size of the diagram area
             _xActualSize = CalculateActualSize(xWidth, _offset);
             _yActualSize = CalculateActualSize(yHeight, _offset);
-            // TODO Delete?
-            _xScale = _xActualSize / xMax;
-            _yScale = _yActualSize / yMax;
+            
+            // Coordinates used to convert to canvas units
+            _xCanvasScale = _xActualSize / xMax;
+            _yCanvasScale = _yActualSize / yMax;
+
+            // Coordinates used to convert from canvas units
+            _xPointScale = xMax / _xActualSize;
+            _yPointScale = yMax / _yActualSize;
 
             int numberOfPoints = xMax / xInterval;
-            _stepValueX = CalculateStepValue(numberOfPoints, _xActualSize);
+            double _stepValueX = CalculateStepValue(numberOfPoints, _xActualSize);
             PointCollection xPoints = CalculatePointsForScale(numberOfPoints, _stepValueX, _offset, yHeight - _offset);
+            
             numberOfPoints = yMax / yInterval;
-            _stepValueY = CalculateStepValue(numberOfPoints, _yActualSize);
+            double _stepValueY = CalculateStepValue(numberOfPoints, _yActualSize);
             PointCollection yPoints = CalculatePointsForScale(numberOfPoints, _stepValueY, _offset, yHeight - _offset, false);
 
             _children.Add(DrawLine(xPoints, Brushes.Black, 2));
             _children.Add(DrawLine(yPoints, Brushes.Black, 2));
+            
             // Draw scale markers using Ellips            
             _children.Add(DrawEllipse(xPoints, Brushes.Black, 3, 3));
             _children.Add(DrawEllipse(yPoints, Brushes.Black, 3, 3));
@@ -66,12 +74,15 @@ namespace Assignment6
             _children.Add(DrawScaleText(yPoints, yInterval, 10, Brushes.Black, false));
 
             // Draw the title 
-            Point titlePoint = new Point((200 * _xScale) +_offset, (0 * _yScale));
+            Point titlePoint = new Point((200 * _xCanvasScale) +_offset, (0 * _yCanvasScale));
             _children.Add(DrawDiagramTitle(title, titlePoint));
         }
+        /// <summary>
+        /// Draw points based on collection
+        /// </summary>
+        /// <param name="points"></param>
         public void DrawPoints(PointCollection points)
-        {
-            // TODO Use calculatepoints for
+        {            
             PointCollection calculatedPoints = TransformPointsToCanvas(points);
             _children.Add(DrawLine(calculatedPoints, Brushes.Black, 1));
         }
@@ -80,7 +91,7 @@ namespace Assignment6
         {
             return source - offset * 2;
         }
-
+        // Helper function to calculate steo in scale
         private double CalculateStepValue(int numberOfPoints, double size)
         {
             return Math.Round(size / numberOfPoints);
@@ -89,10 +100,6 @@ namespace Assignment6
         private PointCollection CalculatePointsForScale(int numberOfPoints, double stepValue, int offset, double startY, bool x = true)
         {
             PointCollection points = new PointCollection();
-            // Calculate stepValue based on the scale
-            // We want some room in the top and bottom
-            // TODO Keep this?
-            //double stepValue = Math.Round(size / numberOfPoints);
             // Add starting point            
             points.Add(new Point(offset, startY));    
             for(int i = 1; i < numberOfPoints + 1; i++)
@@ -109,32 +116,34 @@ namespace Assignment6
             }
             return points;
         }
+        // Transforms points to canvas units
         private PointCollection TransformPointsToCanvas(PointCollection points)
         {
-            // TODO Vi måste ha med scale
-            // xMin/yMin xMax/yMax
             PointCollection transformedPoints = new PointCollection();
             foreach(Point point in points)
             {
-                //double scaledXPoint = point.X * _xScale;
-                //double scaledYPoint = point.Y * _yScale;
-                // Use step
-                transformedPoints.Add(new Point((point.X * _xScale) + _offset, _yHeight - ((point.Y * _yScale) + _offset)));
+                transformedPoints.Add(TransformPointToCanvas(point));
             }
             return transformedPoints;
         }
-        
-        public Point TransformCanvasToPoints(Point point)
+        // Transfor point to canvas units
+        private Point TransformPointToCanvas(Point point)
         {
-            // 0, 0 == top left
-            // 0, 0 på skalan == 40, 330
-            // 0, 0 på skalan maximerad == 40, 885
-            return new Point(point.X - _offset, (_yHeight - _offset) - point.Y);
+            double x = (point.X * _xCanvasScale) + _offset;
+            double y = _yHeight - ((point.Y * _yCanvasScale) + _offset);
+            return new Point(x, y);
         }
-
+        // Transforms canvas units to points
+        public Point TransformCanvasToPoint(Point point)
+        {            
+            double x = Math.Round((point.X - _offset) * _xPointScale) ;
+            double y = Math.Round(((_yHeight - _offset) * _yPointScale) - (point.Y * _yPointScale));
+            return new Point(x, y);
+        }
+        // Helper method to draw a line
         public DrawingVisual DrawLine(PointCollection points, Brush color, int size)
         {
-            // TODO pass in pen
+            // FUTURE pass in pen
             Pen scalePen = new Pen(color, size);
 
             DrawingVisual visual = new DrawingVisual();
@@ -153,6 +162,7 @@ namespace Assignment6
             context.Close();
             return visual;
         }
+        // Helper method to draw an ellipse
         public DrawingVisual DrawEllipse(PointCollection points, Brush color, int radiusX, int radiusY)
         {
             Pen scalePen = new Pen(color, 1);
@@ -168,6 +178,7 @@ namespace Assignment6
             context.Close();
             return visual;
         }
+        // Helper method to draw scale text
         private DrawingVisual DrawScaleText(PointCollection points, int interval, int size, Brush color, bool x = true)
         {
 
@@ -183,27 +194,12 @@ namespace Assignment6
             for(int i = 0; i < points.Count;i++)
             {
                 string scaleText = (interval * i).ToString();
-                DrawText(ref context, scaleText, points[i], direction, size, color);
-                //FlowDirection direction = FlowDirection.LeftToRight;
-                //string pointString = point.X.ToString();
-                //if (x == false)
-                //{
-                //    pointString = point.Y.ToString();
-                //}
-
-                //context.DrawText(
-                //    new FormattedText(
-                //        pointString, 
-                //        CultureInfo.GetCultureInfo("en-us"),
-                //        direction, 
-                //        new Typeface("Verdana"),
-                //        size,
-                //        color), 
-                //    point);                
+                DrawText(ref context, scaleText, points[i], direction, size, color);                             
             }
             context.Close();
             return visual;
         }
+        // Helper method to draw diagram title
         private DrawingVisual DrawDiagramTitle(string title, Point point)
         {
             DrawingVisual visual = new DrawingVisual();
@@ -214,6 +210,7 @@ namespace Assignment6
             return visual;
 
         }
+        // Helper method to draw text
         private void DrawText(ref DrawingContext context, string text, Point point, FlowDirection flowDirection, int size, Brush color)
         {
             
