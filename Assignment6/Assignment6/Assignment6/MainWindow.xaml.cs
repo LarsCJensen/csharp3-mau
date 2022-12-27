@@ -26,10 +26,10 @@ namespace Assignment6
         List<Point> _points = new List<Point>();
         VisualHost _visualHost = new VisualHost();
         // Local variables for settings
-        int _xMax = 0;
+        double _xMax = 0;
         int _xInterval = 0;
         double _xWidth = 0;
-        int _yMax = 0;
+        double _yMax = 0;
         int _yInterval = 0;
         double _yHeight = 0;
         string _diagramTitle;
@@ -39,7 +39,7 @@ namespace Assignment6
         {
             InitializeComponent();
             groupBoxCoordinates.IsEnabled = false;
-            Coordinates.ItemsSource = _points;
+            Coordinates.ItemsSource = _points;            
             _view = (CollectionView)CollectionViewSource.GetDefaultView(Coordinates.ItemsSource);
         }
         
@@ -57,10 +57,10 @@ namespace Assignment6
         private void Save_Settings_Click(object sender, RoutedEventArgs e)
         {
             Coordinates.ItemsSource = _points;
-            _xMax = TryParseToInt(XMax.Text);
+            _xMax = TryParseToDouble(XMax.Text);
             _xInterval = TryParseToInt(XInterval.Text);
             _xWidth = diagramCanvas.ActualWidth;
-            _yMax = TryParseToInt(YMax.Text);
+            _yMax = TryParseToDouble(YMax.Text);
             _yInterval = TryParseToInt(YInterval.Text);
             _yHeight = diagramCanvas.ActualHeight;
             _diagramTitle = DiagramTitle.Text;
@@ -79,7 +79,7 @@ namespace Assignment6
         // Event for Add click
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            _points.Add(new Point(TryParseToInt(XCoordinate.Text), TryParseToInt(YCoordinate.Text)));
+            _points.Add(new Point(TryParseToDouble(XCoordinate.Text), TryParseToDouble(YCoordinate.Text)));
             Coordinates.ItemsSource = _points;
             // Clear filter
             _view.SortDescriptions.Clear();
@@ -130,14 +130,27 @@ namespace Assignment6
             return true;
         }
         // Helper to try to parse text to int
-        private int TryParseToInt(string text)
+        private static int TryParseToInt(string text)
         {
-            if(int.TryParse(text, out int i))
+            if (int.TryParse(text, out int i))
+            {
+                return i;
+            }
+            else
+            {
+                MessageBox.Show("Could not parse text to int", "Parse error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return 0;
+            }
+        }
+        // Helper to try to parse text to double
+        private static double TryParseToDouble(string text)
+        {
+            if(double.TryParse(text, out double i))
             {
                 return i;
             } else
             {
-                //MessageBox.Show("Could not parse text to int", "Parse error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Could not parse text to double", "Parse error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return 0;
             }
         }
