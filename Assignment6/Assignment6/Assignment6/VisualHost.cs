@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -39,7 +40,7 @@ namespace Assignment6
             return _children[index];
         }      
         
-        public void DrawScale(int xMax, int xInterval, double xWidth, int yMax, int yInterval, double yHeight, string title)
+        public void DrawScale(double xMax, int xInterval, double xWidth, double yMax, int yInterval, double yHeight, string title)
         {
             _yHeight = yHeight;
             // Actual size of the diagram area
@@ -54,13 +55,12 @@ namespace Assignment6
             _xPointScale = xMax / _xActualSize;
             _yPointScale = yMax / _yActualSize;
 
-            int numberOfPoints = xMax / xInterval;
-            double _stepValueX = CalculateStepValue(numberOfPoints, _xActualSize);
-            PointCollection xPoints = CalculatePointsForScale(numberOfPoints, _stepValueX, _offset, yHeight - _offset);
+            // Value of each step in the diagram
+            double _stepValueX = CalculateStepValue(xInterval, _xActualSize);
+            PointCollection xPoints = CalculatePointsForScale(xInterval, _stepValueX, _offset, yHeight - _offset);
             
-            numberOfPoints = yMax / yInterval;
-            double _stepValueY = CalculateStepValue(numberOfPoints, _yActualSize);
-            PointCollection yPoints = CalculatePointsForScale(numberOfPoints, _stepValueY, _offset, yHeight - _offset, false);
+            double _stepValueY = CalculateStepValue(yInterval, _yActualSize);
+            PointCollection yPoints = CalculatePointsForScale(yInterval, _stepValueY, _offset, yHeight - _offset, false);
 
             _children.Add(DrawLine(xPoints, Brushes.Black, 2));
             _children.Add(DrawLine(yPoints, Brushes.Black, 2));
@@ -68,13 +68,15 @@ namespace Assignment6
             // Draw scale markers using Ellips            
             _children.Add(DrawEllipse(xPoints, Brushes.Black, 3, 3));
             _children.Add(DrawEllipse(yPoints, Brushes.Black, 3, 3));
-            
+
             // Draw the figures on the axises
-            _children.Add(DrawScaleText(xPoints, xInterval, 10, Brushes.Black));
-            _children.Add(DrawScaleText(yPoints, yInterval, 10, Brushes.Black, false));
+            double stepIncrementValue = xMax / xInterval;
+            _children.Add(DrawScaleText(xPoints, stepIncrementValue, 10, Brushes.Black));
+            stepIncrementValue = yMax / yInterval;
+            _children.Add(DrawScaleText(yPoints, stepIncrementValue, 10, Brushes.Black, false));
 
             // Draw the title 
-            Point titlePoint = new Point((200 * _xCanvasScale) +_offset, (0 * _yCanvasScale));
+            Point titlePoint = new Point((_xActualSize / 2) +_offset, 10);
             _children.Add(DrawDiagramTitle(title, titlePoint));
         }
         /// <summary>
@@ -91,18 +93,18 @@ namespace Assignment6
         {
             return source - offset * 2;
         }
-        // Helper function to calculate steo in scale
-        private double CalculateStepValue(int numberOfPoints, double size)
+        // Helper function to calculate step in scale
+        private double CalculateStepValue(double numberOfPoints, double size)
         {
-            return Math.Round(size / numberOfPoints);
+            return size / numberOfPoints;
         }
         // Helper function to calculate point collection for x and y
-        private PointCollection CalculatePointsForScale(int numberOfPoints, double stepValue, int offset, double startY, bool x = true)
+        private PointCollection CalculatePointsForScale(double interval, double stepValue, int offset, double startY, bool x = true)
         {
             PointCollection points = new PointCollection();
-            // Add starting point            
+            // Add origo point            
             points.Add(new Point(offset, startY));    
-            for(int i = 1; i < numberOfPoints + 1; i++)
+            for(int i = 1; i < interval + 1; i++)
             {
                 if (x == true)
                 {                    
@@ -136,8 +138,8 @@ namespace Assignment6
         // Transforms canvas units to points
         public Point TransformCanvasToPoint(Point point)
         {            
-            double x = Math.Round((point.X - _offset) * _xPointScale) ;
-            double y = Math.Round(((_yHeight - _offset) * _yPointScale) - (point.Y * _yPointScale));
+            double x = (point.X - _offset) * _xPointScale ;
+            double y = ((_yHeight - _offset) * _yPointScale) - (point.Y * _yPointScale);
             return new Point(x, y);
         }
         // Helper method to draw a line
@@ -179,7 +181,7 @@ namespace Assignment6
             return visual;
         }
         // Helper method to draw scale text
-        private DrawingVisual DrawScaleText(PointCollection points, int interval, int size, Brush color, bool x = true)
+        private DrawingVisual DrawScaleText(PointCollection points, double stepIntervalValue, int size, Brush color, bool x = true)
         {
 
             DrawingVisual visual = new DrawingVisual();
@@ -193,7 +195,7 @@ namespace Assignment6
 
             for(int i = 0; i < points.Count;i++)
             {
-                string scaleText = (interval * i).ToString();
+                string scaleText = FormatDecimalString(stepIntervalValue * i);
                 DrawText(ref context, scaleText, points[i], direction, size, color);                             
             }
             context.Close();
@@ -223,6 +225,23 @@ namespace Assignment6
                     size,
                     color),
                 point);
+        }
+        // TODO Move to Utilities
+        private string FormatDecimalString(double value)
+        {
+            string s = string.Format("{0:0.00}", value);
+
+            if (s.EndsWith("00"))
+            {
+                return ((int)value).ToString();
+            }
+            else if (s.EndsWith("0") && s != "0") {
+                return s.Substring(0, s.Length - 1);
+            }
+            else
+            {
+                return s;
+            }
         }
     }
 }
