@@ -39,13 +39,13 @@ namespace Assignment6
         {
             InitializeComponent();
             groupBoxCoordinates.IsEnabled = false;
-            Coordinates.ItemsSource = _points;            
+            Coordinates.ItemsSource = _points;
             _view = (CollectionView)CollectionViewSource.GetDefaultView(Coordinates.ItemsSource);
         }
-        
+
         // Helper method to clear diagram
         private void Clear_Diagram_Click(object sender, RoutedEventArgs e)
-        {            
+        {
             // Clears the children, which allows other children to be added
             diagramCanvas.Children.Clear();
             groupSettings.IsEnabled = true;
@@ -71,7 +71,8 @@ namespace Assignment6
                 groupBoxCoordinates.IsEnabled = true;
                 _visualHost.DrawScale(_xMax, _xInterval, _xWidth, _yMax, _yInterval, _yHeight, _diagramTitle);
                 diagramCanvas.Children.Add(_visualHost);
-            } else
+            }
+            else
             {
                 MessageBox.Show("Title required and zero values is not allowed!", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -113,14 +114,14 @@ namespace Assignment6
         {
             _visualHost.DrawScale(_xMax, _xInterval, _xWidth, _yMax, _yInterval, _yHeight, _diagramTitle);
             PointCollection points = new PointCollection();
-            foreach(Point point in Coordinates.Items)
+            foreach (Point point in Coordinates.Items)
             {
                 points.Add(point);
             }
             _visualHost.DrawPoints(points);
             // Add the visual host to the canvas
             diagramCanvas.Children.Add(_visualHost);
-            
+
         }
         // Helper function to make sure we don't get zero values
         private bool NoZeroValues()
@@ -145,10 +146,11 @@ namespace Assignment6
         // Helper to try to parse text to double
         private static double TryParseToDouble(string text)
         {
-            if(double.TryParse(text, out double i))
+            if (double.TryParse(text, out double i))
             {
                 return i;
-            } else
+            }
+            else
             {
                 MessageBox.Show("Could not parse text to double", "Parse error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return 0;
@@ -191,7 +193,7 @@ namespace Assignment6
         }
         // Helper function to refresh view
         private void RefreshView()
-        {            
+        {
             _view = (CollectionView)CollectionViewSource.GetDefaultView(Coordinates.ItemsSource);
             Coordinates.Items.Refresh();
         }
