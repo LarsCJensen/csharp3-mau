@@ -1,0 +1,81 @@
+﻿<Window x:Class="LoveYourBudget.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LoveYourBudget"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="500" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="200" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Menu>
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New Budget" Click="NewBudget_Click" />
+                    <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
+                </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem Header="_About" Command="{Binding OpenAbout}" />
+                </MenuItem>
+            </Menu>
+        </Grid>
+
+        <StackPanel Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="80" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="125" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
+                    <Label Content="{Binding YearMonth, FallbackValue='2023-01'}" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="1">
+                    <Label Content="Income" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="1">
+                    <Label Content="{Binding Income, FallbackValue='40 000'}" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="2">
+                    <Label Content="Budget Expenses" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="2">
+                    <Label Content="{Binding BudgetExpenses, FallbackValue='20 000'}" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="3">
+                    <Label Content="Actual Expenses" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="3">
+                    <Label Content="{Binding ActualExpenses, FallbackValue='14 000'}" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="4">
+                    <Label Content="Top expense category" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="4">
+                    <Label Content="{Binding TopExpenseCategory, FallbackValue='Groceries'}" />
+                </StackPanel>
+            </Grid>
+
+        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+        </Grid>
+    </Grid>
+</Window>
