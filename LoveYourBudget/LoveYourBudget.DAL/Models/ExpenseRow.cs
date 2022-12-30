@@ -11,10 +11,11 @@ namespace LoveYourBudget
     public class ExpenseRow : BaseModel
     {
         [Required]
+        public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
         [Required]
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
         [Required]
-        public DateTime Date { get; set; } = DateTime.UtcNow;
+        public DateTime Date { get; set; } = DateTime.Now;
     }
 }

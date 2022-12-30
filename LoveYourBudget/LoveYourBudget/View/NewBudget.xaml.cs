@@ -20,11 +20,11 @@ namespace LoveYourBudget.View
     /// </summary>
     public partial class NewBudget : Window
     {
-        NewBudgetViewModel vm = new NewBudgetViewModel();
+        //NewBudgetViewModel vm = new NewBudgetViewModel();
         public NewBudget()
         {
             InitializeComponent();
-            this.DataContext = vm;
+            //this.DataContext = vm;
         }
     }
 }

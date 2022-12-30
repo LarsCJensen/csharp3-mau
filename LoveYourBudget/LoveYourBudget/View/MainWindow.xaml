@@ -3,9 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LoveYourBudget"
+        xmlns:local="clr-namespace:LoveYourBudget.ViewModel" 
+        xmlns:converter="clr-namespace:LoveYourBudget.Converters"
+        xmlns:Behaviors="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Title="{Binding Title}" Height="500" Width="800">
+    <Window.Resources>
+        <Style x:Key="LabelFont">
+            <Setter Property="Label.FontSize" Value="15" />
+            <Setter Property="Label.FontWeight" Value="Bold" />
+        </Style>
+        <converter:CategoryConverter x:Key="conv" />
+        <local:MainViewModel x:Key="vm" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
@@ -19,8 +29,8 @@
                     <MenuItem Header="_New Budget" Click="NewBudget_Click" />
                     <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
                 </MenuItem>
-                <MenuItem Header="_Options">
-                    <MenuItem Header="_About" Command="{Binding OpenAbout}" />
+                <MenuItem Header="_Reports">
+                    <MenuItem Header="_Yearly Overview" Command="{Binding OpenYearlyOverview}" />
                 </MenuItem>
             </Menu>
         </Grid>
@@ -40,8 +50,23 @@
                     <ColumnDefinition Width="130" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0" Grid.ColumnSpan="5">
-                    <Label Content="{Binding YearMonth, FallbackValue='2023-01'}" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" FontWeight="Bold"/>
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="5,10,5,0">
+                    <ComboBox ItemsSource="{Binding Years}" HorizontalAlignment="Right" Width="100" SelectedItem="{Binding SelectedYear, Mode=TwoWay}" SelectedValue="{Binding BudgetManager.Budget.Year, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                        <Behaviors:Interaction.Triggers>
+                            <Behaviors:EventTrigger EventName="SelectionChanged">
+                                <Behaviors:InvokeCommandAction Command="{Binding YearChangedCommand}" />
+                            </Behaviors:EventTrigger>
+                        </Behaviors:Interaction.Triggers>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="3" Margin="5,10,5,0">
+                    <ComboBox ItemsSource="{Binding Months}" HorizontalAlignment="Left" Width="100" SelectedItem="{Binding SelectedMonth, Mode=TwoWay}" SelectedValue="{Binding BudgetManager.Budget.Month, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                        <Behaviors:Interaction.Triggers>
+                            <Behaviors:EventTrigger EventName="SelectionChanged">
+                                <Behaviors:InvokeCommandAction Command="{Binding MonthChangedCommand}" />
+                            </Behaviors:EventTrigger>
+                        </Behaviors:Interaction.Triggers>
+                    </ComboBox>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="1">
                     <Label Content="Income" FontSize="15" FontWeight="Bold"/>
@@ -71,11 +96,38 @@
 
         </StackPanel>
         <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
-            
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="center" Height="35">
+                <ComboBox Width="100" Margin="10,5,0,5" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" SelectedValuePath="Id" SelectedValue="{Binding Category.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <TextBox Text="{Binding Amount, FallbackValue='12345'}" Margin="10,5,0,5" Width="100" VerticalContentAlignment="center"  />
+                <DatePicker Text="{Binding Date}" Margin="10,5,0,5"/>
+                <Button Content="Add" Width="50"  Margin="10,5,0,5" Command="{Binding AddCommand}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" >
+                <ListView x:Name="lvExpenseRows" Height="200"  ItemsSource="{Binding ExpenseRows}" SelectedItem="{Binding SelectedExpenseRow, FallbackValue=null}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding CategoryId, Converter={StaticResource conv}, ConverterParameter={StaticResource vm}}" Width="130">
+                                <GridViewColumnHeader>Category</GridViewColumnHeader>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Amount}" Width="130">
+                                <GridViewColumnHeader>Amount</GridViewColumnHeader>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Date}" Width="130">
+                                <GridViewColumnHeader>Date</GridViewColumnHeader>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

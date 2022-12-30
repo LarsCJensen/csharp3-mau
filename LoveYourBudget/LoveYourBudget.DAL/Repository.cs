@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -97,7 +98,15 @@ namespace LoveYourBudget.DAL
         /// <returns>Entities</returns>
         public IEnumerable<T> GetEntities()
         {
-            return _context.Set<T>();
+            return _context.Set<T>().AsNoTracking<T>();
+        }
+        /// <summary>
+        /// Method to get all entities of a certain type without tracking changes
+        /// </summary>
+        /// <returns>Entities</returns>
+        public IEnumerable<T> GetEntitiesNoTracking()
+        {
+            return _context.Set<T>().AsNoTracking();
         }
         // TODO REMOVE
         ///// <summary>

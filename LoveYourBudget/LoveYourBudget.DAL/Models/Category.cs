@@ -7,6 +7,7 @@ namespace LoveYourBudget
 {
     public class Category : BaseModel
     {
-        public string Name { get; set; }
+        public string Name { get; set; }       
+        public virtual ICollection<BudgetRow> BudgetRows { get; set; }
     }
 }

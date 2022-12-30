@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace LoveYourBudget.BLL.Services
 {
-    public class BudgetService : BaseService<Budget>
+    public class CategoryService : BaseService<Category>
     {
-        private IRepository<Budget> _repository;
-        public BudgetService() 
+        private IRepository<Category> _repository;
+        public CategoryService() 
         {
             RecreateContext();
         }
-        public override void Save(Budget entity)
+        public override void Save(Category entity)
         {
             _repository.Save(entity);
         }
@@ -25,12 +25,12 @@ namespace LoveYourBudget.BLL.Services
         public override void RecreateContext()
         {
             LoveYourBudgetDbContext _context = new LoveYourBudgetDbContext();
-            _repository = new Repository<Budget>(_context);
-        }
-        public override IEnumerable<Budget> GetItems()
+            _repository = new Repository<Category>(_context);
+        }        
+        public override IEnumerable<Category> GetItems()
         {
             RecreateContext();
-            return _repository.GetEntities();
+            return _repository.GetEntitiesNoTracking();
         }
     }
 }

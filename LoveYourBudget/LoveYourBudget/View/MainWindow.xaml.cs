@@ -33,9 +33,9 @@ namespace LoveYourBudget
         {
             NewBudgetViewModel newVm = new NewBudgetViewModel();
             NewBudget newBudgetWindow = new NewBudget();
+            newBudgetWindow.DataContext = newVm;
             newVm.OnSave += vm.OnSave;
             newBudgetWindow.Show();
-
         }
     }
 }
