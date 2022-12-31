@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -98,7 +99,7 @@ namespace LoveYourBudget.DAL
         /// <returns>Entities</returns>
         public IEnumerable<T> GetEntities()
         {
-            return _context.Set<T>().AsNoTracking<T>();
+            return _context.Set<T>();
         }
         /// <summary>
         /// Method to get all entities of a certain type without tracking changes
@@ -107,6 +108,24 @@ namespace LoveYourBudget.DAL
         public IEnumerable<T> GetEntitiesNoTracking()
         {
             return _context.Set<T>().AsNoTracking();
+        }
+        /// <summary>
+        /// Method to get all ExpenseRows asynchronously
+        /// </summary>
+        /// <param name="year">year to filter on</param>
+        /// <param name="month">month to filter on</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month)
+        {
+            DateTime date = DateTime.Parse(year + "-" + month);
+            int daysInMonth = DateTime.DaysInMonth(Int32.Parse(year), Int32.Parse(month));
+            DateTime enddate = DateTime.Parse(year + "-" + month + "-" + daysInMonth);
+            //return await _context.ExpenseRows.Where(x => x.Date > date && x.Date <= enddate).ToListAsync();
+            return await GetAllExpenses().Where(x => x.Date >= date && x.Date <= enddate).ToListAsync();
+        }
+        private IQueryable<ExpenseRow> GetAllExpenses()
+        {
+            return _context.ExpenseRows.AsQueryable();
         }
         // TODO REMOVE
         ///// <summary>

@@ -19,7 +19,7 @@ namespace LoveYourBudget.Converters
             if (targetType == typeof(String) && value != null)
             {
                 int id = (int)value;
-                NewBudgetViewModel vm = parameter as NewBudgetViewModel;
+                BaseViewModel vm = parameter as BaseViewModel;
                 if (vm != null)
                 {
                     Category category = vm.Categories.FirstOrDefault(c => c.Id == id);

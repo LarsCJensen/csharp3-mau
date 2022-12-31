@@ -14,6 +14,7 @@ namespace LoveYourBudget.DAL
         /// <returns></returns>
         IEnumerable<T> GetEntities();
         IEnumerable<T> GetEntitiesNoTracking();
+        Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month);
         // TODO REMOVE?
         //IEnumerable<T> SearchEntities(string searchText, string searchProperty, string searchCriteria);
         T GetById(int id);

@@ -32,5 +32,15 @@ namespace LoveYourBudget.BLL.Services
             RecreateContext();
             return _repository.GetEntitiesNoTracking();
         }
+
+        public override Category GetById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

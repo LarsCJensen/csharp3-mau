@@ -30,7 +30,7 @@ namespace LoveYourBudget.ViewModel
             {
                 return new List<String>()
                 {
-                    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                    "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
                 };
             }
         }
@@ -80,32 +80,32 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("SelectedMonth");
             }
         }
-        private ObservableCollection<Category> _categories= new ObservableCollection<Category>();
-        public ObservableCollection<Category> Categories
-        {
-            get
-            {
-                return _categories;
-            }
-            set
-            {
-                _categories = value;
-                OnPropertyChanged("Categories");
-            }
-        }
-        private Category _selectedCategory;
-        public Category SelectedCategory
-        {
-            get
-            {
-                return _selectedCategory;
-            }
-            set
-            {
-                _selectedCategory = value;
-                OnPropertyChanged("SelectedCategory");
-            }
-        }
+        //private ObservableCollection<Category> _categories= new ObservableCollection<Category>();
+        //public ObservableCollection<Category> Categories
+        //{
+        //    get
+        //    {
+        //        return _categories;
+        //    }
+        //    set
+        //    {
+        //        _categories = value;
+        //        OnPropertyChanged("Categories");
+        //    }
+        //}
+        //private Category _selectedCategory;
+        //public Category SelectedCategory
+        //{
+        //    get
+        //    {
+        //        return _selectedCategory;
+        //    }
+        //    set
+        //    {
+        //        _selectedCategory = value;
+        //        OnPropertyChanged("SelectedCategory");
+        //    }
+        //}
         private string _amount;
         public string Amount
         {
@@ -168,7 +168,7 @@ namespace LoveYourBudget.ViewModel
         private void Save()
         {
             // TODO Save data in separate thread
-            _budgetManager.Save();
+            _budgetManager.SaveBudget();
             OnSave(this, EventArgs.Empty);
             Close();
         }

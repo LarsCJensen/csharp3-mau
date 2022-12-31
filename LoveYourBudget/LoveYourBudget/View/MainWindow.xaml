@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:LoveYourBudget.ViewModel" 
         xmlns:converter="clr-namespace:LoveYourBudget.Converters"
         xmlns:Behaviors="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="500" Width="800">
+        Title="{Binding Title}" Height="600" Width="800">
     <Window.Resources>
         <Style x:Key="LabelFont">
             <Setter Property="Label.FontSize" Value="15" />
@@ -34,7 +35,6 @@
                 </MenuItem>
             </Menu>
         </Grid>
-
         <StackPanel Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
@@ -51,7 +51,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="2" Margin="5,10,5,0">
-                    <ComboBox ItemsSource="{Binding Years}" HorizontalAlignment="Right" Width="100" SelectedItem="{Binding SelectedYear, Mode=TwoWay}" SelectedValue="{Binding BudgetManager.Budget.Year, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                    <ComboBox ItemsSource="{Binding Years}" HorizontalAlignment="Right" Width="100" SelectedItem="{Binding SelectedYear, Mode=TwoWay}">
                         <Behaviors:Interaction.Triggers>
                             <Behaviors:EventTrigger EventName="SelectionChanged">
                                 <Behaviors:InvokeCommandAction Command="{Binding YearChangedCommand}" />
@@ -60,7 +60,7 @@
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Grid.Row="0" Grid.Column="3" Margin="5,10,5,0">
-                    <ComboBox ItemsSource="{Binding Months}" HorizontalAlignment="Left" Width="100" SelectedItem="{Binding SelectedMonth, Mode=TwoWay}" SelectedValue="{Binding BudgetManager.Budget.Month, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                    <ComboBox ItemsSource="{Binding Months}" HorizontalAlignment="Left" Width="100" SelectedItem="{Binding SelectedMonth, Mode=TwoWay}">
                         <Behaviors:Interaction.Triggers>
                             <Behaviors:EventTrigger EventName="SelectionChanged">
                                 <Behaviors:InvokeCommandAction Command="{Binding MonthChangedCommand}" />
@@ -99,6 +99,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100" />
@@ -108,8 +109,9 @@
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="center" Height="35">
                 <ComboBox Width="100" Margin="10,5,0,5" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" SelectedValuePath="Id" SelectedValue="{Binding Category.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                 <TextBox Text="{Binding Amount, FallbackValue='12345'}" Margin="10,5,0,5" Width="100" VerticalContentAlignment="center"  />
-                <DatePicker Text="{Binding Date}" Margin="10,5,0,5"/>
+                <DatePicker SelectedDate="{Binding Date}" Margin="10,5,0,5"/>
                 <Button Content="Add" Width="50"  Margin="10,5,0,5" Command="{Binding AddCommand}"/>
+                <Button Content="Delete" Width="50" Margin="10,5,0,5" Command="{Binding DeleteCommand}"/>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" >
                 <ListView x:Name="lvExpenseRows" Height="200"  ItemsSource="{Binding ExpenseRows}" SelectedItem="{Binding SelectedExpenseRow, FallbackValue=null}">

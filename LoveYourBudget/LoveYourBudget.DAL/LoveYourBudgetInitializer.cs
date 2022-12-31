@@ -29,7 +29,9 @@ namespace LoveYourBudget.DAL
                    new Category() { Id = 3, Name = "Electricity", CreatedTime = DateTime.Now, UpdatedTime = DateTime.Now },
                    new Category() { Id = 4, Name = "Gas", CreatedTime = DateTime.Now, UpdatedTime = DateTime.Now },
                    new Category() { Id = 5, Name = "Broadband", CreatedTime = DateTime.Now, UpdatedTime = DateTime.Now },
-                   new Category() { Id = 6, Name = "TV", CreatedTime = DateTime.Now, UpdatedTime = DateTime.Now }
+                   new Category() { Id = 6, Name = "Streaming", CreatedTime = DateTime.Now, UpdatedTime = DateTime.Now },
+                   new Category() { Id = 7, Name = "Transportation", CreatedTime = DateTime.Now, UpdatedTime = DateTime.Now },
+                   new Category() { Id = 8, Name = "Restaurants", CreatedTime = DateTime.Now, UpdatedTime = DateTime.Now }
 
 
 

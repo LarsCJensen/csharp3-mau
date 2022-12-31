@@ -11,5 +11,7 @@ namespace LoveYourBudget.BLL.Services
         public abstract void Save(T entity);
         public abstract void RecreateContext();
         public abstract IEnumerable<T> GetItems();
+        public abstract T GetById(int id);
+        public abstract void Delete(int id);
     }
 }

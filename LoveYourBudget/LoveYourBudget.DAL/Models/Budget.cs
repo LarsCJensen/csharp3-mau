@@ -18,6 +18,5 @@ namespace LoveYourBudget
         public int Income { get; set; }        
         public virtual ICollection<Loan> Loans { get; set; }
         public virtual ICollection<BudgetRow> BudgetRows { get; set; }
-        public virtual ICollection<ExpenseRow> ExpenseRows { get; set; }
     }
 }

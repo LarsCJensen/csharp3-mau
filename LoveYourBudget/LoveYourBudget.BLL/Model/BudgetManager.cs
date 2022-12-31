@@ -7,17 +7,17 @@ namespace LoveYourBudget.BLL.Model
     {
         private BudgetService _budgetService;
         private CategoryService _categoryService;
+        private ExpensesService _expensesService;
         public Budget Budget { get; set; }
         public List<BudgetRow> BudgetRows { get; set; }
-        public List<ExpenseRow> ExpenseRows { get; set; }
-
+        
         public BudgetManager() 
         {
             _budgetService = new BudgetService();
             _categoryService = new CategoryService();
+            _expensesService = new ExpensesService();
             Budget = new Budget();
             BudgetRows = new List<BudgetRow>();
-            ExpenseRows = new List<ExpenseRow>();
         }
         public int GetSumBudgetExpenses()
         {
@@ -34,7 +34,7 @@ namespace LoveYourBudget.BLL.Model
             // Sum expenses for Category with Budget.Id
             return "Groceries";
         }
-        public void Save()
+        public void SaveBudget()
         {
             if(Budget.CreatedTime == null)
             {
@@ -44,9 +44,22 @@ namespace LoveYourBudget.BLL.Model
             Budget.BudgetRows = BudgetRows;
             _budgetService.Save(Budget);
         }
+        public void SaveExpense(ExpenseRow expenseRow)
+        {
+            _expensesService.Save(expenseRow);
+        }
         public List<Category> GetCategories()
         {
             return _categoryService.GetItems().ToList();
+        }
+        public async Task<IEnumerable<ExpenseRow>> GetExpensesAsync(string year, string month)
+        {
+            // TODO Get by Year, month
+            return await _expensesService.GetExpensesByDateAsync(year, month);
+        }
+        public void DeleteExpense(int expenseId)
+        {
+            _expensesService.Delete(expenseId);
         }
     }
 }

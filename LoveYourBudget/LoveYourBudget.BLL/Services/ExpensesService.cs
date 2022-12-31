@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace LoveYourBudget.BLL.Services
 {
-    public class BudgetService : BaseService<Budget>
+    public class ExpensesService : BaseService<ExpenseRow>
     {
-        private IRepository<Budget> _repository;
-        public BudgetService() 
+        private IRepository<ExpenseRow> _repository;
+        public ExpensesService() 
         {
             RecreateContext();
         }
-        public override void Save(Budget entity)
+        public override void Save(ExpenseRow entity)
         {
             _repository.Save(entity);
         }
@@ -25,9 +25,9 @@ namespace LoveYourBudget.BLL.Services
         public override void RecreateContext()
         {
             LoveYourBudgetDbContext _context = new LoveYourBudgetDbContext();
-            _repository = new Repository<Budget>(_context);
+            _repository = new Repository<ExpenseRow>(_context);
         }
-        public override IEnumerable<Budget> GetItems()
+        public override IEnumerable<ExpenseRow> GetItems()
         {
             RecreateContext();
             return _repository.GetEntities();
@@ -37,19 +37,25 @@ namespace LoveYourBudget.BLL.Services
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Item</returns>
-        public override Budget GetById(int id)
+        public override ExpenseRow GetById(int id)
         {
             RecreateContext();
             return _repository.GetById(id);
         }
+
+        public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month)
+        {
+            RecreateContext();
+            return await _repository.GetExpensesByDateAsync(year, month);
+        }
         /// <summary>
         /// Method for delete
         /// </summary>
-        /// <param name="budgetId">Budget ID</param>
-        public override void Delete(int budgetId)
+        /// <param name="expenseId">Expense ID</param>
+        public override void Delete(int expenseId)
         {
             RecreateContext();
-            _repository.Delete(budgetId);
+            _repository.Delete(expenseId);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace LoveYourBudget.ViewModel
         }
         public List<String> Months => new List<String>()
                 {
-                    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                    "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
                 };
         private string _selectedMonth;
         public string SelectedMonth
@@ -80,32 +80,32 @@ namespace LoveYourBudget.ViewModel
         {
             get { return _budgetManager.GetTopExpenseCategory(); }
         }
-        private ObservableCollection<Category> _categories = new ObservableCollection<Category>();
-        public ObservableCollection<Category> Categories
-        {
-            get
-            {
-                return _categories;
-            }
-            set
-            {
-                _categories = value;
-                OnPropertyChanged("Categories");
-            }
-        }
-        private Category _selectedCategory;
-        public Category SelectedCategory
-        {
-            get
-            {
-                return _selectedCategory;
-            }
-            set
-            {
-                _selectedCategory = value;
-                OnPropertyChanged("SelectedCategory");
-            }
-        }
+        //private ObservableCollection<Category> _categories = new ObservableCollection<Category>();
+        //public ObservableCollection<Category> Categories
+        //{
+        //    get
+        //    {
+        //        return _categories;
+        //    }
+        //    set
+        //    {
+        //        _categories = value;
+        //        OnPropertyChanged("Categories");
+        //    }
+        //}
+        //private Category _selectedCategory;
+        //public Category SelectedCategory
+        //{
+        //    get
+        //    {
+        //        return _selectedCategory;
+        //    }
+        //    set
+        //    {
+        //        _selectedCategory = value;
+        //        OnPropertyChanged("SelectedCategory");
+        //    }
+        //}
         private string _amount;
         public string Amount
         {
@@ -162,10 +162,16 @@ namespace LoveYourBudget.ViewModel
         public RelayCommand YearChangedCommand { get; private set; }
         public RelayCommand MonthChangedCommand { get; private set; }
         public RelayCommand AddCommand { get; private set; }
+        public RelayCommand DeleteCommand { get; private set; }
         #endregion
         public MainViewModel()
         {
             _budgetManager = new BudgetManager();
+            SelectedYear = "2023";
+            SelectedMonth = "01";
+            LoadCategories();
+            LoadExpenses();
+            Date = DateTime.Now;
         }
         protected override void RegisterCommands()
         {
@@ -173,6 +179,7 @@ namespace LoveYourBudget.ViewModel
             YearChangedCommand = new RelayCommand(YearChangedExecute);
             MonthChangedCommand = new RelayCommand(MonthChangedExecute);
             AddCommand = new RelayCommand(Add);
+            DeleteCommand = new RelayCommand(Delete);
         }
         /// <summary>
         /// Handler for OnSave event. Used to reload budget view
@@ -205,11 +212,29 @@ namespace LoveYourBudget.ViewModel
                 Amount = result,
                 Date = Date,
             };
-            BudgetManager.ExpenseRows.Add(ExpenseRow);
-            BudgetManager.Save();
+            BudgetManager.SaveExpense(ExpenseRow);
             SelectedCategory = null;
             Amount = "";
-            ExpenseRows = new ObservableCollection<ExpenseRow>(BudgetManager.ExpenseRows);
+            ExpenseRows.Add(ExpenseRow);
+        }
+        private void Delete()
+        {
+            if(SelectedExpenseRow == null)
+            {
+                MessageBox.Show("Please select expense to delete!", "No expense selected!");
+                return;
+            }
+            BudgetManager.DeleteExpense(SelectedExpenseRow.Id);
+            ExpenseRows.Remove(SelectedExpenseRow);
+
+        }
+        private void LoadCategories()
+        {
+            Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
+        }
+        private async void LoadExpenses()
+        {
+            ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
         }
     }
 }
