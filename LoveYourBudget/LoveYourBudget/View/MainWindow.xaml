@@ -38,6 +38,7 @@
         <StackPanel Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
                     <RowDefinition Height="40" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
@@ -46,11 +47,15 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="125" />
                     <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0" Grid.Column="2" Margin="5,10,5,0">
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="44,0,0,0">
+                    <Label Content="Year" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="2" Margin="5,10,5,0">
                     <ComboBox ItemsSource="{Binding Years}" HorizontalAlignment="Right" Width="100" SelectedItem="{Binding SelectedYear, Mode=TwoWay}">
                         <Behaviors:Interaction.Triggers>
                             <Behaviors:EventTrigger EventName="SelectionChanged">
@@ -59,7 +64,10 @@
                         </Behaviors:Interaction.Triggers>
                     </ComboBox>
                 </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="3" Margin="5,10,5,0">
+                <StackPanel Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Margin="5,0,0,0">
+                    <Label Content="Month" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="3" Margin="5,10,5,0">
                     <ComboBox ItemsSource="{Binding Months}" HorizontalAlignment="Left" Width="100" SelectedItem="{Binding SelectedMonth, Mode=TwoWay}">
                         <Behaviors:Interaction.Triggers>
                             <Behaviors:EventTrigger EventName="SelectionChanged">
@@ -68,29 +76,35 @@
                         </Behaviors:Interaction.Triggers>
                     </ComboBox>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="1">
-                    <Label Content="Income" FontSize="15" FontWeight="Bold"/>
+                <StackPanel Grid.Row="1" Grid.Column="4" Margin="5,10,5,0">
+                    <Button Content="View budget" Width="75" Command="{Binding ViewBudgetRowsCommand}" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="5" Margin="5,10,5,0">
+                    <Label Content="{Binding NumberOfBudgets, FallbackValue='Number of budgets: '}" FontSize="13" FontWeight="Bold" />
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="1">
+                    <Label Content="Income" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="1">
                     <Label Content="{Binding Income, FallbackValue='40 000'}" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="2">
+                <StackPanel Grid.Row="2" Grid.Column="2">
                     <Label Content="Budget Expenses" FontSize="15" FontWeight="Bold"/>
                 </StackPanel>
-                <StackPanel Grid.Row="2" Grid.Column="2">
+                <StackPanel Grid.Row="3" Grid.Column="2">
                     <Label Content="{Binding BudgetExpenses, FallbackValue='20 000'}" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="3">
+                <StackPanel Grid.Row="2" Grid.Column="3">
                     <Label Content="Actual Expenses" FontSize="15" FontWeight="Bold"/>
                 </StackPanel>
-                <StackPanel Grid.Row="2" Grid.Column="3">
+                <StackPanel Grid.Row="3" Grid.Column="3">
                     <Label Content="{Binding ActualExpenses, FallbackValue='14 000'}" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="4">
+                <StackPanel Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2">
                     <Label Content="Top expense category" FontSize="15" FontWeight="Bold"/>
                 </StackPanel>
-                <StackPanel Grid.Row="2" Grid.Column="4">
-                    <Label Content="{Binding TopExpenseCategory, FallbackValue='Groceries'}" />
+                <StackPanel Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2">
+                    <Label Content="{Binding TopExpenseCategory, FallbackValue='Groceries'}" />                    
                 </StackPanel>
             </Grid>
 
@@ -131,5 +145,8 @@
                 </ListView>
             </StackPanel>
         </Grid>
+        <StackPanel Grid.Row="3">
+            <Button Content="Create Test Data" Width="100" Command="{Binding CreateTestDataCommand}"/>
+        </StackPanel>
     </Grid>
 </Window>

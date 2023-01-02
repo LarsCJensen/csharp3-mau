@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using LoveYourBudget.BLL.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,6 +31,11 @@ namespace LoveYourBudget.ViewModel
                 return _title;
             }
         }
+        public string _numberOfBudgets;
+        public string NumberOfBudgets
+        {
+            get { return $"Number of budgets: {_budgetManager.Budgets.Count}"; }
+        }
         public List<String> Years => new List<String>()
                 {
                     "2023", "2022"
@@ -49,7 +55,7 @@ namespace LoveYourBudget.ViewModel
         }
         public List<String> Months => new List<String>()
                 {
-                    "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
+                    "", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
                 };
         private string _selectedMonth;
         public string SelectedMonth
@@ -64,21 +70,57 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("SelectedMonth");
             }
         }
-        public int Income
+        private double _income;
+        public double Income
         {
-            get { return _budgetManager.Budget.Income; }
+            get 
+            {
+                return _income;
+            }
+            set
+            {
+                _income = value;
+                OnPropertyChanged("Income");
+            }
         }
-        public int BudgetExpenses
+        private double _budgetExpenses;
+        public double BudgetExpenses
         {
-            get { return _budgetManager.GetSumBudgetExpenses(); }
+            get { 
+                return _budgetExpenses; 
+            }
+            set
+            {
+                _budgetExpenses = value;
+                OnPropertyChanged("BudgetExpenses");
+            }
         }
-        public int ActualExpenses
+        private double _actualExpenses;
+        public double ActualExpenses
         {
-            get { return _budgetManager.GetSumExpenses(); }
+            get 
+            { 
+                return _actualExpenses; 
+            } 
+            set
+            {
+                _actualExpenses = value;
+                OnPropertyChanged("ActualExpenses");
+            }
+
         }
+        private string _topExpenseCategory;
         public string TopExpenseCategory
         {
-            get { return _budgetManager.GetTopExpenseCategory(); }
+            get 
+            {
+                return _topExpenseCategory;                
+            }
+            set
+            {
+                _topExpenseCategory = value;
+                OnPropertyChanged("TopExpenseCategory");
+            }
         }
         //private ObservableCollection<Category> _categories = new ObservableCollection<Category>();
         //public ObservableCollection<Category> Categories
@@ -163,15 +205,25 @@ namespace LoveYourBudget.ViewModel
         public RelayCommand MonthChangedCommand { get; private set; }
         public RelayCommand AddCommand { get; private set; }
         public RelayCommand DeleteCommand { get; private set; }
+        public RelayCommand CreateTestDataCommand { get; private set; }
         #endregion
         public MainViewModel()
         {
-            _budgetManager = new BudgetManager();
             SelectedYear = "2023";
             SelectedMonth = "01";
+            _budgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            RefreshGUI();
+
+        }
+        private void RefreshGUI()
+        {
             LoadCategories();
-            LoadExpenses();
+            LoadExpensesAsync();
             Date = DateTime.Now;
+            BudgetExpenses = _budgetManager.GetSumBudgetExpenses();
+            Income = _budgetManager.GetSumIncome();
+            //ActualExpenses = GetSumExpenses();
+            TopExpenseCategory = test();
         }
         protected override void RegisterCommands()
         {
@@ -180,6 +232,7 @@ namespace LoveYourBudget.ViewModel
             MonthChangedCommand = new RelayCommand(MonthChangedExecute);
             AddCommand = new RelayCommand(Add);
             DeleteCommand = new RelayCommand(Delete);
+            CreateTestDataCommand = new RelayCommand(CreateTestData);
         }
         /// <summary>
         /// Handler for OnSave event. Used to reload budget view
@@ -192,13 +245,13 @@ namespace LoveYourBudget.ViewModel
         }
         private void YearChangedExecute()
         {
-            // TODO Get data in separate thread
-            MessageBox.Show("test");
+            _budgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            RefreshGUI();            
         }
         private void MonthChangedExecute()
         {
-            // TODO Get data in separate thread
-            MessageBox.Show("test");
+            _budgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            RefreshGUI();
         }
         private void Add()
         {
@@ -224,17 +277,67 @@ namespace LoveYourBudget.ViewModel
                 MessageBox.Show("Please select expense to delete!", "No expense selected!");
                 return;
             }
-            BudgetManager.DeleteExpense(SelectedExpenseRow.Id);
-            ExpenseRows.Remove(SelectedExpenseRow);
-
+            try
+            {
+                BudgetManager.DeleteExpense(SelectedExpenseRow.Id);
+                ExpenseRows.Remove(SelectedExpenseRow);
+            } catch(Exception ex)
+            {
+                MessageBox.Show($"Could not delete expense: {ex.Message} ");
+            }
         }
         private void LoadCategories()
         {
-            Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
+            try
+            {
+                Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
+            } catch(Exception ex) 
+            {
+                MessageBox.Show($"Could not get categories: {ex.Message} ");
+            }
         }
-        private async void LoadExpenses()
+        private async void LoadExpensesAsync()
         {
-            ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
+            try
+            {
+                ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
+                ActualExpenses = ExpenseRows.Sum(x => x.Amount);
+            } catch(Exception ex)
+            {
+                MessageBox.Show($"Could not get expenses: {ex.Message} ");
+            }            
+        }
+        /// <summary>
+        /// Helper method to summarize expenses
+        /// </summary>
+        /// <returns></returns>
+        //private double GetSumExpenses()
+        //{
+            
+        //    double sum = 0;
+        //    foreach(ExpenseRow row in ExpenseRows) 
+        //    {
+        //        sum += row.Amount;
+        //    }
+        //    //return sum;
+        //    // TODO Move to property
+        //    return ExpenseRows.Sum(x => x.Amount);
+        //}
+        private string test()
+        {
+            // TODO 
+            //var category = ExpenseRows.GroupBy(e => e.CategoryId)
+            //    .Select(g => new
+            //    {
+            //        g.Key,
+            //        SUM = g.Sum(s => s.Amount)
+            //    }).First();
+            //MessageBox.Show("test");
+            return "Test";
+        }
+        private void CreateTestData()
+        {
+            _budgetManager.CreateTestData();
         }
     }
 }

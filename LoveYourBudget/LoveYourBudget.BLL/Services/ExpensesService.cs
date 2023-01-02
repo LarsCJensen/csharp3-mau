@@ -48,6 +48,10 @@ namespace LoveYourBudget.BLL.Services
             RecreateContext();
             return await _repository.GetExpensesByDateAsync(year, month);
         }
+        public Category GetTopExpenseCategory(string year, string month)
+        {
+            return _repository.GetTopExpenseCategory(year, month);
+        }
         /// <summary>
         /// Method for delete
         /// </summary>

@@ -110,6 +110,51 @@ namespace LoveYourBudget.DAL
             return _context.Set<T>().AsNoTracking();
         }
         /// <summary>
+        /// Method to get all entities of a certain type by date
+        /// </summary>
+        /// <returns>Entities</returns>
+        public IEnumerable<Budget> GetBudgetsByDate(string year, string month)
+        {
+            if(month == "")
+            {
+                return _context.Budgets.AsQueryable().Where(x => x.Year == year).ToList();
+            } else
+            {
+                return _context.Budgets.AsQueryable().Where(x => x.Year == year && x.Month == month).ToList();
+            }
+            
+        }
+        public Category GetTopExpenseCategory(string year, string month)
+        {
+            DateTime date = DateTime.Parse(year + "-" + month);
+            int daysInMonth = DateTime.DaysInMonth(Int32.Parse(year), Int32.Parse(month));
+            DateTime enddate = DateTime.Parse(year + "-" + month + "-" + daysInMonth);
+            //var query = from e in _context.Set<ExpenseRow>()
+            //            join c in _context.Set<Category>()
+            //            on e.CategoryId equals c.Id into grouping
+            //            select new {}
+            var category = _context.Categories.GroupBy(c => c.Name)
+                .Select(g => new
+                {
+                    g.Key, SUM = g.Sum(s => s.ExpenseRows.Select(t => t.Amount).Sum())
+                }).FirstOrDefault();
+            List<BudgetRow> budgetRows = new List<BudgetRow>();
+            if (month == "")
+            {
+                //budgetRows = GetAllBudgetRows().Where(x => x.Date >= date && x.Date <= enddate).GroupBy(Category);
+            }
+            else
+            {
+                //return _context.Budgets.AsQueryable().Where(x => x.Year == year && x.Month == month).First();
+            }
+            return _context.Categories.First();
+        }
+        private IQueryable<BudgetRow> GetAllBudgetRows()
+        {
+            return _context.BudgetRows.AsQueryable();
+        }
+
+        /// <summary>
         /// Method to get all ExpenseRows asynchronously
         /// </summary>
         /// <param name="year">year to filter on</param>
@@ -117,11 +162,18 @@ namespace LoveYourBudget.DAL
         /// <returns></returns>
         public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month)
         {
-            DateTime date = DateTime.Parse(year + "-" + month);
-            int daysInMonth = DateTime.DaysInMonth(Int32.Parse(year), Int32.Parse(month));
-            DateTime enddate = DateTime.Parse(year + "-" + month + "-" + daysInMonth);
-            //return await _context.ExpenseRows.Where(x => x.Date > date && x.Date <= enddate).ToListAsync();
+            DateTime date = new DateTime(int.Parse(year), 1, 1);
+            DateTime enddate = new DateTime(int.Parse(year), 12, 31);
+            if (month != "")
+            {
+                // If month is selected calculate date and enddate
+                date = DateTime.Parse(year + "-" + month);
+                int daysInMonth = DateTime.DaysInMonth(Int32.Parse(year), Int32.Parse(month));
+                enddate = DateTime.Parse(year + "-" + month + "-" + daysInMonth);             
+            }
             return await GetAllExpenses().Where(x => x.Date >= date && x.Date <= enddate).ToListAsync();
+            //return await _context.ExpenseRows.Where(x => x.Date > date && x.Date <= enddate).ToListAsync();
+
         }
         private IQueryable<ExpenseRow> GetAllExpenses()
         {

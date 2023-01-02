@@ -51,5 +51,14 @@ namespace LoveYourBudget.BLL.Services
             RecreateContext();
             _repository.Delete(budgetId);
         }
+        /// <summary>
+        /// Helper method to get budgets by date
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Budget> GetBudgetsByDate(string year, string month)
+        {
+            RecreateContext();
+            return _repository.GetBudgetsByDate(year, month);
+        }
     }
 }

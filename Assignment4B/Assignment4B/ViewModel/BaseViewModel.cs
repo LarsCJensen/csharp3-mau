@@ -49,10 +49,7 @@ namespace Assignment4B.ViewModel
             // If I want general commands I can add them here
             RegisterCommands();
         }
-        protected virtual void RegisterCommands() 
-        {
-            
-        }
+        protected virtual void RegisterCommands() {}
         public void Close()
         {
             if (OnClose != null)
@@ -60,6 +57,5 @@ namespace Assignment4B.ViewModel
                 OnClose(this, EventArgs.Empty);
             }
         }
-
     }
 }

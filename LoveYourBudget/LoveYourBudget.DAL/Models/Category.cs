@@ -9,5 +9,6 @@ namespace LoveYourBudget
     {
         public string Name { get; set; }       
         public virtual ICollection<BudgetRow> BudgetRows { get; set; }
+        public virtual ICollection<ExpenseRow> ExpenseRows { get; set; }
     }
 }
