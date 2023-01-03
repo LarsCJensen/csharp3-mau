@@ -13,6 +13,7 @@ namespace LoveYourBudget.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
+        #region Properties
         private BudgetManager _budgetManager;
         public BudgetManager BudgetManager
         {
@@ -34,7 +35,27 @@ namespace LoveYourBudget.ViewModel
         public string _numberOfBudgets;
         public string NumberOfBudgets
         {
-            get { return $"Number of budgets: {_budgetManager.Budgets.Count}"; }
+            get { 
+                return _numberOfBudgets; 
+            }
+            set
+            {
+                _numberOfBudgets = value;
+                OnPropertyChanged("NumberOfBudgets");
+            }
+        }
+        public string _numberOfBudgetRows;
+        public string NumberOfBudgetRows
+        {
+            get
+            {
+                return _numberOfBudgetRows;
+            }
+            set
+            {
+                _numberOfBudgetRows = value;
+                OnPropertyChanged("NumberOfBudgetRows");
+            }
         }
         public List<String> Years => new List<String>()
                 {
@@ -122,32 +143,6 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("TopExpenseCategory");
             }
         }
-        //private ObservableCollection<Category> _categories = new ObservableCollection<Category>();
-        //public ObservableCollection<Category> Categories
-        //{
-        //    get
-        //    {
-        //        return _categories;
-        //    }
-        //    set
-        //    {
-        //        _categories = value;
-        //        OnPropertyChanged("Categories");
-        //    }
-        //}
-        //private Category _selectedCategory;
-        //public Category SelectedCategory
-        //{
-        //    get
-        //    {
-        //        return _selectedCategory;
-        //    }
-        //    set
-        //    {
-        //        _selectedCategory = value;
-        //        OnPropertyChanged("SelectedCategory");
-        //    }
-        //}
         private string _amount;
         public string Amount
         {
@@ -200,6 +195,33 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("Date");
             }
         }
+        private bool _editEnabled;
+        public bool EditEnabled
+        {
+            get
+            {
+                return _editEnabled;
+            }
+            set
+            {
+                _editEnabled = value;
+                OnPropertyChanged("EditEnabled");
+            }
+        }
+        private string _editOrCreateBudget;
+        public string EditOrCreateBudget
+        {
+            get
+            {
+                return _editOrCreateBudget;
+            }
+            set
+            {
+                _editOrCreateBudget = value;
+                OnPropertyChanged("EditOrCreateBudget");
+            }
+        }
+        #endregion
         #region Commands
         public RelayCommand YearChangedCommand { get; private set; }
         public RelayCommand MonthChangedCommand { get; private set; }
@@ -211,7 +233,7 @@ namespace LoveYourBudget.ViewModel
         {
             SelectedYear = "2023";
             SelectedMonth = "01";
-            _budgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
             RefreshGUI();
 
         }
@@ -220,10 +242,15 @@ namespace LoveYourBudget.ViewModel
             LoadCategories();
             LoadExpensesAsync();
             Date = DateTime.Now;
-            BudgetExpenses = _budgetManager.GetSumBudgetExpenses();
-            Income = _budgetManager.GetSumIncome();
+            BudgetExpenses = BudgetManager.GetSumBudgetExpenses();
+            Income = BudgetManager.GetSumIncome();
             //ActualExpenses = GetSumExpenses();
             TopExpenseCategory = test();
+            // TODO Get number of budgets per year instead?
+            NumberOfBudgets = $"# Budgets: {BudgetManager.Budgets.Count}";
+            NumberOfBudgetRows = $"# Budget rows: {BudgetManager.BudgetRows.Count}";
+            EditOrCreateBudget = BudgetManager.Budgets.Count == 1 ? "Edit budget" : "Create budget";
+            EditEnabled = SelectedMonth != "" && (BudgetManager.Budgets.Count == 1 || EditOrCreateBudget == "Create budget") ? true : false;
         }
         protected override void RegisterCommands()
         {
@@ -245,12 +272,12 @@ namespace LoveYourBudget.ViewModel
         }
         private void YearChangedExecute()
         {
-            _budgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
             RefreshGUI();            
         }
         private void MonthChangedExecute()
         {
-            _budgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
             RefreshGUI();
         }
         private void Add()
@@ -337,7 +364,7 @@ namespace LoveYourBudget.ViewModel
         }
         private void CreateTestData()
         {
-            _budgetManager.CreateTestData();
+            BudgetManager.CreateTestData();
         }
     }
 }

@@ -31,12 +31,44 @@ namespace LoveYourBudget
 
         private void NewBudget_Click(object sender, RoutedEventArgs e)
         {
-            NewBudgetViewModel newVm = new NewBudgetViewModel();
-            NewBudget newBudgetWindow = new NewBudget();
+            BudgetViewModel newVm = new BudgetViewModel();
+            BudgetWindow newBudgetWindow = new BudgetWindow();
             newBudgetWindow.DataContext = newVm;
             newVm.OnClose += delegate { newBudgetWindow.Close(); };
             newVm.OnSave += vm.OnSave;
             newBudgetWindow.Show();
         }
+        private void EditOrCreateBudget_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn.Content.ToString() == "Create budget")
+            {
+                BudgetWindow newBudgetWindow = new BudgetWindow();
+                BudgetViewModel newVm = new BudgetViewModel(vm.SelectedYear, vm.SelectedMonth);                
+                newBudgetWindow.DataContext = newVm;
+                newVm.OnClose += delegate { newBudgetWindow.Close(); };
+                newVm.OnSave += vm.OnSave;
+                newBudgetWindow.Show();
+            }
+            else if (btn.Content.ToString() == "Edit budget")
+            {
+                BudgetWindow budgetWindow = new BudgetWindow();
+                BudgetViewModel budgetVm = new BudgetViewModel(vm.BudgetManager);
+                budgetWindow.DataContext = budgetVm;
+                budgetVm.OnClose += delegate { budgetWindow.Close(); };
+                budgetVm.OnSave += vm.OnSave;
+                budgetWindow.Show();
+            }
+
+        }
+        //private void Edit_Budget_Click(object sender, RoutedEventArgs e)
+        //{
+        //    BudgetViewModel budgetVm = new BudgetViewModel(vm.BudgetManager);
+        //    Budget budgetWindow = new BudgetWindow();
+        //    budgetWindow.DataContext = budgetVm;
+        //    budgetVm.OnClose += delegate { budgetWindow.Close(); };
+        //    budgetVm.OnSave += vm.OnSave;
+        //    budgetWindow.Show();
+        //}
     }
 }

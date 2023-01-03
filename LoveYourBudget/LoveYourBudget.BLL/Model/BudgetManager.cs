@@ -10,6 +10,7 @@ namespace LoveYourBudget.BLL.Model
         private BudgetService _budgetService = new BudgetService();
         private CategoryService _categoryService = new CategoryService();
         private ExpensesService _expensesService = new ExpensesService();
+        // TODO Is this optimal??
         public Budget Budget { get; set; }
         public List<Budget> Budgets { get; set; }
         public List<BudgetRow> BudgetRows { get; set; }
@@ -30,6 +31,12 @@ namespace LoveYourBudget.BLL.Model
             //_expensesService = new ExpensesService();
             // Get's all budgets for selected year/month
             Budgets = _budgetService.GetBudgetsByDate(year, month).ToList();
+            BudgetRows = new List<BudgetRow>();
+            if (Budgets.Count == 1) 
+            {
+                Budget = Budgets.First();
+                BudgetRows = Budget.BudgetRows.ToList();
+            }
         }
         public double GetSumBudgetExpenses()
         {

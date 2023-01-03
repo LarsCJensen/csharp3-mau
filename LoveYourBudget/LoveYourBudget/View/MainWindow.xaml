@@ -42,7 +42,8 @@
                     <RowDefinition Height="40" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="30" />
-                    <RowDefinition Height="80" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="125" />
@@ -77,33 +78,36 @@
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="4" Margin="5,10,5,0">
-                    <Button Content="View budget" Width="75" Command="{Binding ViewBudgetRowsCommand}" />
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="5" Margin="5,10,5,0">
-                    <Label Content="{Binding NumberOfBudgets, FallbackValue='Number of budgets: '}" FontSize="13" FontWeight="Bold" />
-                </StackPanel>
-                <StackPanel Grid.Row="2" Grid.Column="1">
-                    <Label Content="Income" FontSize="15" FontWeight="Bold"/>
-                </StackPanel>
-                <StackPanel Grid.Row="3" Grid.Column="1">
-                    <Label Content="{Binding Income, FallbackValue='40 000'}" />
+                    <Button Content="{Binding EditOrCreateBudget}" Width="90" Click="EditOrCreateBudget_Click" IsEnabled="{Binding EditEnabled}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="2">
-                    <Label Content="Budget Expenses" FontSize="15" FontWeight="Bold"/>
-                </StackPanel>
-                <StackPanel Grid.Row="3" Grid.Column="2">
-                    <Label Content="{Binding BudgetExpenses, FallbackValue='20 000'}" />
+                    <TextBlock Text="{Binding NumberOfBudgets, FallbackValue='Budgets: '}" FontSize="13" FontWeight="Bold" />
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="3">
-                    <Label Content="Actual Expenses" FontSize="15" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding NumberOfBudgetRows, FallbackValue='Budget rows: '}" FontSize="13" FontWeight="Bold" />
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="1" >
+                    <Label Content="Income" FontSize="15" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="1">
+                    <TextBlock Text="{Binding Income, StringFormat={}{0:N0}, FallbackValue='40 000'}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="2">
+                    <Label Content="Budget Expenses" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="2">
+                    <TextBlock Text="{Binding BudgetExpenses, StringFormat={}{0:N0}, FallbackValue='20 000'}" />
                 </StackPanel>
                 <StackPanel Grid.Row="3" Grid.Column="3">
-                    <Label Content="{Binding ActualExpenses, FallbackValue='14 000'}" />
+                    <Label Content="Actual Expenses" FontSize="15" FontWeight="Bold"/>
                 </StackPanel>
-                <StackPanel Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2">
-                    <Label Content="Top expense category" FontSize="15" FontWeight="Bold"/>
+                <StackPanel Grid.Row="4" Grid.Column="3">
+                    <TextBlock Text="{Binding ActualExpenses, StringFormat={}{0:N0}, FallbackValue='14 000'}" />
                 </StackPanel>
                 <StackPanel Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2">
+                    <Label Content="Top expense category" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="2">
                     <Label Content="{Binding TopExpenseCategory, FallbackValue='Groceries'}" />                    
                 </StackPanel>
             </Grid>
@@ -131,13 +135,13 @@
                 <ListView x:Name="lvExpenseRows" Height="200"  ItemsSource="{Binding ExpenseRows}" SelectedItem="{Binding SelectedExpenseRow, FallbackValue=null}">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding CategoryId, Converter={StaticResource conv}, ConverterParameter={StaticResource vm}}" Width="130">
+                            <GridViewColumn DisplayMemberBinding="{Binding CategoryId, Converter={StaticResource conv}, ConverterParameter={StaticResource vm}}" Width="150">
                                 <GridViewColumnHeader>Category</GridViewColumnHeader>
                             </GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Amount}" Width="130">
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Amount}" Width="150">
                                 <GridViewColumnHeader>Amount</GridViewColumnHeader>
                             </GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Date}" Width="130">
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Date}" Width="150">
                                 <GridViewColumnHeader>Date</GridViewColumnHeader>
                             </GridViewColumn>
                         </GridView>

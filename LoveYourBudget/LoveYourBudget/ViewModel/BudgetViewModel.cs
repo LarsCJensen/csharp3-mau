@@ -13,7 +13,7 @@ using System.Windows.Controls.Ribbon.Primitives;
 
 namespace LoveYourBudget.ViewModel
 {
-    public class NewBudgetViewModel: BaseViewModel
+    public class BudgetViewModel: BaseViewModel
     {
         public List<String> Years { 
             get
@@ -34,7 +34,7 @@ namespace LoveYourBudget.ViewModel
                 };
             }
         }
-
+        #region Properties
         private BudgetManager _budgetManager;
         public BudgetManager BudgetManager
         {
@@ -48,11 +48,17 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("BudgetManager");
             }
         }
+        private string _title;
         public string Title
         {
-            get { 
-                return _budgetManager.Budget.Year + "-" + _budgetManager.Budget.Month; 
+            get {
+                return _title; 
             }            
+            set
+            {
+                _title = value;
+                OnPropertyChanged("Title");
+            }
         }
         private string _selectedYear;
         public string SelectedYear
@@ -79,33 +85,7 @@ namespace LoveYourBudget.ViewModel
                 _selectedMonth = value;
                 OnPropertyChanged("SelectedMonth");
             }
-        }
-        //private ObservableCollection<Category> _categories= new ObservableCollection<Category>();
-        //public ObservableCollection<Category> Categories
-        //{
-        //    get
-        //    {
-        //        return _categories;
-        //    }
-        //    set
-        //    {
-        //        _categories = value;
-        //        OnPropertyChanged("Categories");
-        //    }
-        //}
-        //private Category _selectedCategory;
-        //public Category SelectedCategory
-        //{
-        //    get
-        //    {
-        //        return _selectedCategory;
-        //    }
-        //    set
-        //    {
-        //        _selectedCategory = value;
-        //        OnPropertyChanged("SelectedCategory");
-        //    }
-        //}
+        }        
         private string _amount;
         public string Amount
         {
@@ -145,6 +125,7 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("SelectedBudgetRow");
             }
         }
+        #endregion
         #region EventHandlers
         public event EventHandler OnSave;
         #endregion
@@ -153,9 +134,27 @@ namespace LoveYourBudget.ViewModel
         public RelayCommand SaveCommand { get; private set; }
         public RelayCommand<BudgetRow> DeleteCommand { get; private set; }
         #endregion
-        public NewBudgetViewModel() 
+        public BudgetViewModel()
         {
-            _budgetManager= new BudgetManager();
+            BudgetManager = new BudgetManager();
+            Title = "New budget";
+            LoadCategories();
+        }
+        public BudgetViewModel(string year, string month) 
+        {
+            BudgetManager= new BudgetManager();
+            BudgetManager.Budget.Year = year;
+            BudgetManager.Budget.Month = month;
+            SelectedYear = year;
+            SelectedMonth = month;             
+            Title = "New budget";
+            LoadCategories();
+        }
+        public BudgetViewModel(BudgetManager budgetManager)
+        {
+            BudgetManager = budgetManager;
+            Title = BudgetManager.Budget.Year + "-" + BudgetManager.Budget.Month;
+            BudgetRows = new ObservableCollection<BudgetRow>(BudgetManager.BudgetRows);
             LoadCategories();
         }
         protected override void RegisterCommands()
@@ -168,7 +167,7 @@ namespace LoveYourBudget.ViewModel
         private void Save()
         {
             // TODO Save data in separate thread
-            _budgetManager.SaveBudget();
+            BudgetManager.SaveBudget();
             OnSave(this, EventArgs.Empty);
             Close();
         }
@@ -180,7 +179,6 @@ namespace LoveYourBudget.ViewModel
             {
                 CreatedTime =  DateTime.Now,
                 CategoryId = SelectedCategory.Id,
-                //Category = SelectedCategory,
                 Amount = result,
             };
             BudgetManager.BudgetRows.Add(budgetRow);
@@ -194,6 +192,11 @@ namespace LoveYourBudget.ViewModel
         }
         private void Delete(BudgetRow selectedBudgetRow)
         {
+            if (SelectedBudgetRow == null)
+            {
+                MessageBox.Show("Please select budget row to delete!", "No budget row selected!");
+                return;
+            }
             BudgetManager.BudgetRows.Remove(selectedBudgetRow);
             BudgetRows = new ObservableCollection<BudgetRow>(BudgetManager.BudgetRows);
         }

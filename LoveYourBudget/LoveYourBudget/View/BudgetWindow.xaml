@@ -1,4 +1,4 @@
-﻿<Window x:Class="LoveYourBudget.View.NewBudget"
+﻿<Window x:Class="LoveYourBudget.View.BudgetWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,7 +13,7 @@
             <Setter Property="Label.FontWeight" Value="Bold" />
         </Style>
         <converter:CategoryConverter x:Key="conv" />
-        <local:NewBudgetViewModel x:Key="vm" />
+        <local:BudgetViewModel x:Key="vm" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -40,7 +40,7 @@
             <Label Content="Month" Style="{StaticResource LabelFont}" />
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="1" Margin="5,5,5,5">
-            <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear, Mode=TwoWay}" SelectedValue="{Binding BudgetManager.Budget.Year, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+            <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding BudgetManager.Budget.Year, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="2"  Margin="5,5,5,5">
             <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding SelectedMonth, Mode=TwoWay}" SelectedValue="{Binding BudgetManager.Budget.Month, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
@@ -49,7 +49,7 @@
             <Label Content="Income" Style="{StaticResource LabelFont}" />
         </StackPanel>
         <StackPanel Grid.Row="4" Grid.Column="1" Margin="5,5,5,5">
-            <TextBox Text="{Binding BudgetManager.Budget.Income}" />
+            <TextBox Text="{Binding BudgetManager.Budget.Income, StringFormat={}{0:N0}}" />
         </StackPanel>
         <StackPanel Grid.Row="5" Grid.Column="1">
             <Label Content="Category" Style="{StaticResource LabelFont}" />

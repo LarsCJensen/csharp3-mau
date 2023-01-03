@@ -16,15 +16,13 @@ using System.Windows.Shapes;
 namespace LoveYourBudget.View
 {
     /// <summary>
-    /// Interaction logic for NewBudget.xaml
+    /// Interaction logic for Budget.xaml
     /// </summary>
-    public partial class NewBudget : Window
+    public partial class BudgetWindow : Window
     {
-        //NewBudgetViewModel vm = new NewBudgetViewModel();
-        public NewBudget()
+        public BudgetWindow()
         {
             InitializeComponent();
-            //this.DataContext = vm;
         }
     }
 }
