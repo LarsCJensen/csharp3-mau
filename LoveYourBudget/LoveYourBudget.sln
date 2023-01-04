@@ -5,11 +5,13 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoveYourBudget", "LoveYourBudget\LoveYourBudget.csproj", "{9277A251-E555-4215-A773-B2E60E0761DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoveYourBudget.DAL", "LoveYourBudget.DAL\LoveYourBudget.DAL.csproj", "{86171D57-BAC1-45FC-A9B8-B66DB2D4FF25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoveYourBudget.DAL", "LoveYourBudget.DAL\LoveYourBudget.DAL.csproj", "{86171D57-BAC1-45FC-A9B8-B66DB2D4FF25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoveYourBudget.BLL", "LoveYourBudget.BLL\LoveYourBudget.BLL.csproj", "{75341A70-B9B6-4C99-B077-12FE155BB928}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoveYourBudget.BLL", "LoveYourBudget.BLL\LoveYourBudget.BLL.csproj", "{75341A70-B9B6-4C99-B077-12FE155BB928}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "..\Utilities\Utilities\Utilities.csproj", "{E04EC58E-4A85-40F6-8DEF-0AEBED0E70EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoveYourBudget.Diagram", "LoveYourBudget.Diagram\LoveYourBudget.Diagram.csproj", "{5571BDD4-A755-48A5-9E15-D698F6C18EE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{E04EC58E-4A85-40F6-8DEF-0AEBED0E70EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E04EC58E-4A85-40F6-8DEF-0AEBED0E70EC}.Release|x64.ActiveCfg = Release|x64
 		{E04EC58E-4A85-40F6-8DEF-0AEBED0E70EC}.Release|x64.Build.0 = Release|x64
+		{5571BDD4-A755-48A5-9E15-D698F6C18EE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5571BDD4-A755-48A5-9E15-D698F6C18EE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5571BDD4-A755-48A5-9E15-D698F6C18EE3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5571BDD4-A755-48A5-9E15-D698F6C18EE3}.Debug|x64.Build.0 = Debug|Any CPU
+		{5571BDD4-A755-48A5-9E15-D698F6C18EE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5571BDD4-A755-48A5-9E15-D698F6C18EE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5571BDD4-A755-48A5-9E15-D698F6C18EE3}.Release|x64.ActiveCfg = Release|Any CPU
+		{5571BDD4-A755-48A5-9E15-D698F6C18EE3}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

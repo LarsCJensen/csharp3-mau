@@ -1,4 +1,5 @@
-﻿using LoveYourBudget.View;
+﻿using LoveYourBudget.Diagram;
+using LoveYourBudget.View;
 using LoveYourBudget.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,13 @@ namespace LoveYourBudget
                 budgetWindow.Show();
             }
 
+        }
+
+        private void YearlyOverView_Click(object sender, RoutedEventArgs e)
+        {            
+            DiagramWindow diagramWindow = new DiagramWindow("YearlyOverView");
+            diagramWindow.Title = "Yearly Overview";
+            diagramWindow.Show();
         }
         //private void Edit_Budget_Click(object sender, RoutedEventArgs e)
         //{

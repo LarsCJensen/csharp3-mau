@@ -31,7 +31,7 @@
                     <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
                 </MenuItem>
                 <MenuItem Header="_Reports">
-                    <MenuItem Header="_Yearly Overview" Command="{Binding OpenYearlyOverview}" />
+                    <MenuItem Header="_Yearly Overview" Click="YearlyOverView_Click" />
                 </MenuItem>
             </Menu>
         </Grid>
