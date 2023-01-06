@@ -272,12 +272,27 @@ namespace LoveYourBudget.ViewModel
         }
         private void YearChangedExecute()
         {
-            BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
-            RefreshGUI();            
+            if(SelectedMonth  == "")
+            {
+                BudgetManager = new BudgetManager(SelectedYear);
+            } else
+            {
+                BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            }
+            RefreshGUI();
+
         }
         private void MonthChangedExecute()
         {
-            BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            if (SelectedMonth == "")            
+            {
+                BudgetManager = new BudgetManager(SelectedYear);
+            }
+            else
+            {
+                BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+            }
+                
             RefreshGUI();
         }
         private void Add()

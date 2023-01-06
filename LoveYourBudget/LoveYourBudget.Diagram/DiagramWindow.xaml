@@ -11,7 +11,10 @@
             <RowDefinition Height="80" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Canvas x:Name="diagramCanvas" Grid.Row="1" Grid.Column="0" Margin="10" Background="White" Visibility="Visible"/>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ComboBox x:Name="cboYears" Width="100" SelectionChanged="cboYears_SelectionChanged"/>
+        </StackPanel>
+        <Canvas x:Name="diagramCanvas" Background="Ivory" Grid.Row="1" Grid.Column="0" Margin="10" Visibility="Visible"/>
     </Grid>
 </Window>
 

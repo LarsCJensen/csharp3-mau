@@ -31,7 +31,8 @@
                     <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
                 </MenuItem>
                 <MenuItem Header="_Reports">
-                    <MenuItem Header="_Yearly Overview" Click="YearlyOverView_Click" />
+                    <MenuItem Header="_Expenses vs budget" Click="ExpensesVsBudget_Click" />
+                    <MenuItem Header="_Expenses per category" Click="ExpensesPerCategory_Click" />
                 </MenuItem>
             </Menu>
         </Grid>

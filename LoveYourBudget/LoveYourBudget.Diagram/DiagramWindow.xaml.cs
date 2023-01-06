@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LoveYourBudget.BLL.Model;
 using static System.Net.Mime.MediaTypeNames;
+using static LoveYourBudget.Diagram.Enums;
 
 namespace LoveYourBudget.Diagram
 {
@@ -21,31 +23,95 @@ namespace LoveYourBudget.Diagram
     /// </summary>
     public partial class DiagramWindow : Window
     {
-        VisualHost _visualHost = new VisualHost();
-        string _test;
-        public DiagramWindow(string test)
+        VisualHost _visualHost;
+        string _reportName;
+        BudgetManager _budgetManager;
+        
+        public DiagramWindow(string reportName)
         {
-            InitializeComponent();            
-            _test = test;
+            InitializeComponent();
+            _reportName = reportName;
+            cboYears.ItemsSource = new List<string>()
+            {
+                "2023",
+                "2022",
+                "Rolling 12m"
+            };
+            cboYears.SelectedItem = "2023";
+            _budgetManager = new BudgetManager(cboYears.SelectedItem.ToString());
         }
-        // TODO Async
-        private async void DrawYearlyOverView()
+        private async void DrawExpensesVsBudget(string year)
         {
-            double xMax = 12;
-            int xInterval = 1;
-            double startX = 1;
-            double yMax = 10000;
-            int yInterval = 1000;
-            double startY = 0;
+            double xMax = 12;            
+            List<string> xLabels = new List<string>()
+            {
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            };
 
-            await DrawScale(xMax, xInterval, diagramCanvas.ActualWidth, startX, yMax, yInterval, diagramCanvas.ActualHeight, startY);
-        }
-        private async Task DrawScale(double xMax, int xInterval, double xWidth, double startX, double yMax, int yInterval, double yHeight, double startY)
-        {
-            _visualHost.DrawScale(xMax, xInterval, xWidth, startX, yMax, yInterval, yHeight, startY);
+            double yMax = 20000;            
+            List<string> yLabels = new List<string>()
+            {
+                "0", "2000", "4000", "6000", "8000", "10000", "12000", "14000", "16000", "18000", "20000"
+            };
 
+            await DrawScaleAxis(xLabels, xMax, diagramCanvas.ActualWidth, Enums.Orientation.Horizontal);
+            await DrawScaleAxis(yLabels, yMax, diagramCanvas.ActualHeight, Enums.Orientation.Vertical);
+            PointCollection budgetPoints = GetBudgetSumPerMonth();
+            await _visualHost.DrawPointsAsync(budgetPoints, Brushes.Black);
+            PointCollection expensePoints = GetExpensesSumPerMonth();
+            await _visualHost.DrawPointsAsync(expensePoints, Brushes.Green);
             diagramCanvas.Children.Add(_visualHost);
         }
+        private async Task DrawScaleAxis(List<string> labels, double max, double size, Enums.Orientation orientation)
+        {
+             await _visualHost.DrawScaleAxis(labels, max, size, orientation);            
+        }
+        #region Helper methods
+        private PointCollection GetBudgetSumPerMonth()
+        {
+            PointCollection budgetPoints = new PointCollection();
+            foreach(Budget budget in _budgetManager.Budgets)
+            {
+                // Month will be the X value in the diagram, but starting point in diagram is 0 so -1
+                int xPoint = Int32.Parse(budget.Month) - 1;    
+                // Y value will be sum of budget
+                budgetPoints.Add(new Point(xPoint, budget.BudgetRows.Sum(x => x.Amount)));                
+            }
+            // TODO TEST
+            budgetPoints.Add(new Point(2, 0));
+            budgetPoints.Add(new Point(3, 10000));
+            return budgetPoints;
+        }
+        private PointCollection GetExpensesSumPerMonth()
+        {
+            PointCollection expensesPoints = new PointCollection();            
+            // Get expenses per month
+            for(int i = 1; i < 13; i++)
+            {
+                List<ExpenseRow> expenses = _budgetManager.GetExpenses(cboYears.SelectedItem.ToString(), (i).ToString()).ToList();
+                // Month will be the X value in the diagram, but starting point in diagram is 0 so -1
+                int xPoint = i - 1;
+                // Y value will be sum of expense
+                expensesPoints.Add(new Point(xPoint, expenses.Sum(x => x.Amount)));
+            }
+
+            //foreach (ExpenseRow expense in expenses)
+            //{
+            //    // Month will be the X value in the diagram, but starting point in diagram is 0 so -1
+            //    int xPoint = Int32.Parse(expense.Date.ToString()) - 1;
+            //    // Y value will be sum of budget
+            //    //expensesPoints.Add(new Point(xPoint, expense.Sum(x => x.Amount)));
+            //}
+            return expensesPoints;
+        }
+        // Helper to clear children from canvas
+        private void ClearCanvas()
+        {
+            diagramCanvas.Children.Clear();
+            _visualHost = new VisualHost(diagramCanvas.ActualHeight);
+        }
+        #endregion 
+        #region Events
         // Event for Window size changed
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -63,11 +129,27 @@ namespace LoveYourBudget.Diagram
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (_test == "YearlyOverView")
+        {            
+            if (_reportName == "ExpensesVsBudget")
             {
-                DrawYearlyOverView();
+                _visualHost = new VisualHost(diagramCanvas.ActualHeight);
+                DrawExpensesVsBudget(cboYears.SelectedItem.ToString());
             }
         }
+
+        private void cboYears_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            if (!comboBox.IsLoaded)
+                return;
+            if (comboBox != null)
+            {
+                string year = comboBox.SelectedItem.ToString();
+                ClearCanvas();
+                _budgetManager = new BudgetManager(year);
+                DrawExpensesVsBudget(year);
+            }            
+        }
+        #endregion        
     }
 }

@@ -42,7 +42,33 @@ namespace LoveYourBudget.BLL.Services
             RecreateContext();
             return _repository.GetById(id);
         }
-
+        /// <summary>
+        /// Method to get expenses per Year
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpensesByDate(string year)
+        {
+            return _repository.GetExpensesByDate(year);
+        }
+        /// <summary>
+        /// Method to get expenses per Year
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpensesByDate(string year, string month)
+        {
+            return _repository.GetExpensesByDate(year, month);
+        }
+        /// <summary>
+        /// Method to get expenses by year async
+        /// </summary>
+        /// <param name="year">Year</param>        
+        /// <returns>Task</returns>
+        public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year)
+        {
+            return await _repository.GetExpensesByDateAsync(year);
+        }
         public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month)
         {
             RecreateContext();

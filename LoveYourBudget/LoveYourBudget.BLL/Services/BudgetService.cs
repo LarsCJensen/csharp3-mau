@@ -55,6 +55,15 @@ namespace LoveYourBudget.BLL.Services
         /// Helper method to get budgets by date
         /// </summary>
         /// <returns></returns>
+        public IEnumerable<Budget> GetBudgetsByDate(string year)
+        {
+            RecreateContext();
+            return _repository.GetBudgetsByDate(year);
+        }
+        /// <summary>
+        /// Helper method to get budgets by date
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Budget> GetBudgetsByDate(string year, string month)
         {
             RecreateContext();

@@ -167,7 +167,15 @@ namespace LoveYourBudget.ViewModel
         private void Save()
         {
             // TODO Save data in separate thread
-            BudgetManager.SaveBudget();
+            try
+            {
+                BudgetManager.SaveBudget();
+            }
+            catch (Exception ex)
+            {
+                string test = "fan";
+            }
+
             OnSave(this, EventArgs.Empty);
             Close();
         }

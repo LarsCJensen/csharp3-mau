@@ -113,16 +113,18 @@ namespace LoveYourBudget.DAL
         /// Method to get all entities of a certain type by date
         /// </summary>
         /// <returns>Entities</returns>
+        public IEnumerable<Budget> GetBudgetsByDate(string year)
+        {
+            return _context.Budgets.AsQueryable().Where(x => x.Year == year).ToList();
+        
+        }
+        /// <summary>
+        /// Method to get all entities of a certain type by date
+        /// </summary>
+        /// <returns>Entities</returns>
         public IEnumerable<Budget> GetBudgetsByDate(string year, string month)
         {
-            if(month == "")
-            {
-                return _context.Budgets.AsQueryable().Where(x => x.Year == year).ToList();
-            } else
-            {
-                return _context.Budgets.AsQueryable().Where(x => x.Year == year && x.Month == month).ToList();
-            }
-            
+            return _context.Budgets.AsQueryable().Where(x => x.Year == year && x.Month == month).ToList();            
         }
         public Category GetTopExpenseCategory(string year, string month)
         {
@@ -155,6 +157,42 @@ namespace LoveYourBudget.DAL
         }
 
         /// <summary>
+        /// Method to get all ExpenseRows for year
+        /// </summary>
+        /// <param name="year">year to filter on</param>
+        /// /// <param name="month">month to filter on</param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpensesByDate(string year, string month)
+        {
+            DateTime date = DateTime.Parse(year + "-" + month);
+            int daysInMonth = DateTime.DaysInMonth(Int32.Parse(year), Int32.Parse(month));
+            DateTime enddate = DateTime.Parse(year + "-" + month + "-" + daysInMonth);
+
+            return GetAllExpenses().Where(x => x.Date >= date && x.Date <= enddate).ToList();
+        }
+        /// <summary>
+        /// Method to get all ExpenseRows for year and month
+        /// </summary>
+        /// <param name="year">year to filter on</param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpensesByDate(string year)
+        {
+            DateTime date = new DateTime(int.Parse(year), 1, 1);
+            DateTime enddate = new DateTime(int.Parse(year), 12, 31);
+            return GetAllExpenses().Where(x => x.Date >= date && x.Date <= enddate).ToList();
+        }
+        /// <summary>
+        /// Method to get all ExpenseRows asynchronously
+        /// </summary>
+        /// <param name="year">year to filter on</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year)
+        {
+            DateTime date = new DateTime(int.Parse(year), 1, 1);
+            DateTime enddate = new DateTime(int.Parse(year), 12, 31);
+            return await GetAllExpenses().Where(x => x.Date >= date && x.Date <= enddate).ToListAsync();
+        }
+        /// <summary>
         /// Method to get all ExpenseRows asynchronously
         /// </summary>
         /// <param name="year">year to filter on</param>
@@ -162,15 +200,11 @@ namespace LoveYourBudget.DAL
         /// <returns></returns>
         public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month)
         {
-            DateTime date = new DateTime(int.Parse(year), 1, 1);
-            DateTime enddate = new DateTime(int.Parse(year), 12, 31);
-            if (month != "")
-            {
-                // If month is selected calculate date and enddate
-                date = DateTime.Parse(year + "-" + month);
-                int daysInMonth = DateTime.DaysInMonth(Int32.Parse(year), Int32.Parse(month));
-                enddate = DateTime.Parse(year + "-" + month + "-" + daysInMonth);             
-            }
+            // If month is selected calculate date and enddate
+            DateTime date = DateTime.Parse(year + "-" + month);
+            int daysInMonth = DateTime.DaysInMonth(Int32.Parse(year), Int32.Parse(month));
+            DateTime enddate = DateTime.Parse(year + "-" + month + "-" + daysInMonth);             
+            
             return await GetAllExpenses().Where(x => x.Date >= date && x.Date <= enddate).ToListAsync();
             //return await _context.ExpenseRows.Where(x => x.Date > date && x.Date <= enddate).ToListAsync();
 

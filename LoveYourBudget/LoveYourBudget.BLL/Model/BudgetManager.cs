@@ -24,20 +24,29 @@ namespace LoveYourBudget.BLL.Model
             Budgets = new List<Budget>();
             BudgetRows = new List<BudgetRow>();
         }
-        public BudgetManager(string year, string month)
+        public BudgetManager(string year)        
         {
-            //_budgetService = new BudgetService();
-            //_categoryService = new CategoryService();
-            //_expensesService = new ExpensesService();
-            // Get's all budgets for selected year/month
-            Budgets = _budgetService.GetBudgetsByDate(year, month).ToList();
+            // Get's all budgets for selected year
+            Budgets = _budgetService.GetBudgetsByDate(year).ToList();
             BudgetRows = new List<BudgetRow>();
-            if (Budgets.Count == 1) 
+            foreach(Budget budget in Budgets)
             {
-                Budget = Budgets.First();
-                BudgetRows = Budget.BudgetRows.ToList();
+                BudgetRows.AddRange(budget.BudgetRows);
             }
         }
+        public BudgetManager(string year, string month)
+        {
+            // Get's all budgets for selected year and month
+            Budgets = _budgetService.GetBudgetsByDate(year, month).ToList();            
+            BudgetRows = new List<BudgetRow>();
+            if(Budgets.Count > 0)
+            {                
+                // TODO Even if there are more budgets, only use the first one
+                Budget = Budgets.First();
+                BudgetRows = Budget.BudgetRows.ToList();
+            }            
+        }
+        
         public double GetSumBudgetExpenses()
         {
             double budgetSum = 0;
@@ -85,6 +94,40 @@ namespace LoveYourBudget.BLL.Model
         {
             return _categoryService.GetItems().ToList();
         }
+        /// <summary>
+        /// Method to get expenses by year
+        /// </summary>
+        /// <param name="year">Year</param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpenses(string year)
+        {
+            return _expensesService.GetExpensesByDate(year);
+        }
+        /// <summary>
+        /// Method to get expenses by year and month
+        /// </summary>
+        /// <param name="year">Year</param>
+        /// /// <param name="month">Month</param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpenses(string year, string month)
+        {
+            return _expensesService.GetExpensesByDate(year, month);
+        }
+        /// <summary>
+        /// Method to get expenses by year async
+        /// </summary>
+        /// <param name="year">Year</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<ExpenseRow>> GetExpensesAsync(string year)
+        {
+            return await _expensesService.GetExpensesByDateAsync(year);
+        }
+        /// <summary>
+        /// Method to get expenses by year async
+        /// </summary>
+        /// <param name="year">Year</param>
+        /// <param name="month">Month</param>
+        /// <returns></returns>
         public async Task<IEnumerable<ExpenseRow>> GetExpensesAsync(string year, string month)
         {
             return await _expensesService.GetExpensesByDateAsync(year, month);

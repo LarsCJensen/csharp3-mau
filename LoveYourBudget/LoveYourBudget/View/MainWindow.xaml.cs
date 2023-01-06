@@ -63,12 +63,19 @@ namespace LoveYourBudget
 
         }
 
-        private void YearlyOverView_Click(object sender, RoutedEventArgs e)
+        private void ExpensesVsBudget_Click(object sender, RoutedEventArgs e)
         {            
-            DiagramWindow diagramWindow = new DiagramWindow("YearlyOverView");
-            diagramWindow.Title = "Yearly Overview";
+            DiagramWindow diagramWindow = new DiagramWindow("ExpensesVsBudget");
+            diagramWindow.Title = "Expenses vs Budget";
             diagramWindow.Show();
         }
+        private void ExpensesPerCategory_Click(object sender, RoutedEventArgs e)
+        {
+            DiagramWindow diagramWindow = new DiagramWindow("ExpensesPerCategory");
+            diagramWindow.Title = "Expenses per category";
+            diagramWindow.Show();
+        }
+        
         //private void Edit_Budget_Click(object sender, RoutedEventArgs e)
         //{
         //    BudgetViewModel budgetVm = new BudgetViewModel(vm.BudgetManager);
