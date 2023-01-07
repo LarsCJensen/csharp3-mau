@@ -11,7 +11,7 @@ namespace Utilities
 {
     public static class DrawHelpers
     {
-        public static DrawingVisual DrawLine(PointCollection points, Brush color, int size)
+        public static DrawingVisual DrawLine(PointCollection points, Brush color, int size, bool drawPoint = true)
         {
             // FUTURE pass in pen
             Pen scalePen = new Pen(color, size);
@@ -27,6 +27,10 @@ namespace Utilities
                     continue;
                 }
                 context.DrawLine(scalePen, lastPoint, point);
+                if(drawPoint == true)
+                {
+                    context.DrawEllipse(color, new Pen(color, 1), point, 2,2);
+                }
                 lastPoint = point;
             }
             context.Close();

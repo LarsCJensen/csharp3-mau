@@ -76,14 +76,13 @@ namespace LoveYourBudget
             diagramWindow.Show();
         }
         
-        //private void Edit_Budget_Click(object sender, RoutedEventArgs e)
-        //{
-        //    BudgetViewModel budgetVm = new BudgetViewModel(vm.BudgetManager);
-        //    Budget budgetWindow = new BudgetWindow();
-        //    budgetWindow.DataContext = budgetVm;
-        //    budgetVm.OnClose += delegate { budgetWindow.Close(); };
-        //    budgetVm.OnSave += vm.OnSave;
-        //    budgetWindow.Show();
-        //}
+        private void ViewLoans_Click(object sender, RoutedEventArgs e)
+        {
+            LoansWindow loansWindow = new LoansWindow();
+            LoansViewModel loansVm = new LoansViewModel();
+            loansWindow.DataContext = loansVm;
+            loansVm.OnClose += delegate { loansVm.Close(); };
+            loansWindow.Show();
+        }
     }
 }

@@ -40,7 +40,12 @@ namespace LoveYourBudget.Diagram
             cboYears.SelectedItem = "2023";
             _budgetManager = new BudgetManager(cboYears.SelectedItem.ToString());
         }
-        private async void DrawExpensesVsBudget(string year)
+        /// <summary>
+        /// Method to draw report async
+        /// </summary>
+        /// <param name="year">year to draw for</param>
+        /// <returns></returns>
+        private async Task DrawExpensesVsBudgetAsync()
         {
             double xMax = 12;            
             List<string> xLabels = new List<string>()
@@ -56,40 +61,68 @@ namespace LoveYourBudget.Diagram
 
             await DrawScaleAxis(xLabels, xMax, diagramCanvas.ActualWidth, Enums.Orientation.Horizontal);
             await DrawScaleAxis(yLabels, yMax, diagramCanvas.ActualHeight, Enums.Orientation.Vertical);
+            
             PointCollection budgetPoints = GetBudgetSumPerMonth();
-            await _visualHost.DrawPointsAsync(budgetPoints, Brushes.Black);
+            await DrawPoints(budgetPoints, Brushes.Black);
             PointCollection expensePoints = GetExpensesSumPerMonth();
-            await _visualHost.DrawPointsAsync(expensePoints, Brushes.Green);
+            await DrawPoints(expensePoints, Brushes.Red);
+            await DrawLegend(); 
             diagramCanvas.Children.Add(_visualHost);
         }
         private async Task DrawScaleAxis(List<string> labels, double max, double size, Enums.Orientation orientation)
         {
              await _visualHost.DrawScaleAxis(labels, max, size, orientation);            
         }
+        private async Task DrawPoints(PointCollection points, Brush color)
+        {
+            await _visualHost.DrawPointsAsync(points, color);
+        }
+        private async Task DrawLegend()
+        {
+            Dictionary<string, Brush> labels = new Dictionary<string, Brush>()
+            {
+                {"Budget", Brushes.Black },
+                { "Expenses", Brushes.Red }
+            };
+            await _visualHost.DrawLegend(labels);
+        }
         #region Helper methods
+        /// <summary>
+        /// Helper to get budget sum per month of chosen year
+        /// </summary>
+        /// <returns></returns>
         private PointCollection GetBudgetSumPerMonth()
         {
             PointCollection budgetPoints = new PointCollection();
-            foreach(Budget budget in _budgetManager.Budgets)
+            foreach (Budget budget in _budgetManager.Budgets)
             {
                 // Month will be the X value in the diagram, but starting point in diagram is 0 so -1
-                int xPoint = Int32.Parse(budget.Month) - 1;    
+                int xPoint = Int32.Parse(budget.Month) - 1;
                 // Y value will be sum of budget
-                budgetPoints.Add(new Point(xPoint, budget.BudgetRows.Sum(x => x.Amount)));                
+                budgetPoints.Add(new Point(xPoint, budget.BudgetRows.Sum(x => x.Amount)));
             }
             // TODO TEST
             budgetPoints.Add(new Point(2, 0));
             budgetPoints.Add(new Point(3, 10000));
-            return budgetPoints;
+            return budgetPoints;            
         }
+        /// <summary>
+        /// Helper method to get expenses summed per month of selected year
+        /// </summary>
+        /// <returns></returns>        
         private PointCollection GetExpensesSumPerMonth()
         {
-            PointCollection expensesPoints = new PointCollection();            
+            // TODO Make into a task?
+            PointCollection expensesPoints = new PointCollection();
             // Get expenses per month
-            for(int i = 1; i < 13; i++)
+            for (int i = 1; i < 13; i++)
             {
                 List<ExpenseRow> expenses = _budgetManager.GetExpenses(cboYears.SelectedItem.ToString(), (i).ToString()).ToList();
                 // Month will be the X value in the diagram, but starting point in diagram is 0 so -1
+                if (expenses.Count == 0)
+                {
+                    continue;
+                }
                 int xPoint = i - 1;
                 // Y value will be sum of expense
                 expensesPoints.Add(new Point(xPoint, expenses.Sum(x => x.Amount)));
@@ -102,7 +135,7 @@ namespace LoveYourBudget.Diagram
             //    // Y value will be sum of budget
             //    //expensesPoints.Add(new Point(xPoint, expense.Sum(x => x.Amount)));
             //}
-            return expensesPoints;
+            return expensesPoints;            
         }
         // Helper to clear children from canvas
         private void ClearCanvas()
@@ -128,16 +161,16 @@ namespace LoveYourBudget.Diagram
             //}
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {            
             if (_reportName == "ExpensesVsBudget")
             {
                 _visualHost = new VisualHost(diagramCanvas.ActualHeight);
-                DrawExpensesVsBudget(cboYears.SelectedItem.ToString());
+                await DrawExpensesVsBudgetAsync();
             }
         }
 
-        private void cboYears_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void cboYears_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;
             if (!comboBox.IsLoaded)
@@ -147,7 +180,7 @@ namespace LoveYourBudget.Diagram
                 string year = comboBox.SelectedItem.ToString();
                 ClearCanvas();
                 _budgetManager = new BudgetManager(year);
-                DrawExpensesVsBudget(year);
+                await DrawExpensesVsBudgetAsync();
             }            
         }
         #endregion        

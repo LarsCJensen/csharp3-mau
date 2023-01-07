@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace LoveYourBudget.BLL.Model
 {
+    // TODO REMOVE
     public class BaseManager
     {
     }

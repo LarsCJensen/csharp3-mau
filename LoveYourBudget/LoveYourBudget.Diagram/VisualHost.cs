@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Utilities;
 using static LoveYourBudget.Diagram.Enums;
 
@@ -117,7 +118,7 @@ namespace LoveYourBudget.Diagram
         public async Task DrawScaleAxis(List<string> axisLabels, double max, double size, Orientation orientation)
         {
             // Actual size of the diagram area
-            _actualSize = CalculateActualSize(size, _offset);            
+            _actualSize = Calculator.CalculateActualSize(size, _offset);            
 
             // Coordinates used to convert from canvas units
             if(orientation == Orientation.Horizontal)
@@ -136,8 +137,8 @@ namespace LoveYourBudget.Diagram
             // Value of each step in the diagram
             double numberOfPoints = axisLabels.Count;
             
-            double stepValue = CalculateStepValue(Math.Round(numberOfPoints), _actualSize);
-            PointCollection points = CalculatePointsForScale(numberOfPoints, stepValue, _offset, _canvasHeight - _offset, orientation);
+            double stepValue = Calculator.CalculateStepValue(numberOfPoints, _actualSize);
+            PointCollection points = Calculator.GetPointsForScale(numberOfPoints, stepValue, _offset, _canvasHeight - _offset, orientation);
             
             // TODO REMOVE COMMENTED CODE
             //if (yMax == 1)
@@ -175,44 +176,62 @@ namespace LoveYourBudget.Diagram
             //}
             //_children.Add(DrawScaleText(yPoints, scaleStep, 10, Brushes.Black, false));
         }
-        public async Task DrawLegend(List<string> axisLabels, double max, double size, Orientation orientation)
+        public async Task DrawLegend(Dictionary<string, Brush> labels)
         {
-
-        }
-        // Helper method to calculate canvas size
-        private static double CalculateActualSize(double source, int offset)
-        {
-            return source - offset;
-        }
-        // Helper function to calculate step in scale
-        private static double CalculateStepValue(double numberOfPoints, double size)
-        {
-            return size / numberOfPoints;
-        }
-        // Helper function to calculate point collection for x and y
-        private static PointCollection CalculatePointsForScale(double numberOfSteps, double stepValue, int offset, double startY, Orientation orientation)
-        {
-            PointCollection points = new PointCollection
+            DrawingVisual visual = new DrawingVisual();
+            DrawingContext context = visual.RenderOpen();
+            FlowDirection direction = FlowDirection.RightToLeft;
+            double startX = _offset;
+            double startY = _canvasHeight - 20;
+            foreach (var label in labels)
             {
-                // Add origo point            
-                new Point(offset, startY)
-            };
-            // Since we add an origo point we skip one of the steps passed in
-            for (int i = 1; i < numberOfSteps; i++)
-            {
-                if (orientation == Orientation.Horizontal)
+                PointCollection legendLine = new PointCollection()
                 {
-                    // For horizontal we increase by stepvalue + offset, but keep Y at the same coordinate
-                    points.Add(new Point(i * stepValue + offset, startY));
-                }
-                else if (orientation == Orientation.Vertical)
-                {
-                    // For vertical we keep X at offset
-                    points.Add(new Point(offset, startY - (i * stepValue)));
-                }
+                    new Point(startX, startY),
+                    new Point(startX + 20, startY),
+                };
+                Point textPoint = new Point(startX, startY);
+                _children.Add(DrawHelpers.DrawLine(legendLine, label.Value,2,false));                
+                _children.Add(DrawText(textPoint, label.Key, 10, label.Value, Orientation.Horizontal));
+                startX += 50;
+                //DrawHelpers.DrawText(ref context, label.Key, points[0], direction, 15, label.Value);
             }
-            return points;
+            
         }
+        //// Helper method to calculate canvas size
+        //private static double CalculateActualSize(double source, int offset)
+        //{
+        //    return source - offset;
+        //}
+        //// Helper function to calculate step in scale
+        //private static double CalculateStepValue(double numberOfPoints, double size)
+        //{
+        //    return size / numberOfPoints;
+        //}
+        //// Helper function to calculate point collection for x and y
+        //private static PointCollection CalculatePointsForScale(double numberOfSteps, double stepValue, int offset, double startY, Orientation orientation)
+        //{
+        //    PointCollection points = new PointCollection
+        //    {
+        //        // Add origo point            
+        //        new Point(offset, startY)
+        //    };
+        //    // Since we add an origo point we skip one of the steps passed in
+        //    for (int i = 1; i < numberOfSteps; i++)
+        //    {
+        //        if (orientation == Orientation.Horizontal)
+        //        {
+        //            // For horizontal we increase by stepvalue + offset, but keep Y at the same coordinate
+        //            points.Add(new Point(i * stepValue + offset, startY));
+        //        }
+        //        else if (orientation == Orientation.Vertical)
+        //        {
+        //            // For vertical we keep X at offset
+        //            points.Add(new Point(offset, startY - (i * stepValue)));
+        //        }
+        //    }
+        //    return points;
+        //}
         // Helper method to draw scale text
         private DrawingVisual DrawScaleText(PointCollection points, List<string> labels, int size, Brush color, Orientation orientation)
         {
@@ -231,31 +250,28 @@ namespace LoveYourBudget.Diagram
             context.Close();
             return visual;
         }
+        // Helper method to draw scale text
+        private DrawingVisual DrawText(Point point, string label, int size, Brush color, Orientation orientation)
+        {
+            DrawingVisual visual = new DrawingVisual();
+            DrawingContext context = visual.RenderOpen();
+            FlowDirection direction = FlowDirection.RightToLeft;
+            if (orientation == Orientation.Horizontal)
+            {
+                direction = FlowDirection.LeftToRight;
+            }
+            DrawHelpers.DrawText(ref context, label, point, direction, size, color);
+            context.Close();
+            return visual;
+        }
         /// <summary>
         /// Draw points based on collection. Will transform points to canvas values
         /// </summary>
         /// <param name="points"></param>
         public async Task DrawPointsAsync(PointCollection points, Brush color)
         {
-            PointCollection calculatedPoints = TransformPointsToCanvas(points);
+            PointCollection calculatedPoints = await Calculator.TransformPointsToCanvas(points, _canvasHeight, _xCanvasScale, _yCanvasScale, _offset);
             _children.Add(DrawHelpers.DrawLine(calculatedPoints, color, 1));
-        }
-        // Transforms points to canvas units
-        private PointCollection TransformPointsToCanvas(PointCollection points)
-        {
-            PointCollection transformedPoints = new PointCollection();
-            foreach (Point point in points)
-            {
-                transformedPoints.Add(TransformPointToCanvas(point));
-            }
-            return transformedPoints;
-        }
-        // Transfor point to canvas units
-        private Point TransformPointToCanvas(Point point)
-        {
-            double x = (point.X * _xCanvasScale) + _offset;
-            double y = _canvasHeight - ((point.Y * _yCanvasScale) + _offset);
-            return new Point(x, y);
-        }
+        }        
     }
 }

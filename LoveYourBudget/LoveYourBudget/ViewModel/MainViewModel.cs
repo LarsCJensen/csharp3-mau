@@ -228,6 +228,7 @@ namespace LoveYourBudget.ViewModel
         public RelayCommand AddCommand { get; private set; }
         public RelayCommand DeleteCommand { get; private set; }
         public RelayCommand CreateTestDataCommand { get; private set; }
+        public RelayCommand CloseCommand { get; private set; }
         #endregion
         public MainViewModel()
         {
@@ -240,7 +241,7 @@ namespace LoveYourBudget.ViewModel
         private void RefreshGUI()
         {
             LoadCategories();
-            LoadExpensesAsync();
+            LoadExpenses();
             Date = DateTime.Now;
             BudgetExpenses = BudgetManager.GetSumBudgetExpenses();
             Income = BudgetManager.GetSumIncome();
@@ -260,6 +261,7 @@ namespace LoveYourBudget.ViewModel
             AddCommand = new RelayCommand(Add);
             DeleteCommand = new RelayCommand(Delete);
             CreateTestDataCommand = new RelayCommand(CreateTestData);
+            CloseCommand = new RelayCommand(Close);
         }
         /// <summary>
         /// Handler for OnSave event. Used to reload budget view
@@ -338,17 +340,26 @@ namespace LoveYourBudget.ViewModel
                 MessageBox.Show($"Could not get categories: {ex.Message} ");
             }
         }
-        private async void LoadExpensesAsync()
+        private void LoadExpenses()
         {
             try
             {
-                ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
+                // TODO Är detta rätt iom att det är en I/O-operation?
+                // Borde kanske vara  Task loadExpenses = Task.Run()
+                // Since this is a I/O bound task Task.Run is used
+                Task getExpensesTask = Task.Run(() =>
+                {
+                    ExpenseRows = new ObservableCollection<ExpenseRow>(BudgetManager.GetExpenses(SelectedYear, SelectedMonth).ToList());
+                });
+                //ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
+                getExpensesTask.Wait();
                 ActualExpenses = ExpenseRows.Sum(x => x.Amount);
             } catch(Exception ex)
             {
                 MessageBox.Show($"Could not get expenses: {ex.Message} ");
             }            
         }
+        // TODO REMOVE
         /// <summary>
         /// Helper method to summarize expenses
         /// </summary>

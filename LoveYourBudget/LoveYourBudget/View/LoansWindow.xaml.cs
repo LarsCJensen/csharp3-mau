@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace LoveYourBudget.View
 {
     /// <summary>
-    /// Interaction logic for ViewBudgetRows.xaml
+    /// Interaction logic for LoansWindow.xaml
     /// </summary>
-    public partial class ViewBudgetRows : Window
+    public partial class LoansWindow : Window
     {
-        public ViewBudgetRows()
+        public LoansWindow()
         {
             InitializeComponent();
         }
