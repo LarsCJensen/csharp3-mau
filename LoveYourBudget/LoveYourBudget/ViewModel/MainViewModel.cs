@@ -411,8 +411,16 @@ namespace LoveYourBudget.ViewModel
         }
         private void CreateTestData()
         {
-            BudgetManager.CreateTestData();
-            MessageBox.Show("Test data created!");
+            try
+            {
+                BudgetManager.CreateTestData();
+                MessageBox.Show("Test data created!");
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+            {
+                MessageBox.Show($"Could not create test data: {ex.Message}");
+            }
+            
         }
     }
 }

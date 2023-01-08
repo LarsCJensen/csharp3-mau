@@ -25,6 +25,7 @@ namespace LoveYourBudget.DAL
         {
             base.OnModelCreating(modelBuilder);
             new LoveYourBudgetInitializer(modelBuilder).Seed();
+            modelBuilder.Entity<Budget>().HasKey(nameof(Budget.Year), nameof(Budget.Month));
         }
 
     }

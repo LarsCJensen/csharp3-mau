@@ -172,7 +172,7 @@ namespace LoveYourBudget.ViewModel
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
             {
-                MessageBox.Show(ex.Message, "Save error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Could not save budget:\n { ex.InnerException.Message}", "Save error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
