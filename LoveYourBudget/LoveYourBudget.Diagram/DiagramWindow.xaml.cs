@@ -40,6 +40,14 @@ namespace LoveYourBudget.Diagram
             cboYears.SelectedItem = "2023";
             _budgetManager = new BudgetManager(cboYears.SelectedItem.ToString());
         }
+        private async void DrawReport()
+        {
+            if (_reportName == "ExpensesVsBudget")
+            {
+                _visualHost = new VisualHost(diagramCanvas.ActualHeight);
+                await DrawExpensesVsBudgetAsync();
+            }
+        }
         /// <summary>
         /// Method to draw report async
         /// </summary>
@@ -56,7 +64,7 @@ namespace LoveYourBudget.Diagram
             double yMax = 20000;            
             List<string> yLabels = new List<string>()
             {
-                "0", "2000", "4000", "6000", "8000", "10000", "12000", "14000", "16000", "18000", "20000"
+                "0", "2000", "4000", "6000", "8000", "10000", "12000", "14000", "16000", "18000", "20000"                
             };
 
             await DrawScaleAxis(xLabels, xMax, diagramCanvas.ActualWidth, Enums.Orientation.Horizontal);
@@ -101,9 +109,6 @@ namespace LoveYourBudget.Diagram
                 // Y value will be sum of budget
                 budgetPoints.Add(new Point(xPoint, budget.BudgetRows.Sum(x => x.Amount)));
             }
-            // TODO TEST
-            budgetPoints.Add(new Point(2, 0));
-            budgetPoints.Add(new Point(3, 10000));
             return budgetPoints;            
         }
         /// <summary>
@@ -148,26 +153,18 @@ namespace LoveYourBudget.Diagram
         // Event for Window size changed
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            // TODO
-            //// Reset visualHost
-            //diagramCanvas.Children.Clear();
-            //_visualHost = new VisualHost();
-            //_xWidth = diagramCanvas.ActualWidth;
-            //_yHeight = diagramCanvas.ActualHeight;
-            //// This check is needed since SizeChanged is called before settings are set
-            //if (NoZeroValues())
-            //{
-            //    Draw();
-            //}
+            if(this.IsLoaded)
+            {
+                // Reset visualHost
+                diagramCanvas.Children.Clear();
+                _visualHost = new VisualHost(diagramCanvas.ActualHeight);
+                DrawReport();
+            }            
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
-        {            
-            if (_reportName == "ExpensesVsBudget")
-            {
-                _visualHost = new VisualHost(diagramCanvas.ActualHeight);
-                await DrawExpensesVsBudgetAsync();
-            }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            DrawReport();
         }
 
         private async void cboYears_SelectionChanged(object sender, SelectionChangedEventArgs e)

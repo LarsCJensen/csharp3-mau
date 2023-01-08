@@ -118,26 +118,28 @@ namespace LoveYourBudget.Diagram
         public async Task DrawScaleAxis(List<string> axisLabels, double max, double size, Orientation orientation)
         {
             // Actual size of the diagram area
-            _actualSize = Calculator.CalculateActualSize(size, _offset);            
+            _actualSize = Calculator.CalculateActualSize(size, _offset);
 
+            // TODO NUMBER OF LABELS IS 11 NOT 10 AS IN Ass6
+            // Value of each step in the diagram
+            double numberOfPoints = axisLabels.Count;
+            double stepValue = Calculator.CalculateStepValue(numberOfPoints, _actualSize);
             // Coordinates used to convert from canvas units
-            if(orientation == Orientation.Horizontal)
+            if (orientation == Orientation.Horizontal)
             {
                 //_xPointScale = max / _actualSize;
                 // Coordinates used to convert to canvas units
-                _xCanvasScale = _actualSize / max;
+                _xCanvasScale = Calculator.CalculateScale(_actualSize, max);
             } else
             {
                 //_yPointScale = max / _actualSize;
                 // Coordinates used to convert to canvas units
-                _yCanvasScale = _actualSize / max;
+                _yCanvasScale = Calculator.CalculateScale(_actualSize, max);
+                // TODO Ugly way to handle this
+                stepValue = Calculator.CalculateStepValue(numberOfPoints-1, _actualSize);
             }           
+                       
             
-
-            // Value of each step in the diagram
-            double numberOfPoints = axisLabels.Count;
-            
-            double stepValue = Calculator.CalculateStepValue(numberOfPoints, _actualSize);
             PointCollection points = Calculator.GetPointsForScale(numberOfPoints, stepValue, _offset, _canvasHeight - _offset, orientation);
             
             // TODO REMOVE COMMENTED CODE

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LoveYourBudget.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,33 @@ namespace LoveYourBudget.View
     /// </summary>
     public partial class LoansWindow : Window
     {
+        LoansViewModel vm = new LoansViewModel();
         public LoansWindow()
         {
             InitializeComponent();
+            this.DataContext = vm;
+            vm.OnClose += delegate { vm.Close(); };
+
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            LoanViewModel newVm = new LoanViewModel();
+            AddLoanWindow newLoanWindow = new AddLoanWindow();
+            newLoanWindow.DataContext = newVm;
+            newVm.OnClose += delegate { newLoanWindow.Close(); };
+            newVm.OnSave += vm.OnSave;
+            newLoanWindow.Show();
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {            
+            LoanViewModel newVm = new LoanViewModel(vm.SelectedLoan.Id);
+            AddLoanWindow newLoanWindow = new AddLoanWindow();
+            newLoanWindow.DataContext = newVm;
+            newVm.OnClose += delegate { newLoanWindow.Close(); };
+            newVm.OnSave += vm.OnSave;
+            newLoanWindow.Show();
         }
     }
 }

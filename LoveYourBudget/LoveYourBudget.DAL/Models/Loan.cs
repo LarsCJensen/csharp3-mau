@@ -11,7 +11,9 @@ namespace LoveYourBudget
     public class Loan : BaseModel
     {
         [Required]
-        public int Amount { get; set; }        
+        public string Institute { get; set; }
+        [Required]
+        public int Amount { get; set; }
         public int Mortgage { get; set; }
         [Required]
         public double InterestRate { get; set; }

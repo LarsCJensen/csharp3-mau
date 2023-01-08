@@ -136,6 +136,7 @@ namespace LoveYourBudget.BLL.Model
         {
             _expensesService.Delete(expenseId);
         }
+        #region CreateTestData
         /// <summary>
         /// Only a helper method to create test data
         /// </summary>
@@ -162,10 +163,8 @@ namespace LoveYourBudget.BLL.Model
 
                 CreateBudgetRows(2022, i);
                 CreateExpenseRows(2022, i);
-                SaveBudget();
+                SaveBudget();                
             }
-            // Skapa BudgetRows för 2022
-            // Skapa expenses för 2022
         }
         private void CreateBudgetRows(int year, int month)
         {
@@ -199,5 +198,6 @@ namespace LoveYourBudget.BLL.Model
                 SaveExpense(expense);
             }
         }
+        #endregion
     }
 }

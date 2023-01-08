@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LoveYourBudget.ViewModel" 
         xmlns:converter="clr-namespace:LoveYourBudget.Converters"
+        xmlns:utilities="clr-namespace:Utilities;assembly=Utilities"
         xmlns:Behaviors="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
@@ -15,6 +16,7 @@
             <Setter Property="Label.FontWeight" Value="Bold" />
         </Style>
         <converter:CategoryConverter x:Key="conv" />
+        <utilities:BoolToVisibilityConverter x:Key="BoolToVis" />
         <local:MainViewModel x:Key="vm" />
     </Window.Resources>
     <Grid>
@@ -89,6 +91,9 @@
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="3">
                     <TextBlock Text="{Binding NumberOfBudgetRows, FallbackValue='Budget rows: '}" FontSize="13" FontWeight="Bold" />
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2">
+                    <TextBlock Text="No budget for selected month!" Foreground="Red" FontWeight="Bold" Visibility="{Binding NoBudget, Converter={StaticResource BoolToVis}}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="3" Grid.Column="1" >
                     <Label Content="Income" FontSize="15" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>

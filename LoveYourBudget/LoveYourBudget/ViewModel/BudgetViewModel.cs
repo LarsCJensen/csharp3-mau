@@ -166,14 +166,14 @@ namespace LoveYourBudget.ViewModel
         }
         private void Save()
         {
-            // TODO Save data in separate thread
             try
             {
                 BudgetManager.SaveBudget();
             }
-            catch (Exception ex)
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
             {
-                string test = "fan";
+                MessageBox.Show(ex.Message, "Save error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
             OnSave(this, EventArgs.Empty);

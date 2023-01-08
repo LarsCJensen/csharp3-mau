@@ -221,6 +221,16 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("EditOrCreateBudget");
             }
         }
+        private bool _noBudget;
+        public bool NoBudget
+        {
+            get { return _noBudget; }
+            set { 
+                _noBudget = value;
+                OnPropertyChanged("NoBudget");                    
+            }
+        }
+
         #endregion
         #region Commands
         public RelayCommand YearChangedCommand { get; private set; }
@@ -252,6 +262,7 @@ namespace LoveYourBudget.ViewModel
             NumberOfBudgetRows = $"# Budget rows: {BudgetManager.BudgetRows.Count}";
             EditOrCreateBudget = BudgetManager.Budgets.Count == 1 ? "Edit budget" : "Create budget";
             EditEnabled = SelectedMonth != "" && (BudgetManager.Budgets.Count == 1 || EditOrCreateBudget == "Create budget") ? true : false;
+            NoBudget = BudgetManager.Budgets.Count == 0 ? true: false;
         }
         protected override void RegisterCommands()
         {
@@ -324,7 +335,7 @@ namespace LoveYourBudget.ViewModel
             try
             {
                 BudgetManager.DeleteExpense(SelectedExpenseRow.Id);
-                ExpenseRows.Remove(SelectedExpenseRow);
+                RefreshGUI();
             } catch(Exception ex)
             {
                 MessageBox.Show($"Could not delete expense: {ex.Message} ");
@@ -376,6 +387,7 @@ namespace LoveYourBudget.ViewModel
         //    // TODO Move to property
         //    return ExpenseRows.Sum(x => x.Amount);
         //}
+        // TODO
         private string test()
         {
             // TODO 

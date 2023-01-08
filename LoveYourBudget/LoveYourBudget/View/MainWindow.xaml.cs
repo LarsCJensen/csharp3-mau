@@ -79,9 +79,9 @@ namespace LoveYourBudget
         private void ViewLoans_Click(object sender, RoutedEventArgs e)
         {
             LoansWindow loansWindow = new LoansWindow();
-            LoansViewModel loansVm = new LoansViewModel();
-            loansWindow.DataContext = loansVm;
-            loansVm.OnClose += delegate { loansVm.Close(); };
+            //LoansViewModel loansVm = new LoansViewModel();
+            //loansWindow.DataContext = loansVm;
+            //loansVm.OnClose += delegate { loansVm.Close(); };
             loansWindow.Show();
         }
     }

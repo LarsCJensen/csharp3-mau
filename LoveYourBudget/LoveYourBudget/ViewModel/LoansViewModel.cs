@@ -1,4 +1,5 @@
-﻿using LoveYourBudget.BLL.Model;
+﻿using GalaSoft.MvvmLight.Command;
+using LoveYourBudget.BLL.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -47,17 +48,17 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("AvgInterest");
             }
         }
-        private double _yearlyMortgage;
-        public double YearlyMortgage
+        private double _monthlyMortgage;
+        public double MonthlyMortgage
         {
             get
             {
-                return _yearlyMortgage;
+                return _monthlyMortgage;
             }
             set
             {
-                _yearlyMortgage = value;
-                OnPropertyChanged("YearlyMortgage");
+                _monthlyMortgage = value;
+                OnPropertyChanged("MonthlyMortgage");
             }
         }
         private ObservableCollection<Loan> _loans = new ObservableCollection<Loan>();
@@ -73,8 +74,8 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("Loans");
             }
         }
-        private string _selectedLoan;
-        public string SelectedLoan
+        private Loan _selectedLoan;
+        public Loan SelectedLoan
         {
             get
             {
@@ -86,16 +87,44 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("SelectedLoan");
             }
         }
-
+        #region Commands
+        public RelayCommand DeleteCommand { get; private set; }
+        #endregion
         public LoansViewModel()
         {
             LoanManager = new LoanManager();
             RefreshGUI();
         }
+
         private void RefreshGUI()
         {
             LoadLoans();
+            CalculateTotalAmount();
+            CalculateAvgInterest();
+            CalculateMortgage();
         }
+        protected override void RegisterCommands()
+        {
+            base.RegisterCommands();
+            DeleteCommand = new RelayCommand(Delete);            
+        }
+
+        private void CalculateMortgage()
+        {
+            MonthlyMortgage = Loans.Sum(x => x.Mortgage);
+
+        }
+
+        private void CalculateAvgInterest()
+        {
+            AvgInterest = Loans.Average(x => x.InterestRate);
+        }
+
+        private void CalculateTotalAmount()
+        {
+            TotalLoanSum = Loans.Sum(x => x.Amount);
+        }
+
         private void LoadLoans()
         {
             try
@@ -105,10 +134,11 @@ namespace LoveYourBudget.ViewModel
                 // Since this is a I/O bound task Task.Run is used
                 Task getLoansTask = Task.Run(() =>
                 {
-                    Loans = new ObservableCollection<Loan>(LoanManager.Loans);
+                    LoanManager.LoadLoans();
                 });
                 //ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
                 getLoansTask.Wait();
+                Loans = new ObservableCollection<Loan>(LoanManager.Loans);
                 //ActualExpenses = ExpenseRows.Sum(x => x.Amount);
             }
             catch (Exception ex)
@@ -117,5 +147,27 @@ namespace LoveYourBudget.ViewModel
                 MessageBox.Show($"Could not get expenses: {ex.Message} ");
             }
         }
+        public void OnSave(object sender, EventArgs e)
+        {
+            MessageBox.Show("Saved!");
+            RefreshGUI();
+        }
+        private void Delete()
+        {
+            if (SelectedLoan == null)
+            {
+                MessageBox.Show("Please select loan to delete!", "No loan selected!");
+                return;
+            }
+            try
+            {
+                LoanManager.DeleteLoan(SelectedLoan.Id);
+                RefreshGUI();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not delete expense: {ex.Message} ");
+            }
+        }        
     }
 }

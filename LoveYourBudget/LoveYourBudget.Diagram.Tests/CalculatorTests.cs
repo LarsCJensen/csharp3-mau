@@ -58,5 +58,16 @@ namespace LoveYourBudget.Diagram.Tests
             // Assert            
             Assert.AreEqual(new Point(120, 880), result);
         }
+        [TestMethod]
+        public void TestCalculateScale()
+        {
+            // Arrange            
+            var actualSize = 1000;
+            var max = 10000;
+            // Act
+            var result = Calculator.CalculateScale(actualSize, max);
+            // Assert            
+            Assert.AreEqual(0.1, result);
+        }
     }
 }

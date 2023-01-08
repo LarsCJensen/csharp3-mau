@@ -16,11 +16,11 @@ namespace LoveYourBudget.BLL.Model
         public LoanManager() 
         {
             Loan = new Loan();
-            Loans = new List<Loan>(_loansService.GetItems());
+            Loans = new List<Loan>();
         }
         public void SaveLoan()
         {
-            if (Loan.CreatedTime == null)
+            if (Loan.Id == 0)
             {
                 Loan.CreatedTime = DateTime.Now;
             }
@@ -29,6 +29,14 @@ namespace LoveYourBudget.BLL.Model
         public void DeleteLoan(int loanId)
         {
             _loansService.Delete(loanId);
+        }
+        public void LoadLoans()
+        {
+            Loans = _loansService.GetItems().ToList();
+        }
+        public void LoadLoan(int loanId)
+        {
+            Loan = _loansService.GetById(loanId);
         }
     }    
 }

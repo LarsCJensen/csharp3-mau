@@ -21,16 +21,24 @@ namespace LoveYourBudget.Diagram
         {
             return size / numberOfPoints;
         }
+        // Helper function to calculate step in scale
+        public static double CalculateScale(double size, double maxValue)
+        {
+            return size / maxValue;
+        }
         // Helper function to calculate point collection for x and y
         public static PointCollection GetPointsForScale(double numberOfSteps, double stepValue, int offset, double startY, Orientation orientation)
         {
-            PointCollection points = new PointCollection
-            {
-                // Add origo point            
-                new Point(offset, startY)
-            };
+            // TODO Is this needed?
+            //PointCollection points = new PointCollection
+            //{
+            //    // Add origo point            
+            //    new Point(offset, startY)
+            //};
+            PointCollection points = new PointCollection();
+            // TODO REMOVE
             // Since we add an origo point we skip one of the steps passed in
-            for (int i = 1; i < numberOfSteps; i++)
+            for (int i = 0; i < numberOfSteps; i++)
             {
                 if (orientation == Orientation.Horizontal)
                 {
