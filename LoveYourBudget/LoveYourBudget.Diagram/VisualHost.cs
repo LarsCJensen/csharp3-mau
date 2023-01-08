@@ -270,10 +270,21 @@ namespace LoveYourBudget.Diagram
         /// Draw points based on collection. Will transform points to canvas values
         /// </summary>
         /// <param name="points"></param>
-        public async Task DrawPointsAsync(PointCollection points, Brush color)
+        public async Task DrawPointsAsync(PointCollection points, Brush color, int size=1)
         {
             PointCollection calculatedPoints = await Calculator.TransformPointsToCanvas(points, _canvasHeight, _xCanvasScale, _yCanvasScale, _offset);
-            _children.Add(DrawHelpers.DrawLine(calculatedPoints, color, 1));
-        }        
+            _children.Add(DrawHelpers.DrawLine(calculatedPoints, color, size));
+        }
+        /// <summary>
+        /// Draw points based on collection. Will transform points to canvas values
+        /// </summary>
+        /// <param name="points">points to draw</param>
+        /// <param name="color">color</param>
+        /// <param name="size">size</param>
+        public async Task DrawStackAsync(PointCollection points, Brush color, int size = 1)
+        {
+            PointCollection calculatedPoints = await Calculator.TransformPointsToCanvas(points, _canvasHeight, _xCanvasScale, _yCanvasScale, _offset);
+            _children.Add(DrawHelpers.DrawStacks(calculatedPoints, _canvasHeight - _offset, color, size));
+        }
     }
 }

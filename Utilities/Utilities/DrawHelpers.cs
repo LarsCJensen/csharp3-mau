@@ -36,6 +36,20 @@ namespace Utilities
             context.Close();
             return visual;
         }
+        public static DrawingVisual DrawStacks(PointCollection points, double startY, Brush color, int size)
+        {
+            // FUTURE pass in pen
+            Pen scalePen = new Pen(color, size);
+
+            DrawingVisual visual = new DrawingVisual();
+            DrawingContext context = visual.RenderOpen();
+            foreach (Point point in points)
+            {
+                context.DrawLine(scalePen, new Point(point.X, startY), point);                
+            }
+            context.Close();
+            return visual;
+        }
         public static DrawingVisual DrawEllipse(PointCollection points, Brush color, int radiusX, int radiusY)
         {
             Pen scalePen = new Pen(color, 1);

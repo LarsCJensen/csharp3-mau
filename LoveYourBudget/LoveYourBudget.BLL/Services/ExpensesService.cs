@@ -61,6 +61,15 @@ namespace LoveYourBudget.BLL.Services
             return _repository.GetExpensesByDate(year, month);
         }
         /// <summary>
+        /// Method to get expenses per year and category
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpensesByYearAndCategory(string year, int categoryId)
+        {
+            return _repository.GetExpensesByYearAndCategory(year, categoryId);
+        }
+        /// <summary>
         /// Method to get expenses by year async
         /// </summary>
         /// <param name="year">Year</param>        

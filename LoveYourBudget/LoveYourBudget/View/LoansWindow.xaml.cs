@@ -40,7 +40,12 @@ namespace LoveYourBudget.View
         }
 
         private void Edit_Click(object sender, RoutedEventArgs e)
-        {            
+        {     
+            if(vm.SelectedLoan == null)
+            {
+                MessageBox.Show("Please select loan to edit!", "No loan selected!");
+                return;
+            }
             LoanViewModel newVm = new LoanViewModel(vm.SelectedLoan.Id);
             AddLoanWindow newLoanWindow = new AddLoanWindow();
             newLoanWindow.DataContext = newVm;

@@ -182,6 +182,17 @@ namespace LoveYourBudget.DAL
             return GetAllExpenses().Where(x => x.Date >= date && x.Date <= enddate).ToList();
         }
         /// <summary>
+        /// Method to get all ExpenseRows for year and month
+        /// </summary>
+        /// <param name="year">year to filter on</param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpensesByYearAndCategory(string year, int categoryId)
+        {
+            DateTime date = new DateTime(int.Parse(year), 1, 1);
+            DateTime enddate = new DateTime(int.Parse(year), 12, 31);
+            return GetAllExpenses().Where(x => (x.Date >= date && x.Date <= enddate) && x.CategoryId == categoryId).ToList();
+        }
+        /// <summary>
         /// Method to get all ExpenseRows asynchronously
         /// </summary>
         /// <param name="year">year to filter on</param>

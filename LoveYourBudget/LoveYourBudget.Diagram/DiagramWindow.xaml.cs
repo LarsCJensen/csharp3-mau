@@ -46,15 +46,20 @@ namespace LoveYourBudget.Diagram
             {
                 _visualHost = new VisualHost(diagramCanvas.ActualHeight);
                 await DrawExpensesVsBudgetAsync();
+            }else if(_reportName == "ExpensesPerCategory")
+            {
+                _visualHost = new VisualHost(diagramCanvas.ActualHeight);
+                await DrawExpensesPerCategoryAsync();
             }
         }
         /// <summary>
-        /// Method to draw report async
-        /// </summary>
-        /// <param name="year">year to draw for</param>
-        /// <returns></returns>
+        /// Method to draw Expenses vs Budget report async
+        /// </summary>        
+        /// <returns>Task</returns>
         private async Task DrawExpensesVsBudgetAsync()
         {
+            PointCollection budgetPoints = GetBudgetSumPerMonth();
+            PointCollection expensePoints = GetExpensesSumPerMonth();
             double xMax = 12;            
             List<string> xLabels = new List<string>()
             {
@@ -66,32 +71,134 @@ namespace LoveYourBudget.Diagram
             {
                 "0", "2000", "4000", "6000", "8000", "10000", "12000", "14000", "16000", "18000", "20000"                
             };
+            
+            if(expensePoints.Count == 0|| budgetPoints.Count == 0) {
+                MessageBox.Show("No expense or budget rows to show for selected year!\nPlease choose another year to show.", "Nothing to show");
+                await DrawScaleAxis(xLabels, xMax, diagramCanvas.ActualWidth, Enums.Orientation.Horizontal);
+                await DrawScaleAxis(yLabels, yMax, diagramCanvas.ActualHeight, Enums.Orientation.Vertical);
+                diagramCanvas.Children.Add(_visualHost);
+                return; 
+            }
 
+            // Make scale dynamic
+            if (expensePoints.Max(e => e.Y) > budgetPoints.Max(e => e.Y))
+            {
+                yMax = expensePoints.Max(e => e.Y);                
+            } else
+            {
+                yMax = budgetPoints.Max(e => e.Y);
+            }
+            // Round up to closest 1000
+            yMax = Math.Ceiling(yMax / 1000) * 1000;
+
+            // Create labels dynamically
+            yLabels = new List<string>() { "0" };
+            double scaleStep = xMax < 10000 ? 500 : 1000;
+            double yStep = yMax / 10;
+            for (int i = 1; i < 11;i++)
+            {
+                yLabels.Add((i * Math.Ceiling((yMax / 10) / scaleStep) * scaleStep).ToString());
+            }
+            yMax = Int32.Parse(yLabels[yLabels.Count - 1]);
             await DrawScaleAxis(xLabels, xMax, diagramCanvas.ActualWidth, Enums.Orientation.Horizontal);
             await DrawScaleAxis(yLabels, yMax, diagramCanvas.ActualHeight, Enums.Orientation.Vertical);
-            
-            PointCollection budgetPoints = GetBudgetSumPerMonth();
-            await DrawPoints(budgetPoints, Brushes.Black);
-            PointCollection expensePoints = GetExpensesSumPerMonth();
+
             await DrawPoints(expensePoints, Brushes.Red);
-            await DrawLegend(); 
-            diagramCanvas.Children.Add(_visualHost);
-        }
-        private async Task DrawScaleAxis(List<string> labels, double max, double size, Enums.Orientation orientation)
-        {
-             await _visualHost.DrawScaleAxis(labels, max, size, orientation);            
-        }
-        private async Task DrawPoints(PointCollection points, Brush color)
-        {
-            await _visualHost.DrawPointsAsync(points, color);
-        }
-        private async Task DrawLegend()
-        {
+            await DrawPoints(budgetPoints, Brushes.Black);
+
+
             Dictionary<string, Brush> labels = new Dictionary<string, Brush>()
             {
                 {"Budget", Brushes.Black },
                 { "Expenses", Brushes.Red }
             };
+
+            await DrawLegend(labels); 
+            diagramCanvas.Children.Add(_visualHost);
+        }
+        /// <summary>
+        /// Method to draw Expenses vs Budget report async
+        /// </summary>        
+        /// <returns>Task</returns>
+        private async Task DrawExpensesPerCategoryAsync()
+        {
+            List<Category> categories = _budgetManager.GetCategories();
+            // We will add an extra step to have the categories start one step to the right
+            double xMax = categories.Count + 1;
+            List<string> xLabels = categories.Select(c => c.Name).ToList();
+            xLabels.Insert(0, "");
+            double yMax = 20000;
+            List<string> yLabels = new List<string>()
+            {
+                "0", "1000", "2000", "3000", "4000", "50000", "6000", "7000", "8000", "9000", "10000"
+            };
+            PointCollection expensePoints = GetExpensesSumPerCategory(categories);
+            
+            if (expensePoints.Count == 0)
+            {
+                MessageBox.Show("No expense rows to show for selected year!\nPlease choose another year to show.", "Nothing to show");
+                await DrawScaleAxis(xLabels, xMax, diagramCanvas.ActualWidth, Enums.Orientation.Horizontal);
+                await DrawScaleAxis(yLabels, yMax, diagramCanvas.ActualHeight, Enums.Orientation.Vertical);
+                diagramCanvas.Children.Add(_visualHost);
+                return;
+            }
+            yMax = expensePoints.Max(e => e.Y);
+            // Create labels dynamically
+            yLabels = new List<string>() { "0" };
+            double scaleStep = xMax < 10000 ? 500 : 1000;
+            double yStep = yMax / 10;
+            for (int i = 1; i < 11; i++)
+            {
+                yLabels.Add((i * Math.Ceiling((yMax / 10) / scaleStep) * scaleStep).ToString());
+            }
+            yMax = Int32.Parse(yLabels[yLabels.Count - 1]);
+            await DrawScaleAxis(xLabels, xMax, diagramCanvas.ActualWidth, Enums.Orientation.Horizontal);
+            await DrawScaleAxis(yLabels, yMax, diagramCanvas.ActualHeight, Enums.Orientation.Vertical);
+            
+            //await DrawPoints(expensePoints, Brushes.Black, 10);
+            await DrawStack(expensePoints, Brushes.Black, 10);
+
+            diagramCanvas.Children.Add(_visualHost);
+        }
+        /// <summary>
+        /// Method to draw scale axis async
+        /// </summary>
+        /// <param name="labels">Labels to draw</param>
+        /// <param name="max">Max value for axis</param>
+        /// <param name="size">Size of canvas axis</param>
+        /// <param name="orientation">Orientation</param>
+        /// <returns></returns>
+        private async Task DrawScaleAxis(List<string> labels, double max, double size, Enums.Orientation orientation)
+        {
+             await _visualHost.DrawScaleAxis(labels, max, size, orientation);            
+        }
+        /// <summary>
+        /// Method to draw points async
+        /// </summary>
+        /// <param name="points">Points to draw</param>
+        /// <param name="color">Color to use</param>
+        /// <returns>Task</returns>
+        private async Task DrawPoints(PointCollection points, Brush color, int size=1)
+        {
+            await _visualHost.DrawPointsAsync(points, color, size);
+        }
+        /// <summary>
+        /// Method to draw points async
+        /// </summary>
+        /// <param name="points">Points to draw</param>
+        /// <param name="color">Color to use</param>
+        /// <returns>Task</returns>
+        private async Task DrawStack(PointCollection points, Brush color, int size = 1)
+        {
+            await _visualHost.DrawStackAsync(points, color, size);
+        }
+        /// <summary>
+        /// Method to draw legend async
+        /// </summary>
+        /// <param name="labels">Dict with labels and color</param>
+        /// <returns>Task</returns>
+        private async Task DrawLegend(Dictionary<string, Brush> labels)
+        {
             await _visualHost.DrawLegend(labels);
         }
         #region Helper methods
@@ -122,7 +229,7 @@ namespace LoveYourBudget.Diagram
             // Get expenses per month
             for (int i = 1; i < 13; i++)
             {
-                List<ExpenseRow> expenses = _budgetManager.GetExpenses(cboYears.SelectedItem.ToString(), (i).ToString()).ToList();
+                List<ExpenseRow> expenses = _budgetManager.GetExpensesForDate(cboYears.SelectedItem.ToString(), (i).ToString()).ToList();
                 // Month will be the X value in the diagram, but starting point in diagram is 0 so -1
                 if (expenses.Count == 0)
                 {
@@ -142,6 +249,28 @@ namespace LoveYourBudget.Diagram
             //}
             return expensesPoints;            
         }
+        /// <summary>
+        /// Helper method to get expenses summed per month of selected year
+        /// </summary>
+        /// <returns></returns>        
+        private PointCollection GetExpensesSumPerCategory(List<Category> categories)
+        {            
+            // TODO Make into a task?
+            PointCollection expensesPoints = new PointCollection();            
+            // Get expenses per month
+            for (int i = 0; i < categories.Count; i++)
+            {
+                List<ExpenseRow> expenses = _budgetManager.GetExpensesByYearAndCategory(cboYears.SelectedItem.ToString(), categories[i].Id).ToList();
+                if (expenses.Count == 0)
+                {
+                    continue;
+                }
+                int xPoint = i+1;
+                // Y value will be sum of expense
+                expensesPoints.Add(new Point(xPoint, expenses.Sum(x => x.Amount)));
+            }
+            return expensesPoints;
+        }
         // Helper to clear children from canvas
         private void ClearCanvas()
         {
@@ -156,8 +285,7 @@ namespace LoveYourBudget.Diagram
             if(this.IsLoaded)
             {
                 // Reset visualHost
-                diagramCanvas.Children.Clear();
-                _visualHost = new VisualHost(diagramCanvas.ActualHeight);
+                ClearCanvas();
                 DrawReport();
             }            
         }
@@ -177,7 +305,8 @@ namespace LoveYourBudget.Diagram
                 string year = comboBox.SelectedItem.ToString();
                 ClearCanvas();
                 _budgetManager = new BudgetManager(year);
-                await DrawExpensesVsBudgetAsync();
+                //await DrawExpensesVsBudgetAsync();
+                DrawReport();
             }            
         }
         #endregion        

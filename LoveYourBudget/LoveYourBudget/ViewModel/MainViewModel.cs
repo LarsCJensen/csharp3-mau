@@ -256,7 +256,7 @@ namespace LoveYourBudget.ViewModel
             BudgetExpenses = BudgetManager.GetSumBudgetExpenses();
             Income = BudgetManager.GetSumIncome();
             //ActualExpenses = GetSumExpenses();
-            TopExpenseCategory = test();
+            TopExpenseCategory = BudgetManager.GetTopExpenseCategory(SelectedYear, SelectedMonth);
             // TODO Get number of budgets per year instead?
             NumberOfBudgets = $"# Budgets: {BudgetManager.Budgets.Count}";
             NumberOfBudgetRows = $"# Budget rows: {BudgetManager.BudgetRows.Count}";
@@ -360,7 +360,7 @@ namespace LoveYourBudget.ViewModel
                 // Since this is a I/O bound task Task.Run is used
                 Task getExpensesTask = Task.Run(() =>
                 {
-                    ExpenseRows = new ObservableCollection<ExpenseRow>(BudgetManager.GetExpenses(SelectedYear, SelectedMonth).ToList());
+                    ExpenseRows = new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesForDate(SelectedYear, SelectedMonth).ToList());
                 });
                 //ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
                 getExpensesTask.Wait();
@@ -403,6 +403,7 @@ namespace LoveYourBudget.ViewModel
         private void CreateTestData()
         {
             BudgetManager.CreateTestData();
+            MessageBox.Show("Test data created!");
         }
     }
 }

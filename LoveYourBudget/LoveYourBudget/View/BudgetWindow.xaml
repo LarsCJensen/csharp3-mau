@@ -73,7 +73,7 @@
                         <GridViewColumn DisplayMemberBinding="{Binding CategoryId, Converter={StaticResource conv}, ConverterParameter={StaticResource vm}}" Width="130">
                             <GridViewColumnHeader>Category</GridViewColumnHeader>
                         </GridViewColumn>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Amount}" Width="130">
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Amount, StringFormat={}{0:N0}}" Width="130">
                             <GridViewColumnHeader>Amount</GridViewColumnHeader>
                         </GridViewColumn>
                     </GridView>

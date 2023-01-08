@@ -99,7 +99,7 @@ namespace LoveYourBudget.BLL.Model
         /// </summary>
         /// <param name="year">Year</param>
         /// <returns></returns>
-        public IEnumerable<ExpenseRow> GetExpenses(string year)
+        public IEnumerable<ExpenseRow> GetExpensesForDate(string year)
         {
             return _expensesService.GetExpensesByDate(year);
         }
@@ -109,9 +109,19 @@ namespace LoveYourBudget.BLL.Model
         /// <param name="year">Year</param>
         /// /// <param name="month">Month</param>
         /// <returns></returns>
-        public IEnumerable<ExpenseRow> GetExpenses(string year, string month)
+        public IEnumerable<ExpenseRow> GetExpensesForDate(string year, string month)
         {
             return _expensesService.GetExpensesByDate(year, month);
+        }
+        /// <summary>
+        /// Method to get expenses by year and month
+        /// </summary>
+        /// <param name="year">Year</param>
+        /// /// <param name="month">Month</param>
+        /// <returns></returns>
+        public IEnumerable<ExpenseRow> GetExpensesByYearAndCategory(string year, int categoryId)
+        {
+            return _expensesService.GetExpensesByYearAndCategory(year, categoryId);
         }
         /// <summary>
         /// Method to get expenses by year async
@@ -143,7 +153,7 @@ namespace LoveYourBudget.BLL.Model
         public void CreateTestData()
         {
             Random random = new Random();
-            // Skapa budget för 2022
+            // Creates budgets for 2022 
             for (int i = 1; i < 13; i++)
             {
                 string month = "0";
@@ -186,7 +196,7 @@ namespace LoveYourBudget.BLL.Model
         private void CreateExpenseRows(int year, int month)
         {
             Random random = new Random();            
-            for (int i = 1; i < _categoryService.GetItems().Count(); i++)
+            for (int i = 1; i < _categoryService.GetItems().Count()+1; i++)
             {
                 ExpenseRow expense = new ExpenseRow()
                     {

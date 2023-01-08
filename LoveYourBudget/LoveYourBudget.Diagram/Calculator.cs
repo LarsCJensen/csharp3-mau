@@ -14,7 +14,7 @@ namespace LoveYourBudget.Diagram
         // Helper method to calculate canvas size
         public static double CalculateActualSize(double source, int offset)
         {
-            return source - offset;
+            return source - offset * 2;
         }
         // Helper function to calculate step in scale
         public static double CalculateStepValue(double numberOfPoints, double size)
