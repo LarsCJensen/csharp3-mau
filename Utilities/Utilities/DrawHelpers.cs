@@ -9,6 +9,9 @@ using System.Windows.Media;
 
 namespace Utilities
 {
+    /// <summary>
+    /// Helpers for drawing using DrawingVisual
+    /// </summary>
     public static class DrawHelpers
     {
         public static DrawingVisual DrawLine(PointCollection points, Brush color, int size, bool drawPoint = true)

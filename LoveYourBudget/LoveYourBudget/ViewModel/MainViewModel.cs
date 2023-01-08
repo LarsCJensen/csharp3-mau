@@ -256,11 +256,12 @@ namespace LoveYourBudget.ViewModel
             BudgetExpenses = BudgetManager.GetSumBudgetExpenses();
             Income = BudgetManager.GetSumIncome();
             //ActualExpenses = GetSumExpenses();
+            // FUTURE Not fully implemented
             TopExpenseCategory = BudgetManager.GetTopExpenseCategory(SelectedYear, SelectedMonth);
             // TODO Get number of budgets per year instead?
             NumberOfBudgets = $"# Budgets: {BudgetManager.Budgets.Count}";
             NumberOfBudgetRows = $"# Budget rows: {BudgetManager.BudgetRows.Count}";
-            EditOrCreateBudget = BudgetManager.Budgets.Count == 1 ? "Edit budget" : "Create budget";
+            EditOrCreateBudget = BudgetManager.Budgets.Count > 0 ? "Edit budget" : "Create budget";
             EditEnabled = SelectedMonth != "" && (BudgetManager.Budgets.Count == 1 || EditOrCreateBudget == "Create budget") ? true : false;
             NoBudget = BudgetManager.Budgets.Count == 0 ? true: false;
         }
@@ -282,6 +283,7 @@ namespace LoveYourBudget.ViewModel
         public void OnSave(object sender, EventArgs e)
         {
             MessageBox.Show("Saved!");
+            RefreshGUI();
         }
         private void YearChangedExecute()
         {
@@ -293,7 +295,6 @@ namespace LoveYourBudget.ViewModel
                 BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
             }
             RefreshGUI();
-
         }
         private void MonthChangedExecute()
         {
@@ -324,6 +325,7 @@ namespace LoveYourBudget.ViewModel
             SelectedCategory = null;
             Amount = "";
             ExpenseRows.Add(ExpenseRow);
+            RefreshGUI();
         }
         private void Delete()
         {
@@ -360,7 +362,14 @@ namespace LoveYourBudget.ViewModel
                 // Since this is a I/O bound task Task.Run is used
                 Task getExpensesTask = Task.Run(() =>
                 {
-                    ExpenseRows = new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesForDate(SelectedYear, SelectedMonth).ToList());
+                    if (SelectedMonth == "")
+                    {
+                        ExpenseRows = new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesForDate(SelectedYear).ToList());
+                    } else
+                    {
+                        ExpenseRows = new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesForDate(SelectedYear, SelectedMonth).ToList());
+                    }
+                    
                 });
                 //ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
                 getExpensesTask.Wait();

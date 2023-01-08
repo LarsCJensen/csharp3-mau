@@ -131,24 +131,22 @@ namespace LoveYourBudget.DAL
             DateTime date = DateTime.Parse(year + "-" + month);
             int daysInMonth = DateTime.DaysInMonth(Int32.Parse(year), Int32.Parse(month));
             DateTime enddate = DateTime.Parse(year + "-" + month + "-" + daysInMonth);
-            //var query = from e in _context.Set<ExpenseRow>()
-            //            join c in _context.Set<Category>()
-            //            on e.CategoryId equals c.Id into grouping
-            //            select new {}
-            var category = _context.Categories.GroupBy(c => c.Name)
-                .Select(g => new
-                {
-                    g.Key, SUM = g.Sum(s => s.ExpenseRows.Select(t => t.Amount).Sum())
-                }).FirstOrDefault();
-            List<BudgetRow> budgetRows = new List<BudgetRow>();
-            if (month == "")
-            {
-                //budgetRows = GetAllBudgetRows().Where(x => x.Date >= date && x.Date <= enddate).GroupBy(Category);
-            }
-            else
-            {
-                //return _context.Budgets.AsQueryable().Where(x => x.Year == year && x.Month == month).First();
-            }
+            var expenseRows = GetAllExpenses().Where(x => x.Date >= date && x.Date <= enddate).GroupBy(x => x.CategoryId).ToList();
+            
+            //var category = _context.Categories.GroupBy(c => c.Name)
+            //    .Select(g => new
+            //    {
+            //        g.Key, SUM = g.Sum(s => s.ExpenseRows.Select(t => t.Amount).Sum())
+            //    }).FirstOrDefault();
+            //List<BudgetRow> budgetRows = new List<BudgetRow>();
+            //if (month == "")
+            //{
+            //    //budgetRows = GetAllBudgetRows().Where(x => x.Date >= date && x.Date <= enddate).GroupBy(Category);
+            //}
+            //else
+            //{
+            //    //return _context.Budgets.AsQueryable().Where(x => x.Year == year && x.Month == month).First();
+            //}
             return _context.Categories.First();
         }
         private IQueryable<BudgetRow> GetAllBudgetRows()

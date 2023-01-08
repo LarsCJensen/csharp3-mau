@@ -52,18 +52,32 @@ namespace LoveYourBudget.ViewModel
         }
         private void Save()
         {
-            try
+            if(ValidateLoan())
             {
-                LoanManager.SaveLoan();
-            }
-            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
-            {
-                MessageBox.Show(ex.Message, "Save error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+                try
+                {
+                    LoanManager.SaveLoan();
+                }
+                catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+                {
+                    MessageBox.Show(ex.Message, "Save error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-            OnSave(this, EventArgs.Empty);
-            Close();
+                OnSave(this, EventArgs.Empty);
+                Close();
+            }          
+        }
+
+        private bool ValidateLoan()
+        {
+            // I only check if institute is set. If user inputs errorous amount etc. it will be translated to 0
+            if(LoanManager.Loan.Institute == "" || LoanManager.Loan.Institute == null)
+            {
+                MessageBox.Show("You must enter an institute", "No institute!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }            
+            return true;
         }
     }
 }

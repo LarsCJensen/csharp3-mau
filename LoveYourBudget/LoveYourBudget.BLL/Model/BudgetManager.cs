@@ -70,10 +70,17 @@ namespace LoveYourBudget.BLL.Model
             }
             return budgetIncome;
         }
+        /// <summary>
+        /// NOT YET IMPLEMENTED!
+        /// Get top expense category for date
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
         public string GetTopExpenseCategory(string year, string month)
         {
             // Sum expenses for Category for budgets
-            _expensesService.GetTopExpenseCategory(year, month);
+            //_expensesService.GetTopExpenseCategory(year, month);
             return "Groceries";
         }
         public void SaveBudget()
