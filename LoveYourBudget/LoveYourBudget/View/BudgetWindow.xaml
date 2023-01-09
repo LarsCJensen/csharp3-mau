@@ -30,6 +30,7 @@
             <RowDefinition Height="30" />
             <RowDefinition Height="30" />
             <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
@@ -51,23 +52,26 @@
         <StackPanel Grid.Row="4" Grid.Column="1" Margin="5,5,5,5">
             <TextBox Text="{Binding BudgetManager.Budget.Income, StringFormat={}{0:N0}}" />
         </StackPanel>
-        <StackPanel Grid.Row="5" Grid.Column="1">
+        <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <Label Content="Budget rows" Style="{StaticResource LabelFont}" />
+        </StackPanel>
+        <StackPanel Grid.Row="6" Grid.Column="1">
             <Label Content="Category" Style="{StaticResource LabelFont}" />
         </StackPanel>
-        <StackPanel Grid.Row="5" Grid.Column="2">
+        <StackPanel Grid.Row="6" Grid.Column="2">
             <Label Content="Amount" Style="{StaticResource LabelFont}" />
         </StackPanel>
-        <StackPanel Grid.Row="6" Grid.Column="1" Margin="5,5,5,5">
+        <StackPanel Grid.Row="7" Grid.Column="1" Margin="5,5,5,5">
             <ComboBox ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" SelectedValuePath="Id" SelectedValue="{Binding Category.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
-        <StackPanel Grid.Row="6" Grid.Column="2" Margin="5,5,5,5">
+        <StackPanel Grid.Row="7" Grid.Column="2" Margin="5,5,5,5">
             <TextBox Text="{Binding Amount}" />
         </StackPanel>
-        <StackPanel Grid.Row="6" Grid.Column="3" Margin="5,5,5,5">
+        <StackPanel Grid.Row="7" Grid.Column="3" Margin="5,5,5,5">
             <Button Content="Add" Command="{Binding AddCommand}" CommandParameter=""/>
         </StackPanel>
-        <StackPanel Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2">
-            <ListView x:Name="lvBudgetRows" Height="200"  ItemsSource="{Binding BudgetRows}" SelectedItem="{Binding SelectedBudgetRow, FallbackValue=null}">
+        <StackPanel Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2">
+            <ListView x:Name="lvBudgetRows" Height="180"  ItemsSource="{Binding BudgetRows}" SelectedItem="{Binding SelectedBudgetRow, FallbackValue=null}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding CategoryId, Converter={StaticResource conv}, ConverterParameter={StaticResource vm}}" Width="130">
@@ -80,10 +84,10 @@
                 </ListView.View>
             </ListView>
         </StackPanel>
-        <StackPanel Grid.Row="8" Grid.Column="1" Margin="5,5,5,5">
+        <StackPanel Grid.Row="9" Grid.Column="1" Margin="5,5,5,5">
             <Button Content="Save" Command="{Binding SaveCommand}"/>
         </StackPanel>
-        <StackPanel Grid.Row="8" Grid.Column="2" Margin="5,5,5,5">
+        <StackPanel Grid.Row="9" Grid.Column="2" Margin="5,5,5,5">
             <Button Content="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding ElementName=lvBudgetRows, Path=SelectedItem}"/>
         </StackPanel>
     </Grid>

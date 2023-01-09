@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +19,11 @@ namespace Utilities
 
             DrawingVisual visual = new DrawingVisual();
             DrawingContext context = visual.RenderOpen();
+            // If there only is one point, draw an elipse
+            if(points.Count ==1)
+            {
+                context.DrawEllipse(color, new Pen(color, 1), points[0], 2, 2);
+            }
             Point lastPoint = new Point();
             foreach (Point point in points)
             {

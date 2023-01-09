@@ -304,7 +304,7 @@ namespace LoveYourBudget.ViewModel
         /// <param name="e"></param>
         public void OnSave(object sender, EventArgs e)
         {
-            MessageBox.Show("Saved!");
+            MessageBox.Show("Item saved!", "Save completed!", MessageBoxButton.OK, MessageBoxImage.Information);
             BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
             RefreshGUI();
         }
@@ -447,7 +447,7 @@ namespace LoveYourBudget.ViewModel
                 }                
             } catch(Exception ex)
             {
-                MessageBox.Show($"Unhandled error occured:\n{ex.InnerException}", "Could not create data!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Unhandled error occured:\n{ex.Message}", "Could not create data!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }

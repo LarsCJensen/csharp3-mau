@@ -114,18 +114,26 @@ namespace LoveYourBudget.ViewModel
 
         private void CalculateMortgage()
         {
-            MonthlyMortgage = Loans.Sum(x => x.Mortgage);
-
+            if (Loans.Count > 0)
+            {
+                MonthlyMortgage = Loans.Sum(x => x.Mortgage);
+            }
         }
 
         private void CalculateAvgInterest()
         {
-            AvgInterest = Loans.Average(x => x.InterestRate);
+            if(Loans.Count > 0)
+            {
+                AvgInterest = Loans.Average(x => x.InterestRate);
+            }            
         }
 
         private void CalculateTotalAmount()
         {
-            TotalLoanSum = Loans.Sum(x => x.Amount);
+            if (Loans.Count > 0)
+            {
+                TotalLoanSum = Loans.Sum(x => x.Amount);
+            }
         }
 
         private void LoadLoans()
@@ -148,7 +156,7 @@ namespace LoveYourBudget.ViewModel
         }
         public void OnSave(object sender, EventArgs e)
         {
-            MessageBox.Show("Saved!");
+            MessageBox.Show("Loan saved!", "Save completed!", MessageBoxButton.OK, MessageBoxImage.Information);
             RefreshGUI();
         }
         private void Delete()

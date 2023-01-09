@@ -240,13 +240,6 @@ namespace LoveYourBudget.Diagram
                 expensesPoints.Add(new Point(xPoint, expenses.Sum(x => x.Amount)));
             }
 
-            //foreach (ExpenseRow expense in expenses)
-            //{
-            //    // Month will be the X value in the diagram, but starting point in diagram is 0 so -1
-            //    int xPoint = Int32.Parse(expense.Date.ToString()) - 1;
-            //    // Y value will be sum of budget
-            //    //expensesPoints.Add(new Point(xPoint, expense.Sum(x => x.Amount)));
-            //}
             return expensesPoints;            
         }
         /// <summary>
