@@ -208,6 +208,19 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("EditEnabled");
             }
         }
+        private bool _deleteEnabled;
+        public bool DeleteEnabled
+        {
+            get
+            {
+                return _deleteEnabled;
+            }
+            set
+            {
+                _deleteEnabled = value;
+                OnPropertyChanged("DeleteEnabled");
+            }
+        }
         private string _editOrCreateBudget;
         public string EditOrCreateBudget
         {
@@ -236,6 +249,7 @@ namespace LoveYourBudget.ViewModel
         public RelayCommand YearChangedCommand { get; private set; }
         public RelayCommand MonthChangedCommand { get; private set; }
         public RelayCommand AddCommand { get; private set; }
+        public RelayCommand DeleteBudgetCommand { get; private set; }
         public RelayCommand DeleteCommand { get; private set; }
         public RelayCommand CreateTestDataCommand { get; private set; }
         public RelayCommand CloseCommand { get; private set; }
@@ -250,7 +264,7 @@ namespace LoveYourBudget.ViewModel
         }
         private void RefreshGUI()
         {
-            LoadCategories();
+            LoadCategoriesAsync();
             LoadExpenses();
             Date = DateTime.Now;
             BudgetExpenses = BudgetManager.GetSumBudgetExpenses();
@@ -263,6 +277,7 @@ namespace LoveYourBudget.ViewModel
             NumberOfBudgetRows = $"# Budget rows: {BudgetManager.BudgetRows.Count}";
             EditOrCreateBudget = BudgetManager.Budgets.Count > 0 ? "Edit budget" : "Create budget";
             EditEnabled = SelectedMonth != "" && (BudgetManager.Budgets.Count == 1 || EditOrCreateBudget == "Create budget") ? true : false;
+            DeleteEnabled = SelectedMonth != "" && BudgetManager.Budgets.Count == 1 ? true : false;
             NoBudget = BudgetManager.Budgets.Count == 0 ? true: false;
         }
         protected override void RegisterCommands()
@@ -270,8 +285,9 @@ namespace LoveYourBudget.ViewModel
             base.RegisterCommands();
             YearChangedCommand = new RelayCommand(YearChangedExecute);
             MonthChangedCommand = new RelayCommand(MonthChangedExecute);
-            AddCommand = new RelayCommand(Add);
-            DeleteCommand = new RelayCommand(Delete);
+            AddCommand = new RelayCommand(AddExecute);
+            DeleteBudgetCommand = new RelayCommand(DeleteBudgetExecute);
+            DeleteCommand = new RelayCommand(DeleteExecute);
             CreateTestDataCommand = new RelayCommand(CreateTestData);
             CloseCommand = new RelayCommand(Close);
         }
@@ -283,6 +299,7 @@ namespace LoveYourBudget.ViewModel
         public void OnSave(object sender, EventArgs e)
         {
             MessageBox.Show("Saved!");
+            BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
             RefreshGUI();
         }
         private void YearChangedExecute()
@@ -309,7 +326,7 @@ namespace LoveYourBudget.ViewModel
                 
             RefreshGUI();
         }
-        private void Add()
+        private void AddExecute()
         {
             // Add through separate thread
             // TODO Validate
@@ -327,7 +344,20 @@ namespace LoveYourBudget.ViewModel
             ExpenseRows.Add(ExpenseRow);
             RefreshGUI();
         }
-        private void Delete()
+        private void DeleteBudgetExecute()
+        {            
+            try
+            {
+                BudgetManager.DeleteBudget();
+                BudgetManager = new BudgetManager(SelectedYear, SelectedMonth);
+                RefreshGUI();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not delete budget:\n{ex.InnerException} ");
+            }
+        }
+        private void DeleteExecute()
         {
             if(SelectedExpenseRow == null)
             {
@@ -343,22 +373,27 @@ namespace LoveYourBudget.ViewModel
                 MessageBox.Show($"Could not delete expense: {ex.Message} ");
             }
         }
-        private void LoadCategories()
+        private async void LoadCategoriesAsync()
         {
-            try
+            // Since this is a I/O bound task Task.Run is used
+            await Task.Run(() =>
             {
-                Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
-            } catch(Exception ex) 
-            {
-                MessageBox.Show($"Could not get categories: {ex.Message} ");
-            }
+
+                try
+                {
+                    Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Could not get categories:\n {ex.InnerException}", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                }
+            });
         }
         private void LoadExpenses()
         {
             try
             {
-                // TODO Är detta rätt iom att det är en I/O-operation?
-                // Borde kanske vara  Task loadExpenses = Task.Run()
                 // Since this is a I/O bound task Task.Run is used
                 Task getExpensesTask = Task.Run(() =>
                 {
@@ -371,7 +406,6 @@ namespace LoveYourBudget.ViewModel
                     }
                     
                 });
-                //ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
                 getExpensesTask.Wait();
                 ActualExpenses = ExpenseRows.Sum(x => x.Amount);
             } catch(Exception ex)
@@ -379,36 +413,7 @@ namespace LoveYourBudget.ViewModel
                 MessageBox.Show($"Could not get expenses: {ex.Message} ");
             }            
         }
-        // TODO REMOVE
-        /// <summary>
-        /// Helper method to summarize expenses
-        /// </summary>
-        /// <returns></returns>
-        //private double GetSumExpenses()
-        //{
-            
-        //    double sum = 0;
-        //    foreach(ExpenseRow row in ExpenseRows) 
-        //    {
-        //        sum += row.Amount;
-        //    }
-        //    //return sum;
-        //    // TODO Move to property
-        //    return ExpenseRows.Sum(x => x.Amount);
-        //}
-        // TODO
-        private string test()
-        {
-            // TODO 
-            //var category = ExpenseRows.GroupBy(e => e.CategoryId)
-            //    .Select(g => new
-            //    {
-            //        g.Key,
-            //        SUM = g.Sum(s => s.Amount)
-            //    }).First();
-            //MessageBox.Show("test");
-            return "Test";
-        }
+        
         private void CreateTestData()
         {
             try
@@ -418,7 +423,13 @@ namespace LoveYourBudget.ViewModel
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
             {
-                MessageBox.Show($"Could not create test data: {ex.Message}");
+                if(ex.InnerException.Message.Contains("Violation of PRIMARY KEY"))
+                {
+                    MessageBox.Show("Could not create test data:\n\nOnly one budget allowed per year/month!", "Could not create data!", MessageBoxButton.OK, MessageBoxImage.Error);
+                } else
+                {
+                    MessageBox.Show($"Could not create test data:\n{ex.InnerException}", "Could not create data!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }                
             }
             
         }

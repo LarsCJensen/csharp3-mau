@@ -54,7 +54,7 @@ namespace LoveYourBudget.Diagram
             return points;
         }
         // Transforms points to canvas units
-        public async static Task<PointCollection> TransformPointsToCanvas(PointCollection points,double canvasHeight, double xCanvasScale, double yCanvasScale, int offset)
+        public static PointCollection TransformPointsToCanvas(PointCollection points,double canvasHeight, double xCanvasScale, double yCanvasScale, int offset)
         {
             PointCollection transformedPoints = new PointCollection();
             foreach (Point point in points)

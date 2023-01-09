@@ -60,7 +60,6 @@ namespace LoveYourBudget
                 budgetVm.OnSave += vm.OnSave;
                 budgetWindow.Show();
             }
-
         }
 
         private void ExpensesVsBudget_Click(object sender, RoutedEventArgs e)

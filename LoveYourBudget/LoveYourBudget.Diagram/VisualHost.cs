@@ -115,74 +115,41 @@ namespace LoveYourBudget.Diagram
         //    }
         //    _children.Add(DrawScaleText(yPoints, scaleStep, 10, Brushes.Black, false));
         //}
-        public async Task DrawScaleAxis(List<string> axisLabels, double max, double size, Orientation orientation)
-        {
+        public void DrawScaleAxis(List<string> axisLabels, double max, double size, Orientation orientation)
+        {            
             // Actual size of the diagram area
             _actualSize = Calculator.CalculateActualSize(size, _offset);
 
-            // TODO NUMBER OF LABELS IS 11 NOT 10 AS IN Ass6
             // Value of each step in the diagram
             double numberOfPoints = axisLabels.Count;
             double stepValue = Calculator.CalculateStepValue(numberOfPoints, _actualSize);
             // Coordinates used to convert from canvas units
             if (orientation == Orientation.Horizontal)
             {
-                //_xPointScale = max / _actualSize;
                 // Coordinates used to convert to canvas units
                 _xCanvasScale = Calculator.CalculateScale(_actualSize, max);
             } else
             {
-                //_yPointScale = max / _actualSize;
                 // Coordinates used to convert to canvas units
                 _yCanvasScale = Calculator.CalculateScale(_actualSize, max);
                 // TODO Ugly way to handle this
+                // To handle Y axis with label for 0 I need to reduce number of points with that
                 stepValue = Calculator.CalculateStepValue(numberOfPoints-1, _actualSize);
-            }           
-                       
+            }                                  
             
             PointCollection points = Calculator.GetPointsForScale(numberOfPoints, stepValue, _offset, _canvasHeight - _offset, orientation);
             
-            // TODO REMOVE COMMENTED CODE
-            //if (yMax == 1)
-            //{
-            //    numberOfPoints = yInterval;
-            //}
-            //else
-            //{
-            //    numberOfPoints = yMax / yInterval;
-            //}
-
-            //double _stepValueY = CalculateStepValue(Math.Round(numberOfPoints), _yActualSize);
-            //PointCollection yPoints = CalculatePointsForScale(numberOfPoints, _stepValueY, _offset, yHeight - _offset, false);
-
             _children.Add(DrawHelpers.DrawLine(points, Brushes.Black, 2));
-            //_children.Add(DrawHelpers.DrawLine(yPoints, Brushes.Black, 2));
-
+            
             // Draw scale markers using Ellips            
             _children.Add(DrawHelpers.DrawEllipse(points, Brushes.Black, 3, 3));
-            //_children.Add(DrawHelpers.DrawEllipse(yPoints, Brushes.Black, 3, 3));
-
-            //double scaleStep = xInterval;
-            //if (xMax == 1)
-            //{
-            //    scaleStep = xMax / xInterval;
-            //}
             
             // Draw the figures on the axises
             _children.Add(DrawScaleText(points, axisLabels, 10, Brushes.Black, orientation));
-
-            //scaleStep = yInterval;
-            //if (yMax == 1)
-            //{
-            //    scaleStep = yMax / yInterval;
-            //}
-            //_children.Add(DrawScaleText(yPoints, scaleStep, 10, Brushes.Black, false));
         }
-        public async Task DrawLegend(Dictionary<string, Brush> labels)
+        public async Task AsyncDrawLegend(Dictionary<string, Brush> labels)
         {
             DrawingVisual visual = new DrawingVisual();
-            DrawingContext context = visual.RenderOpen();
-            FlowDirection direction = FlowDirection.RightToLeft;
             double startX = _offset;
             double startY = _canvasHeight - 20;
             foreach (var label in labels)
@@ -195,45 +162,10 @@ namespace LoveYourBudget.Diagram
                 Point textPoint = new Point(startX, startY);
                 _children.Add(DrawHelpers.DrawLine(legendLine, label.Value,2,false));                
                 _children.Add(DrawText(textPoint, label.Key, 10, label.Value, Orientation.Horizontal));
-                startX += 50;
-                //DrawHelpers.DrawText(ref context, label.Key, points[0], direction, 15, label.Value);
+                startX += 50;                
             }
             
         }
-        //// Helper method to calculate canvas size
-        //private static double CalculateActualSize(double source, int offset)
-        //{
-        //    return source - offset;
-        //}
-        //// Helper function to calculate step in scale
-        //private static double CalculateStepValue(double numberOfPoints, double size)
-        //{
-        //    return size / numberOfPoints;
-        //}
-        //// Helper function to calculate point collection for x and y
-        //private static PointCollection CalculatePointsForScale(double numberOfSteps, double stepValue, int offset, double startY, Orientation orientation)
-        //{
-        //    PointCollection points = new PointCollection
-        //    {
-        //        // Add origo point            
-        //        new Point(offset, startY)
-        //    };
-        //    // Since we add an origo point we skip one of the steps passed in
-        //    for (int i = 1; i < numberOfSteps; i++)
-        //    {
-        //        if (orientation == Orientation.Horizontal)
-        //        {
-        //            // For horizontal we increase by stepvalue + offset, but keep Y at the same coordinate
-        //            points.Add(new Point(i * stepValue + offset, startY));
-        //        }
-        //        else if (orientation == Orientation.Vertical)
-        //        {
-        //            // For vertical we keep X at offset
-        //            points.Add(new Point(offset, startY - (i * stepValue)));
-        //        }
-        //    }
-        //    return points;
-        //}
         // Helper method to draw scale text
         private DrawingVisual DrawScaleText(PointCollection points, List<string> labels, int size, Brush color, Orientation orientation)
         {
@@ -270,9 +202,9 @@ namespace LoveYourBudget.Diagram
         /// Draw points based on collection. Will transform points to canvas values
         /// </summary>
         /// <param name="points"></param>
-        public async Task DrawPointsAsync(PointCollection points, Brush color, int size=1)
+        public void DrawPoints(PointCollection points, Brush color, int size=1)
         {
-            PointCollection calculatedPoints = await Calculator.TransformPointsToCanvas(points, _canvasHeight, _xCanvasScale, _yCanvasScale, _offset);
+            PointCollection calculatedPoints = Calculator.TransformPointsToCanvas(points, _canvasHeight, _xCanvasScale, _yCanvasScale, _offset);
             _children.Add(DrawHelpers.DrawLine(calculatedPoints, color, size));
         }
         /// <summary>
@@ -281,9 +213,9 @@ namespace LoveYourBudget.Diagram
         /// <param name="points">points to draw</param>
         /// <param name="color">color</param>
         /// <param name="size">size</param>
-        public async Task DrawStackAsync(PointCollection points, Brush color, int size = 1)
+        public void DrawStack(PointCollection points, Brush color, int size = 1)
         {
-            PointCollection calculatedPoints = await Calculator.TransformPointsToCanvas(points, _canvasHeight, _xCanvasScale, _yCanvasScale, _offset);
+            PointCollection calculatedPoints = Calculator.TransformPointsToCanvas(points, _canvasHeight, _xCanvasScale, _yCanvasScale, _offset);
             _children.Add(DrawHelpers.DrawStacks(calculatedPoints, _canvasHeight - _offset, color, size));
         }
     }

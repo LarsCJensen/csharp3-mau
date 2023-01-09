@@ -74,14 +74,14 @@ namespace LoveYourBudget.BLL.Services
         /// </summary>
         /// <param name="year">Year</param>        
         /// <returns>Task</returns>
-        public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year)
+        public async Task<IEnumerable<ExpenseRow>> AsyncGetExpensesByDate(string year)
         {
-            return await _repository.GetExpensesByDateAsync(year);
+            return await _repository.AsyncGetExpensesByDate(year);
         }
-        public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month)
+        public async Task<IEnumerable<ExpenseRow>> AsyncGetExpensesByDate(string year, string month)
         {
             RecreateContext();
-            return await _repository.GetExpensesByDateAsync(year, month);
+            return await _repository.AsyncGetExpensesByDate(year, month);
         }
         public Category GetTopExpenseCategory(string year, string month)
         {

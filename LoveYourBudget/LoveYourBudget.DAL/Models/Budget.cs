@@ -16,7 +16,6 @@ namespace LoveYourBudget
         public string Month { get; set; }
         [Required]
         public int Income { get; set; }        
-        public virtual ICollection<Loan> Loans { get; set; }
         public virtual ICollection<BudgetRow> BudgetRows { get; set; }
     }
 }

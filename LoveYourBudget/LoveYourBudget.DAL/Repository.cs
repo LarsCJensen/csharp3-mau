@@ -191,11 +191,11 @@ namespace LoveYourBudget.DAL
             return GetAllExpenses().Where(x => (x.Date >= date && x.Date <= enddate) && x.CategoryId == categoryId).ToList();
         }
         /// <summary>
-        /// Method to get all ExpenseRows asynchronously
+        /// Method to get all ExpenseRows by year and month asynchronously
         /// </summary>
         /// <param name="year">year to filter on</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year)
+        public async Task<IEnumerable<ExpenseRow>> AsyncGetExpensesByDate(string year)
         {
             DateTime date = new DateTime(int.Parse(year), 1, 1);
             DateTime enddate = new DateTime(int.Parse(year), 12, 31);
@@ -207,7 +207,7 @@ namespace LoveYourBudget.DAL
         /// <param name="year">year to filter on</param>
         /// <param name="month">month to filter on</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month)
+        public async Task<IEnumerable<ExpenseRow>> AsyncGetExpensesByDate(string year, string month)
         {
             // If month is selected calculate date and enddate
             DateTime date = DateTime.Parse(year + "-" + month);

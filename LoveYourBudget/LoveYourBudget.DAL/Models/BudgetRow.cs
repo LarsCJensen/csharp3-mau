@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace LoveYourBudget
@@ -17,5 +18,7 @@ namespace LoveYourBudget
         public double Amount { get; set; }
         [Required]
         public DateTime Date { get; set; } = DateTime.Now;
+        public int BudgetId { get; set; }
+        public virtual Budget Budget { get; set; }
     }
 }

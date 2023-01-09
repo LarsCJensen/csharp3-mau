@@ -129,17 +129,13 @@ namespace LoveYourBudget.ViewModel
         {
             try
             {
-                // TODO Är detta rätt iom att det är en I/O-operation?
-                // Borde kanske vara  Task loadExpenses = Task.Run()
                 // Since this is a I/O bound task Task.Run is used
                 Task getLoansTask = Task.Run(() =>
                 {
                     LoanManager.LoadLoans();
                 });
-                //ExpenseRows = await Task.Run(() => new ObservableCollection<ExpenseRow>(BudgetManager.GetExpensesAsync(SelectedYear, SelectedMonth).Result));
                 getLoansTask.Wait();
-                Loans = new ObservableCollection<Loan>(LoanManager.Loans);
-                //ActualExpenses = ExpenseRows.Sum(x => x.Amount);
+                Loans = new ObservableCollection<Loan>(LoanManager.Loans);                
             }
             catch (Exception ex)
             {

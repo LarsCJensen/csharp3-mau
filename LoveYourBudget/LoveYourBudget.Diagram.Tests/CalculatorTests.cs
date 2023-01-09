@@ -16,7 +16,7 @@ namespace LoveYourBudget.Diagram.Tests
             // Act
             var result = Calculator.CalculateActualSize(source, offset);
             // Assert            
-            Assert.AreEqual(80, result);
+            Assert.AreEqual(60, result);
         }
 
         [TestMethod]

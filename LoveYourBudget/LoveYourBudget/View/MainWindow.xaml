@@ -86,6 +86,9 @@
                 <StackPanel Grid.Row="1" Grid.Column="4" Margin="5,10,5,0">
                     <Button Content="{Binding EditOrCreateBudget, FallbackValue='Create'}" Width="90" Click="EditOrCreateBudget_Click" IsEnabled="{Binding EditEnabled}"/>
                 </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="5" Margin="5,10,5,0" HorizontalAlignment="Left">
+                    <Button Content="Delete" Width="90" Command="{Binding DeleteBudgetCommand}"  IsEnabled="{Binding DeleteEnabled}"/>
+                </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="2">
                     <TextBlock Text="{Binding NumberOfBudgets, FallbackValue='Budgets: '}" FontSize="13" FontWeight="Bold" />
                 </StackPanel>
@@ -135,7 +138,7 @@
                 <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center">
-                <TextBlock Text="Add expenses" FontSize="15" FontWeight="Bold"/>
+                <TextBlock Text="Add expense" FontSize="15" FontWeight="Bold"/>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="center" Height="35">
                 <ComboBox Width="100" Margin="10,5,0,5" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" SelectedValuePath="Id" SelectedValue="{Binding Category.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>

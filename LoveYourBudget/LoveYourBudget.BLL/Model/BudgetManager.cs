@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace LoveYourBudget.BLL.Model
 {
@@ -93,6 +94,15 @@ namespace LoveYourBudget.BLL.Model
             Budget.BudgetRows = BudgetRows;
             _budgetService.Save(Budget);
         }
+        public void DeleteBudget()
+        {
+            //foreach(BudgetRow budgetRow in Budget.BudgetRows)
+            //{
+            //    //_budgetService.Delete();
+            //}
+                
+            _budgetService.Delete(Budget.Id);
+        }
         public void SaveExpense(ExpenseRow expenseRow)
         {
             _expensesService.Save(expenseRow);
@@ -105,7 +115,7 @@ namespace LoveYourBudget.BLL.Model
         /// Method to get expenses by year
         /// </summary>
         /// <param name="year">Year</param>
-        /// <returns></returns>
+        //4/ <returns></returns>
         public IEnumerable<ExpenseRow> GetExpensesForDate(string year)
         {
             return _expensesService.GetExpensesByDate(year);
@@ -135,9 +145,9 @@ namespace LoveYourBudget.BLL.Model
         /// </summary>
         /// <param name="year">Year</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ExpenseRow>> GetExpensesAsync(string year)
+        public async Task<IEnumerable<ExpenseRow>> AsyncGetExpenses(string year)
         {
-            return await _expensesService.GetExpensesByDateAsync(year);
+            return await _expensesService.AsyncGetExpensesByDate(year);
         }
         /// <summary>
         /// Method to get expenses by year async
@@ -145,9 +155,9 @@ namespace LoveYourBudget.BLL.Model
         /// <param name="year">Year</param>
         /// <param name="month">Month</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ExpenseRow>> GetExpensesAsync(string year, string month)
+        public async Task<IEnumerable<ExpenseRow>> AsyncGetExpenses(string year, string month)
         {
-            return await _expensesService.GetExpensesByDateAsync(year, month);
+            return await _expensesService.AsyncGetExpensesByDate(year, month);
         }
         public void DeleteExpense(int expenseId)
         {

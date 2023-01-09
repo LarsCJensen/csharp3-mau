@@ -17,8 +17,8 @@ namespace LoveYourBudget.DAL
         IEnumerable<ExpenseRow> GetExpensesByDate(string year);
         IEnumerable<ExpenseRow> GetExpensesByDate(string year, string month);
         IEnumerable<ExpenseRow> GetExpensesByYearAndCategory(string year, int categoryId);
-        Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year);
-        Task<IEnumerable<ExpenseRow>> GetExpensesByDateAsync(string year, string month);
+        Task<IEnumerable<ExpenseRow>> AsyncGetExpensesByDate(string year);
+        Task<IEnumerable<ExpenseRow>> AsyncGetExpensesByDate(string year, string month);
         IEnumerable<Budget> GetBudgetsByDate(string year);
         IEnumerable<Budget> GetBudgetsByDate(string year, string month);
         Category GetTopExpenseCategory(string year, string month);

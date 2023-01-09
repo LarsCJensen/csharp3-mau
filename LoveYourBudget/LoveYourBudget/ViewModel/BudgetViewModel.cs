@@ -138,7 +138,7 @@ namespace LoveYourBudget.ViewModel
         {
             BudgetManager = new BudgetManager();
             Title = "New budget";
-            LoadCategories();
+            LoadCategoriesAsync();
         }
         public BudgetViewModel(string year, string month) 
         {
@@ -148,14 +148,14 @@ namespace LoveYourBudget.ViewModel
             SelectedYear = year;
             SelectedMonth = month;             
             Title = "New budget";
-            LoadCategories();
+            LoadCategoriesAsync();
         }
         public BudgetViewModel(BudgetManager budgetManager)
         {
             BudgetManager = budgetManager;
             Title = BudgetManager.Budget.Year + "-" + BudgetManager.Budget.Month;
             BudgetRows = new ObservableCollection<BudgetRow>(BudgetManager.BudgetRows);
-            LoadCategories();
+            LoadCategoriesAsync();
         }
         protected override void RegisterCommands()
         {
@@ -172,7 +172,14 @@ namespace LoveYourBudget.ViewModel
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
             {
-                MessageBox.Show($"Could not save budget:\n { ex.InnerException.Message}", "Save error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (ex.InnerException.Message.Contains("Violation of PRIMARY KEY"))
+                {
+                    MessageBox.Show("Could not create budget:\n\nOnly one budget allowed per year/month!", "Could not create budget!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show($"Could not create budget:\n{ex.InnerException}", "Could not create budget!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
                 return;
             }
 
@@ -181,7 +188,6 @@ namespace LoveYourBudget.ViewModel
         }
         private void Add()
         {
-            // TODO Validate
             Double.TryParse(Amount, out double result);
             BudgetRow budgetRow = new BudgetRow() 
             {
@@ -194,9 +200,39 @@ namespace LoveYourBudget.ViewModel
             Amount = "";
             BudgetRows = new ObservableCollection<BudgetRow>(BudgetManager.BudgetRows);
         }
-        private void LoadCategories()
+        private async void LoadCategoriesAsync()
         {
-            Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
+            // Since this is a I/O bound task Task.Run is used
+            await Task.Run(() =>
+            {
+
+                try
+                {
+                    Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Could not get categories:\n {ex.InnerException}", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                }
+            });
+            //getCategoriesTask.Wait();
+            //// Since this is a I/O bound task Task.Run is used
+            //Task getCategoriesTask = Task.Run(() =>
+            //{
+
+            //    try
+            //    {
+            //        Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show($"Could not get categories:\n {ex.InnerException}", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            //    }
+            //});
+            //getCategoriesTask.Wait();
+
         }
         private void Delete(BudgetRow selectedBudgetRow)
         {
