@@ -19,7 +19,6 @@ namespace LoveYourBudget.DAL
         {
             _context = context;
         }
-
         /// <summary>
         /// Method to save T
         /// </summary>
@@ -38,22 +37,12 @@ namespace LoveYourBudget.DAL
             {
                 throw new InvalidOperationException("Item not found in database!");
             }
-            // This workaround did not work
-            //_context.ChangeTracker.TrackGraph(entity, e => {
-            //    //e.Entry.State = EntityState.Unchanged; //starts tracking
-            //    if ((e.Entry.Entity as Album) != null)
-            //    {
-            //        _context.Entry(e.Entry.Entity as Album).Collection("Files").IsModified = true;
-            //    }
-            //});
 
-            // For unknown reason, files doesn't get tracked as changed. Using this loop to set all properties before save
+            // For unknown reason, relations doesn't get tracked as changed. Using this loop to set all properties before save
             foreach (var item in entity.GetType().GetProperties())
             {
                 dbItem.GetType().GetProperty(item.Name).SetValue(dbItem, item.GetValue(entity));
             }
-            // This couldn't be used as relationship changes was not tracked                
-            //_context.Entry(dbItem).CurrentValues.SetValues(entity);            
             _context.SaveChanges();
             return entity;
         }
@@ -126,6 +115,13 @@ namespace LoveYourBudget.DAL
         {
             return _context.Budgets.AsQueryable().Where(x => x.Year == year && x.Month == month).ToList();            
         }
+        /// <summary>
+        /// NOT IMPLEMENTED YET
+        /// Method to get TopExpenseCategory
+        /// </summary>
+        /// <param name="year">year to get expenses for</param>
+        /// <param name="month">month to get expenses for</param>
+        /// <returns></returns>
         public Category GetTopExpenseCategory(string year, string month)
         {
             DateTime date = DateTime.Parse(year + "-" + month);
@@ -149,11 +145,6 @@ namespace LoveYourBudget.DAL
             //}
             return _context.Categories.First();
         }
-        private IQueryable<BudgetRow> GetAllBudgetRows()
-        {
-            return _context.BudgetRows.AsQueryable();
-        }
-
         /// <summary>
         /// Method to get all ExpenseRows for year
         /// </summary>
@@ -221,76 +212,6 @@ namespace LoveYourBudget.DAL
         private IQueryable<ExpenseRow> GetAllExpenses()
         {
             return _context.ExpenseRows.AsQueryable();
-        }
-        // TODO REMOVE
-        ///// <summary>
-        ///// Method to search entities based on text an property
-        ///// </summary>
-        ///// <param name="searchText">Text to search for</param>
-        ///// <param name="searchProperty">Property to search in</param>
-        ///// <returns></returns>
-        //public IEnumerable<T> SearchEntities(string searchText, string searchProperty, string searchCriteria)
-        //{
-        //    var query = _context.Set<T>();
-        //    if (searchCriteria == "Contains")
-        //    {
-        //        return AddFilterContains(query, searchText, searchProperty);
-        //    }
-        //    else
-        //    {
-        //        return AddFilterEquals(query, searchText, searchProperty);
-        //    }
-
-
-        //}
-        ///// <summary>
-        ///// Helper method to add filter dynamically. Only works with string
-        ///// </summary>
-        ///// <typeparam name="T"></typeparam>
-        ///// <param name="query">Query of type T</param>
-        ///// <param name="propertyName">WHich property to search in</param>
-        ///// <param name="searchTerm">What text to search for</param>
-        ///// <returns>Query with filter</returns>
-        //private IQueryable<T> AddFilterContains<T>(IQueryable<T> query, string searchText, string searchProperty)
-        //{
-        //    // Get type
-        //    var param = Expression.Parameter(typeof(T), "e");
-        //    // Get property form string
-        //    var propExpression = Expression.Property(param, searchProperty);
-
-        //    object value = searchText;
-        //    if (propExpression.Type != typeof(string))
-        //        value = Convert.ChangeType(value, propExpression.Type);
-        //    // Get the Contains method instead of using Equal
-        //    var method = typeof(string).GetMethod("Contains", new Type[] { typeof(string) }); ;
-        //    var call = Expression.Call(propExpression, method, Expression.Constant(value));
-
-        //    var filterLambda = Expression.Lambda<Func<T, bool>>(
-        //        call,
-        //        param
-        //    );
-
-        //    return query.Where(filterLambda);
-        //}
-        //private IQueryable<T> AddFilterEquals<T>(IQueryable<T> query, string searchText, string searchProperty)
-        //{
-        //    // Get type
-        //    var param = Expression.Parameter(typeof(T), "e");
-        //    // Get property form string
-        //    var propExpression = Expression.Property(param, searchProperty);
-
-        //    object value = searchText;
-        //    if (propExpression.Type != typeof(string))
-        //        value = Convert.ChangeType(value, propExpression.Type);
-        //    var filterLambda = Expression.Lambda<Func<T, bool>>(
-        //        Expression.Equal(
-        //            propExpression,
-        //            Expression.Constant(value)
-        //        ),
-        //        param
-        //    );
-
-        //    return query.Where(filterLambda);
-        //}
+        }        
     }
 }

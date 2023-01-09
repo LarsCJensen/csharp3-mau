@@ -7,6 +7,9 @@ using System.Text;
 
 namespace LoveYourBudget
 {
+    /// <summary>
+    /// Table Loans
+    /// </summary>
     [Table("Loans")]
     public class Loan : BaseModel
     {

@@ -10,6 +10,9 @@ using System.Windows;
 
 namespace LoveYourBudget.ViewModel
 {
+    /// <summary>
+    /// ViewModel for Loan
+    /// </summary>
     public class LoanViewModel: BaseViewModel
     {
         #region Properties

@@ -276,11 +276,9 @@ namespace LoveYourBudget.ViewModel
             LoadExpenses();
             Date = DateTime.Now;
             BudgetExpenses = BudgetManager.GetSumBudgetExpenses();
-            Income = BudgetManager.GetSumIncome();
-            //ActualExpenses = GetSumExpenses();
+            Income = BudgetManager.GetSumIncome();            
             // FUTURE Not fully implemented
-            TopExpenseCategory = BudgetManager.GetTopExpenseCategory(SelectedYear, SelectedMonth);
-            // TODO Get number of budgets per year instead?
+            TopExpenseCategory = BudgetManager.GetTopExpenseCategory(SelectedYear, SelectedMonth);            
             NumberOfBudgets = $"# Budgets: {BudgetManager.Budgets.Count}";
             NumberOfBudgetRows = $"# Budget rows: {BudgetManager.BudgetRows.Count}";
             EditOrCreateBudget = BudgetManager.Budgets.Count > 0 ? "Edit budget" : "Create budget";
@@ -447,6 +445,9 @@ namespace LoveYourBudget.ViewModel
                 {
                     MessageBox.Show($"Could not create test data:\n{ex.InnerException}", "Could not create data!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }                
+            } catch(Exception ex)
+            {
+                MessageBox.Show($"Unhandled error occured:\n{ex.InnerException}", "Could not create data!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }

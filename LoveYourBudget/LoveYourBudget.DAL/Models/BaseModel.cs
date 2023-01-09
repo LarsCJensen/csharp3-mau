@@ -7,11 +7,12 @@ using System.Text;
 
 namespace LoveYourBudget
 {
+    /// <summary>
+    /// Base class
+    /// </summary>
+
     public class BaseModel
     {
-        /// <summary>
-        /// Base class
-        /// </summary>
         // Let id be incremented automatically and used as key
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

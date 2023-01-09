@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace LoveYourBudget.Diagram
 {
+    /// <summary>
+    /// Enums for Diagram
+    /// </summary>
     public class Enums
     {
         public enum Orientation

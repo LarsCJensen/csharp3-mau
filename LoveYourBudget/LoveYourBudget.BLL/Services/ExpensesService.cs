@@ -27,6 +27,10 @@ namespace LoveYourBudget.BLL.Services
             LoveYourBudgetDbContext _context = new LoveYourBudgetDbContext();
             _repository = new Repository<ExpenseRow>(_context);
         }
+        /// <summary>
+        /// Implementation of GetItems
+        /// </summary>
+        /// <returns>IEnumerable of ExpenseRow</returns>
         public override IEnumerable<ExpenseRow> GetItems()
         {
             RecreateContext();
@@ -78,11 +82,23 @@ namespace LoveYourBudget.BLL.Services
         {
             return await _repository.AsyncGetExpensesByDate(year);
         }
+        /// <summary>
+        /// Method to get expenses by year and month async
+        /// </summary>
+        /// <param name="year">Year</param>        
+        /// <returns>Task</returns>
         public async Task<IEnumerable<ExpenseRow>> AsyncGetExpensesByDate(string year, string month)
         {
             RecreateContext();
             return await _repository.AsyncGetExpensesByDate(year, month);
         }
+        /// <summary>
+        /// NOT IMPLEMENTED
+        /// Method to get top expense category
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
         public Category GetTopExpenseCategory(string year, string month)
         {
             return _repository.GetTopExpenseCategory(year, month);

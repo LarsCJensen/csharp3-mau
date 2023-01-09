@@ -224,7 +224,7 @@ namespace LoveYourBudget.Diagram
         /// <returns></returns>        
         private PointCollection GetExpensesSumPerMonth()
         {
-            // TODO Make into a task?
+            // FUTURE Make into a task?
             PointCollection expensesPoints = new PointCollection();
             // Get expenses per month
             for (int i = 1; i < 13; i++)
@@ -255,7 +255,7 @@ namespace LoveYourBudget.Diagram
         /// <returns></returns>        
         private PointCollection GetExpensesSumPerCategory(List<Category> categories)
         {            
-            // TODO Make into a task?
+            // FUTURE Make into a task?
             PointCollection expensesPoints = new PointCollection();            
             // Get expenses per month
             for (int i = 0; i < categories.Count; i++)

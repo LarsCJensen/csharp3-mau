@@ -9,6 +9,9 @@ using static LoveYourBudget.Diagram.Enums;
 
 namespace LoveYourBudget.Diagram
 {
+    /// <summary>
+    /// Calculator class for VisualHost
+    /// </summary>
     public static class Calculator
     {
         // Helper method to calculate canvas size
@@ -28,16 +31,8 @@ namespace LoveYourBudget.Diagram
         }
         // Helper function to calculate point collection for x and y
         public static PointCollection GetPointsForScale(double numberOfSteps, double stepValue, int offset, double startY, Orientation orientation)
-        {
-            // TODO Is this needed?
-            //PointCollection points = new PointCollection
-            //{
-            //    // Add origo point            
-            //    new Point(offset, startY)
-            //};
+        {            
             PointCollection points = new PointCollection();
-            // TODO REMOVE
-            // Since we add an origo point we skip one of the steps passed in
             for (int i = 0; i < numberOfSteps; i++)
             {
                 if (orientation == Orientation.Horizontal)

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace LoveYourBudget.BLL.Services
 {
+    /// <summary>
+    /// Service for Loan
+    /// </summary>
     public class LoansService : BaseService<Loan>
     {
         private IRepository<Loan> _repository;
@@ -23,10 +26,18 @@ namespace LoveYourBudget.BLL.Services
             LoveYourBudgetDbContext _context = new LoveYourBudgetDbContext();
             _repository = new Repository<Loan>(_context);
         }
+        /// <summary>
+        /// Method to save
+        /// </summary>
+        /// <param name="entity">Entity to save</param>
         public override void Save(Loan entity)
         {
             _repository.Save(entity);
         }
+        /// <summary>
+        /// Implementation of GetItems
+        /// </summary>
+        /// <returns>IEnumerable of loan</returns>
         public override IEnumerable<Loan> GetItems()
         {
             RecreateContext();

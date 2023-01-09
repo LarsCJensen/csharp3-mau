@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace LoveYourBudget.BLL.Services
 {
+    /// <summary>
+    /// Service for budgets
+    /// </summary>
     public class BudgetService : BaseService<Budget>
     {
         private IRepository<Budget> _repository;
@@ -27,6 +30,10 @@ namespace LoveYourBudget.BLL.Services
             LoveYourBudgetDbContext _context = new LoveYourBudgetDbContext();
             _repository = new Repository<Budget>(_context);
         }
+        /// <summary>
+        /// Implementation of GetItems
+        /// </summary>
+        /// <returns>IEnumerable of budget</returns>
         public override IEnumerable<Budget> GetItems()
         {
             RecreateContext();

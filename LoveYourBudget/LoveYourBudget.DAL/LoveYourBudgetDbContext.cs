@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace LoveYourBudget.DAL
 {
+    /// <summary>
+    /// DBContext for LoveYourBudget
+    /// </summary>
     public class LoveYourBudgetDbContext: DbContext
     {
         public DbSet<Budget> Budgets { get; set; }
@@ -21,6 +24,10 @@ namespace LoveYourBudget.DAL
         public LoveYourBudgetDbContext(DbContextOptions<LoveYourBudgetDbContext> options) : base(options)
         {
         }
+        /// <summary>
+        /// Override to seed data and create composite key
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override  void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -30,7 +37,7 @@ namespace LoveYourBudget.DAL
 
     }
 
-    public class MediaPlayerDbContextFactory : IDesignTimeDbContextFactory<LoveYourBudgetDbContext>
+    public class LoveYourBudgetDbContextFactory : IDesignTimeDbContextFactory<LoveYourBudgetDbContext>
     {
         public LoveYourBudgetDbContext CreateDbContext(string[] args)
         {

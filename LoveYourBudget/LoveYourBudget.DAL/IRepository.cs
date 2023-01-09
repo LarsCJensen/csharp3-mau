@@ -22,8 +22,6 @@ namespace LoveYourBudget.DAL
         IEnumerable<Budget> GetBudgetsByDate(string year);
         IEnumerable<Budget> GetBudgetsByDate(string year, string month);
         Category GetTopExpenseCategory(string year, string month);
-        // TODO REMOVE?
-        //IEnumerable<T> SearchEntities(string searchText, string searchProperty, string searchCriteria);
         T GetById(int id);
         T Save(T entity);
         void Delete(int id);

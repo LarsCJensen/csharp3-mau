@@ -8,6 +8,9 @@ using System.Text;
 
 namespace LoveYourBudget
 {
+    /// <summary>
+    /// Table BudgetRow
+    /// </summary>
     [Table("BudgetRow")]
     public class BudgetRow : BaseModel
     {

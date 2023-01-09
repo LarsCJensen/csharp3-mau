@@ -5,6 +5,9 @@ using System.Text;
 
 namespace LoveYourBudget
 {
+    /// <summary>
+    /// Table Category
+    /// </summary>
     public class Category : BaseModel
     {
         public string Name { get; set; }       

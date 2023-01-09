@@ -11,25 +11,18 @@ using static LoveYourBudget.Diagram.Enums;
 
 namespace LoveYourBudget.Diagram
 {
+    /// <summary>
+    /// Class used to draw
+    /// </summary>
     public class VisualHost: FrameworkElement
     {
         private VisualCollection _children;
         int _offset = 40;        
         double _canvasHeight;        
-
-        //  TODO REMOVE? Local variables to hold the scale when transforming points
+       
         double _xCanvasScale;
-        double _yCanvasScale;
+        double _yCanvasScale;        
         
-        
-        // TODO REMOVE
-        //double _xPointScale;
-        //double _yPointScale;
-
-        // TODO REMOVE
-        private double _xActualSize;
-        private double _yActualSize;
-
         private double _actualSize;
 
         public VisualHost(double height) 
@@ -50,71 +43,7 @@ namespace LoveYourBudget.Diagram
 
             return _children[index];
         }
-        //public void DrawScale(double xMax, int xInterval, double xWidth, double startX, double yMax, int yInterval, double yHeight, double startY)
-        //{
-        //    // TODO
-        //    //_yHeight = yHeight;
-        //    // Actual size of the diagram area
-        //    _xActualSize = CalculateActualSize(xWidth, _offset);
-        //    _yActualSize = CalculateActualSize(yHeight, _offset);
-
-        //    // Coordinates used to convert to canvas units
-        //    _xCanvasScale = _xActualSize / xMax;
-        //    _yCanvasScale = _yActualSize / yMax;
-
-        //    // Coordinates used to convert from canvas units
-        //    _xPointScale = xMax / _xActualSize;
-        //    _yPointScale = yMax / _yActualSize;
-
-        //    // Value of each step in the diagram
-        //    // Ugly workaround in case someone uses max value of 1
-        //    double numberOfPoints;
-        //    if (xMax == 1)
-        //    {
-        //        numberOfPoints = xInterval;
-        //    }
-        //    else
-        //    {
-        //        numberOfPoints = xMax / xInterval;
-        //    }
-
-        //    double _stepValueX = CalculateStepValue(Math.Round(numberOfPoints), _xActualSize);
-        //    PointCollection xPoints = CalculatePointsForScale(numberOfPoints, _stepValueX, _offset, yHeight - _offset);
-
-        //    if (yMax == 1)
-        //    {
-        //        numberOfPoints = yInterval;
-        //    }
-        //    else
-        //    {
-        //        numberOfPoints = yMax / yInterval;
-        //    }
-
-        //    double _stepValueY = CalculateStepValue(Math.Round(numberOfPoints), _yActualSize);
-        //    PointCollection yPoints = CalculatePointsForScale(numberOfPoints, _stepValueY, _offset, yHeight - _offset, false);
-
-        //    _children.Add(DrawHelpers.DrawLine(xPoints, Brushes.Black, 2));
-        //    _children.Add(DrawHelpers.DrawLine(yPoints, Brushes.Black, 2));
-
-        //    // Draw scale markers using Ellips            
-        //    _children.Add(DrawHelpers.DrawEllipse(xPoints, Brushes.Black, 3, 3));
-        //    _children.Add(DrawHelpers.DrawEllipse(yPoints, Brushes.Black, 3, 3));
-
-        //    double scaleStep = xInterval;
-        //    if (xMax == 1)
-        //    {
-        //        scaleStep = xMax / xInterval;
-        //    }
-        //    // Draw the figures on the axises
-        //    _children.Add(DrawScaleText(xPoints, scaleStep, 10, Brushes.Black));
-
-        //    scaleStep = yInterval;
-        //    if (yMax == 1)
-        //    {
-        //        scaleStep = yMax / yInterval;
-        //    }
-        //    _children.Add(DrawScaleText(yPoints, scaleStep, 10, Brushes.Black, false));
-        //}
+        
         public void DrawScaleAxis(List<string> axisLabels, double max, double size, Orientation orientation)
         {            
             // Actual size of the diagram area
@@ -132,7 +61,7 @@ namespace LoveYourBudget.Diagram
             {
                 // Coordinates used to convert to canvas units
                 _yCanvasScale = Calculator.CalculateScale(_actualSize, max);
-                // TODO Ugly way to handle this
+                // FUTURE Ugly way to handle this
                 // To handle Y axis with label for 0 I need to reduce number of points with that
                 stepValue = Calculator.CalculateStepValue(numberOfPoints-1, _actualSize);
             }                                  
@@ -147,9 +76,13 @@ namespace LoveYourBudget.Diagram
             // Draw the figures on the axises
             _children.Add(DrawScaleText(points, axisLabels, 10, Brushes.Black, orientation));
         }
+        /// <summary>
+        /// Method to Draw legend
+        /// </summary>
+        /// <param name="labels">labels to draw</param>
+        /// <returns></returns>
         public async Task AsyncDrawLegend(Dictionary<string, Brush> labels)
         {
-            DrawingVisual visual = new DrawingVisual();
             double startX = _offset;
             double startY = _canvasHeight - 20;
             foreach (var label in labels)

@@ -6,21 +6,21 @@ using System.ComponentModel;
 
 namespace LoveYourBudget.BLL.Model
 {
+    /// <summary>
+    /// Manager for budgets and budget rows.
+    /// Also handles getting of expense rows
+    /// </summary>
     public class BudgetManager
     {
         private BudgetService _budgetService = new BudgetService();
         private CategoryService _categoryService = new CategoryService();
         private ExpensesService _expensesService = new ExpensesService();
-        // TODO Is this optimal??
         public Budget Budget { get; set; }
         public List<Budget> Budgets { get; set; }
         public List<BudgetRow> BudgetRows { get; set; }
         
         public BudgetManager() 
         {
-            //_budgetService = new BudgetService();
-            //_categoryService = new CategoryService();
-            //_expensesService = new ExpensesService();
             Budget = new Budget();
             Budgets = new List<Budget>();
             BudgetRows = new List<BudgetRow>();
@@ -41,8 +41,7 @@ namespace LoveYourBudget.BLL.Model
             Budgets = _budgetService.GetBudgetsByDate(year, month).ToList();            
             BudgetRows = new List<BudgetRow>();
             if(Budgets.Count > 0)
-            {                
-                // TODO Even if there are more budgets, only use the first one
+            {   
                 Budget = Budgets.First();
                 BudgetRows = Budget.BudgetRows.ToList();
             }            
@@ -89,17 +88,12 @@ namespace LoveYourBudget.BLL.Model
             if(Budget.CreatedTime == null)
             {
                 Budget.CreatedTime = DateTime.Now;
-            }
-            // TODO Ìs there a better way?
+            }            
             Budget.BudgetRows = BudgetRows;
             _budgetService.Save(Budget);
         }
         public void DeleteBudget()
         {
-            //foreach(BudgetRow budgetRow in Budget.BudgetRows)
-            //{
-            //    //_budgetService.Delete();
-            //}
                 
             _budgetService.Delete(Budget.Id);
         }

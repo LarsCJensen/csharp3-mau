@@ -10,6 +10,9 @@ using System.Windows;
 
 namespace LoveYourBudget.ViewModel
 {
+    /// <summary>
+    /// ViewModel for Loans
+    /// </summary>
     public class LoansViewModel: BaseViewModel
     {
         private LoanManager _loanManager;
@@ -139,7 +142,7 @@ namespace LoveYourBudget.ViewModel
             }
             catch (Exception ex)
             {
-                // TODO should use dialog
+                // FUTURE should use dialog
                 MessageBox.Show($"Could not get expenses: {ex.Message} ");
             }
         }

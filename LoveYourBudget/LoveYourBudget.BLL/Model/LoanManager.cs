@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace LoveYourBudget.BLL.Model
 {
-    
-    public class LoanManager: BaseManager
+    /// <summary>
+    /// Manager for Loans
+    /// </summary>
+    public class LoanManager
     {
         private LoansService _loansService = new LoansService();
         public Loan Loan { get; set; }
@@ -18,6 +20,9 @@ namespace LoveYourBudget.BLL.Model
             Loan = new Loan();
             Loans = new List<Loan>();
         }
+        /// <summary>
+        /// Method to save loan
+        /// </summary>
         public void SaveLoan()
         {
             if (Loan.Id == 0)
@@ -26,14 +31,25 @@ namespace LoveYourBudget.BLL.Model
             }
             _loansService.Save(Loan);
         }
+        /// <summary>
+        /// Method to delete loan
+        /// </summary>
+        /// <param name="loanId">Id of loan</param>
         public void DeleteLoan(int loanId)
         {
             _loansService.Delete(loanId);
         }
+        /// <summary>
+        /// Method to Load Loans into List
+        /// </summary>
         public void LoadLoans()
         {
             Loans = _loansService.GetItems().ToList();
         }
+        /// <summary>
+        /// Method to load a loan into Loan
+        /// </summary>
+        /// <param name="loanId">Id of loan</param>
         public void LoadLoan(int loanId)
         {
             Loan = _loansService.GetById(loanId);

@@ -1,12 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
-// TODO REMOVE
 namespace LoveYourBudget.DAL
 {
     /// <summary>
@@ -20,7 +14,9 @@ namespace LoveYourBudget.DAL
         {
             this.modelBuilder = modelBuilder;
         }
-
+        /// <summary>
+        /// Categories are created on startup for now
+        /// </summary>
         public void Seed()
         {
             modelBuilder.Entity<Category>().HasData(

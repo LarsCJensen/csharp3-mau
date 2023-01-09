@@ -4,6 +4,9 @@ using System.Windows;
 
 namespace LoveYourBudget.Diagram.Tests
 {
+    /// <summary>
+    /// Tests for Calculator
+    /// </summary>
     [TestClass]
     public class CalculatorTests
     {
