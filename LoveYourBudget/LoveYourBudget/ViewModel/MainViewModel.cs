@@ -11,6 +11,9 @@ using System.Windows;
 
 namespace LoveYourBudget.ViewModel
 {
+    /// <summary>
+    /// ViewModel for MainWindow
+    /// </summary>
     public class MainViewModel : BaseViewModel
     {
         #region Properties
@@ -57,7 +60,8 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("NumberOfBudgetRows");
             }
         }
-        public List<String> Years => new List<String>()
+        // Static list with years to choose from
+        public List<string> Years => new List<string>()
                 {
                     "2023", "2022"
                 };
@@ -74,7 +78,8 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("SelectedYear");
             }
         }
-        public List<String> Months => new List<String>()
+        // Static list with months to choose from
+        public List<string> Months => new List<string>()
                 {
                     "", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
                 };
@@ -262,6 +267,9 @@ namespace LoveYourBudget.ViewModel
             RefreshGUI();
 
         }
+        /// <summary>
+        /// Helper method to refresh GUI
+        /// </summary>
         private void RefreshGUI()
         {
             LoadCategoriesAsync();
@@ -329,9 +337,18 @@ namespace LoveYourBudget.ViewModel
         private void AddExecute()
         {
             // Add through separate thread
-            // TODO Validate
+            if (SelectedCategory == null)
+            {
+                MessageBox.Show("Please select category before saving", "Select category!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             Double.TryParse(Amount, out double result);
-            ExpenseRow ExpenseRow = new ExpenseRow()
+            if (result == 0)
+            {
+                MessageBox.Show("Please add an amount before saving", "Add amount", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+                ExpenseRow ExpenseRow = new ExpenseRow()
             {
                 CreatedTime = DateTime.Now,
                 CategoryId = SelectedCategory.Id,

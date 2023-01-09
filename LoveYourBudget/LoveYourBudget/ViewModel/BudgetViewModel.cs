@@ -13,27 +13,21 @@ using System.Windows.Controls.Ribbon.Primitives;
 
 namespace LoveYourBudget.ViewModel
 {
+    /// <summary>
+    /// ViewModel for budget
+    /// </summary>
     public class BudgetViewModel: BaseViewModel
     {
-        public List<String> Years { 
-            get
-            {
-                return new List<String>()
+        // Static list with years to choose from
+        public List<string> Years => new List<string>()
                 {
                     "2023", "2022"
                 };
-            }        
-        }
-        public List<String> Months
-        {
-            get
-            {
-                return new List<String>()
+        // Static list with months to choose from
+        public List<string> Months => new List<string>()
                 {
                     "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
                 };
-            }
-        }
         #region Properties
         private BudgetManager _budgetManager;
         public BudgetManager BudgetManager
@@ -216,23 +210,6 @@ namespace LoveYourBudget.ViewModel
 
                 }
             });
-            //getCategoriesTask.Wait();
-            //// Since this is a I/O bound task Task.Run is used
-            //Task getCategoriesTask = Task.Run(() =>
-            //{
-
-            //    try
-            //    {
-            //        Categories = new ObservableCollection<Category>(BudgetManager.GetCategories());
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show($"Could not get categories:\n {ex.InnerException}", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            //    }
-            //});
-            //getCategoriesTask.Wait();
-
         }
         private void Delete(BudgetRow selectedBudgetRow)
         {

@@ -9,6 +9,9 @@ using Utilities;
 
 namespace LoveYourBudget.ViewModel
 {
+    /// <summary>
+    /// Base ViewModel with OnPropertyChanged methods
+    /// </summary>
     public abstract class BaseViewModel: INotifyPropertyChanged
     {
         #region INotifyPropertyChanged
@@ -47,8 +50,8 @@ namespace LoveYourBudget.ViewModel
                 OnPropertyChanged("Categories");
             }
         }
-        private Category _selectedCategory;
-        public Category SelectedCategory
+        private Category? _selectedCategory;
+        public Category? SelectedCategory
         {
             get
             {

@@ -123,12 +123,11 @@
                     <Label Content="{Binding TopExpenseCategory, FallbackValue='Groceries'}" />                    
                 </StackPanel>
             </Grid>
-
         </StackPanel>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
-                <RowDefinition Height="50" />
+                <RowDefinition Height="30" />                
+                <RowDefinition Height="50" />                
                 <RowDefinition Height="*" />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
@@ -140,12 +139,24 @@
             <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center">
                 <TextBlock Text="Add expense" FontSize="15" FontWeight="Bold"/>
             </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="center" Height="35">
-                <ComboBox Width="100" Margin="10,5,0,5" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" SelectedValuePath="Id" SelectedValue="{Binding Category.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
-                <TextBox Text="{Binding Amount, FallbackValue='12345'}" Margin="10,5,0,5" Width="100" VerticalContentAlignment="center"  />
-                <DatePicker SelectedDate="{Binding Date}" Margin="10,5,0,5"/>
-                <Button Content="Add" Width="50"  Margin="10,5,0,5" Command="{Binding AddCommand}"/>
-                <Button Content="Delete" Width="50" Margin="10,5,0,5" Command="{Binding DeleteCommand}"/>
+            <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Orientation="Horizontal" HorizontalAlignment="center" >
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="0,0,0,0" Text="Choose category"/>
+                    <ComboBox Width="100" Margin="0,0,0,5" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" SelectedValuePath="Id" SelectedValue="{Binding Category.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0"  Text="Add amount"/>
+                    <TextBox Text="{Binding Amount, FallbackValue='12345'}" Margin="5,0,0,5" Width="100" VerticalContentAlignment="center"  />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="5,0,0,0" Text="Choose date"/>
+                    <DatePicker SelectedDate="{Binding Date}" Margin="5,0,0,5"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button Content="Add" Width="50"  Margin="10,5,0,5" Command="{Binding AddCommand}"/>
+                    <Button Content="Delete" Width="50" Margin="10,5,0,5" Command="{Binding DeleteCommand}"/>
+                </StackPanel>
+                
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1" >
                 <ListView x:Name="lvExpenseRows" Height="200"  ItemsSource="{Binding ExpenseRows}" SelectedItem="{Binding SelectedExpenseRow, FallbackValue=null}">
