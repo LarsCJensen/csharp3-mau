@@ -45,5 +45,27 @@ namespace Utilities
                 return TimeSpan.FromTicks((long)t).TotalMilliseconds;
             }
         }
+        /// <summary>
+        /// Format for decimal string
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string FormatDecimalString(double value)
+        {
+            string s = string.Format("{0:0.00}", value);
+
+            if (s.EndsWith("00"))
+            {
+                return ((int)value).ToString();
+            }
+            else if (s.EndsWith("0") && s != "0")
+            {
+                return s.Substring(0, s.Length - 1);
+            }
+            else
+            {
+                return s;
+            }
+        }
     }
 }

@@ -1,0 +1,183 @@
+﻿<Window x:Class="LoveYourBudget.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LoveYourBudget.ViewModel" 
+        xmlns:converter="clr-namespace:LoveYourBudget.Converters"
+        xmlns:utilities="clr-namespace:Utilities;assembly=Utilities"
+        xmlns:Behaviors="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="600" Width="800">
+    <Window.Resources>
+        <Style x:Key="LabelFont">
+            <Setter Property="Label.FontSize" Value="15" />
+            <Setter Property="Label.FontWeight" Value="Bold" />
+        </Style>
+        <converter:CategoryConverter x:Key="conv" />
+        <utilities:BoolToVisibilityConverter x:Key="BoolToVis" />
+        <local:MainViewModel x:Key="vm" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="200" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Menu>
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New Budget" Click="NewBudget_Click" />
+                    <MenuItem Header="_Exit" Command="{Binding CloseCommand}" />
+                </MenuItem>
+                <MenuItem Header="_View">
+                    <MenuItem Header="_Loans" Click="ViewLoans_Click" />                    
+                </MenuItem>
+                <MenuItem Header="_Reports">
+                    <MenuItem Header="_Expenses vs budget" Click="ExpensesVsBudget_Click" />
+                    <MenuItem Header="_Expenses per category" Click="ExpensesPerCategory_Click" />
+                </MenuItem>
+            </Menu>
+        </Grid>
+        <StackPanel Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="125" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="44,0,0,0">
+                    <Label Content="Year" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="2" Margin="5,10,5,0">
+                    <ComboBox ItemsSource="{Binding Years}" HorizontalAlignment="Right" Width="100" SelectedItem="{Binding SelectedYear, Mode=TwoWay}">
+                        <Behaviors:Interaction.Triggers>
+                            <Behaviors:EventTrigger EventName="SelectionChanged">
+                                <Behaviors:InvokeCommandAction Command="{Binding YearChangedCommand}" />
+                            </Behaviors:EventTrigger>
+                        </Behaviors:Interaction.Triggers>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" Margin="5,0,0,0">
+                    <Label Content="Month" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="3" Margin="5,10,5,0">
+                    <ComboBox ItemsSource="{Binding Months}" HorizontalAlignment="Left" Width="100" SelectedItem="{Binding SelectedMonth, Mode=TwoWay}">
+                        <Behaviors:Interaction.Triggers>
+                            <Behaviors:EventTrigger EventName="SelectionChanged">
+                                <Behaviors:InvokeCommandAction Command="{Binding MonthChangedCommand}" />
+                            </Behaviors:EventTrigger>
+                        </Behaviors:Interaction.Triggers>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="4" Margin="5,10,5,0">
+                    <Button Content="{Binding EditOrCreateBudget, FallbackValue='Create'}" Width="90" Click="EditOrCreateBudget_Click" IsEnabled="{Binding EditEnabled}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="5" Margin="5,10,5,0" HorizontalAlignment="Left">
+                    <Button Content="Delete" Width="90" Command="{Binding DeleteBudgetCommand}"  IsEnabled="{Binding DeleteEnabled}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="2">
+                    <TextBlock Text="{Binding NumberOfBudgets, FallbackValue='Budgets: '}" FontSize="13" FontWeight="Bold" />
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="3">
+                    <TextBlock Text="{Binding NumberOfBudgetRows, FallbackValue='Budget rows: '}" FontSize="13" FontWeight="Bold" />
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2">
+                    <TextBlock Text="No budget for selected month!" Foreground="Red" FontWeight="Bold" Visibility="{Binding NoBudget, Converter={StaticResource BoolToVis}}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="1" >
+                    <Label Content="Income" FontSize="15" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="1">
+                    <TextBlock Text="{Binding Income, StringFormat={}{0:N0}, FallbackValue='40 000'}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="2">
+                    <Label Content="Budget Expenses" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="2">
+                    <TextBlock Text="{Binding BudgetExpenses, StringFormat={}{0:N0}, FallbackValue='20 000'}" />
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="3">
+                    <Label Content="Actual Expenses" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="3">
+                    <TextBlock Text="{Binding ActualExpenses, StringFormat={}{0:N0}, FallbackValue='14 000'}" />
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2">
+                    <Label Content="Top expense category" FontSize="15" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="2">
+                    <Label Content="{Binding TopExpenseCategory, FallbackValue='Groceries'}" />                    
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />                
+                <RowDefinition Height="50" />                
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center">
+                <TextBlock Text="Add expense" FontSize="15" FontWeight="Bold"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Orientation="Horizontal" HorizontalAlignment="center" >
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="0,0,0,0" Text="Choose category"/>
+                    <ComboBox Width="100" Margin="0,0,0,5" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" SelectedValuePath="Id" SelectedValue="{Binding Category.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0"  Text="Add amount"/>
+                    <TextBox Text="{Binding Amount, FallbackValue='12345'}" Margin="5,0,0,5" Width="100" VerticalContentAlignment="center"  />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="5,0,0,0" Text="Choose date"/>
+                    <DatePicker SelectedDate="{Binding Date}" Margin="5,0,0,5"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button Content="Add" Width="50"  Margin="10,5,0,5" Command="{Binding AddCommand}"/>
+                    <Button Content="Delete" Width="50" Margin="10,5,0,5" Command="{Binding DeleteCommand}"/>
+                </StackPanel>
+                
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1" >
+                <ListView x:Name="lvExpenseRows" Height="200"  ItemsSource="{Binding ExpenseRows}" SelectedItem="{Binding SelectedExpenseRow, FallbackValue=null}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding CategoryId, Converter={StaticResource conv}, ConverterParameter={StaticResource vm}}" Width="150">
+                                <GridViewColumnHeader>Category</GridViewColumnHeader>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Amount, StringFormat={}{0:N0}}" Width="150">
+                                <GridViewColumnHeader>Amount</GridViewColumnHeader>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Date}" Width="150">
+                                <GridViewColumnHeader>Date</GridViewColumnHeader>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </Grid>
+        <StackPanel Grid.Row="3">
+            <Button Content="Create Test Data" Width="100" Command="{Binding CreateTestDataCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Utilities\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\LoveYourBudget.BLL\LoveYourBudget.BLL.csproj" />
+    <ProjectReference Include="..\LoveYourBudget.DAL\LoveYourBudget.DAL.csproj" />
+    <ProjectReference Include="..\LoveYourBudget.Diagram\LoveYourBudget.Diagram.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -52,7 +52,7 @@ namespace Assignment6
             _yCanvasScale = _yActualSize / yMax;
 
             // Coordinates used to convert from canvas units
-            _xPointScale = xMax / _xActualSize;
+             _xPointScale = xMax / _xActualSize;
             _yPointScale = yMax / _yActualSize;
 
             // Value of each step in the diagram

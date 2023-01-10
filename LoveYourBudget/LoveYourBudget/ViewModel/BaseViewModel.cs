@@ -1,22 +1,18 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Assignment4B.Utilities;
-using CommunityToolkit.Mvvm.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using Utilities;
 
-namespace Assignment4B.ViewModel
+namespace LoveYourBudget.ViewModel
 {
     /// <summary>
-    /// Base ViewModel
+    /// Base ViewModel with OnPropertyChanged methods
     /// </summary>
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel: INotifyPropertyChanged
     {
         #region INotifyPropertyChanged
         // Property changed event handler
@@ -40,7 +36,33 @@ namespace Assignment4B.ViewModel
                 throw new VerifyPropertyException(msg);
             }
         }
-        #endregion      
+        #endregion
+        private ObservableCollection<Category> _categories = new ObservableCollection<Category>();
+        public ObservableCollection<Category> Categories
+        {
+            get
+            {
+                return _categories;
+            }
+            set
+            {
+                _categories = value;
+                OnPropertyChanged("Categories");
+            }
+        }
+        private Category? _selectedCategory;
+        public Category? SelectedCategory
+        {
+            get
+            {
+                return _selectedCategory;
+            }
+            set
+            {
+                _selectedCategory = value;
+                OnPropertyChanged("SelectedCategory");
+            }
+        }
         #region EventHandlers
         public event EventHandler OnClose;
         #endregion
@@ -49,7 +71,7 @@ namespace Assignment4B.ViewModel
             // If I want general commands I can add them here
             RegisterCommands();
         }
-        protected virtual void RegisterCommands() {}
+        protected virtual void RegisterCommands() { }
         public void Close()
         {
             if (OnClose != null)

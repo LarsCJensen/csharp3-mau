@@ -1,0 +1,73 @@
+﻿<Window x:Class="LoveYourBudget.View.AddLoanWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LoveYourBudget.View"
+        mc:Ignorable="d"
+        Title="Add loan" Height="400" Width="400">
+    <Window.Resources>
+        <Style TargetType="TextBlock" >
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,10" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Width" Value="120" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />            
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="*" />            
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="New loan" FontSize="20" FontWeight="Bold"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <TextBlock Text="Institute:"  />            
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" >
+            <TextBox Margin="10" Text="{Binding LoanManager.Loan.Institute}" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"  HorizontalAlignment="Right">
+            <TextBlock Text="Amount:"/>            
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" >
+            <TextBox Margin="10" Text="{Binding LoanManager.Loan.Amount, StringFormat={}{0:N0}}" />
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"  HorizontalAlignment="Right">
+            <TextBlock Text="Interest %:"/>        
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" >
+            <TextBox Margin="10" Text="{Binding LoanManager.Loan.InterestRate}" />
+        </StackPanel>
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <TextBlock Text="Lock-in period:"/>            
+        </StackPanel>
+        <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" >
+            <DatePicker SelectedDate="{Binding LoanManager.Loan.LockInPeriod}" Margin="10,5,0,5"/>
+        </StackPanel>
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <TextBlock Margin="0,10" Text="Mortgage/month:" FontSize="14" FontWeight="Bold" />            
+        </StackPanel>
+        <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" >
+            <TextBox Margin="10" Text="{Binding LoanManager.Loan.Mortgage, StringFormat={}{0:N0}}" />
+        </StackPanel>
+        <StackPanel Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+            <Button Margin="5,5,5,5" Width="100" Content="Save" Command="{Binding SaveCommand}" />
+            <Button Margin="5,5,5,5" Width="100" Content="Exit" Command="{Binding ExitCommand}" />
+        </StackPanel>
+    </Grid>
+</Window>
